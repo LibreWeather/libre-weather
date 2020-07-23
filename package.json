@@ -2,6 +2,7 @@
   "name": "libre-weather",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0",
   "dependencies": {},
   "scripts": {
     "start": "parcel ./src/index.html --no-cache",
@@ -46,5 +47,9 @@
     "react": "^16.13.1",
     "react-animated-weather": "^4.0.1",
     "react-dom": "^16.13.1"
-  }
+  },
+  "author": "jkuester",
+  "contributors": [
+    "tobitenno"
+  ]
 }

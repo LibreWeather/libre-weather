@@ -3,8 +3,6 @@ import ReactAnimatedWeather from 'react-animated-weather';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLongArrowAltUp } from '@fortawesome/free-solid-svg-icons'
 
-import logo from './assets/logo.svg';
-
 const OPEN_WEATHER_ROOT = 'https://api.openweathermap.org/data/2.5/onecall';
 const LAT = '38.910843';
 const LON = '-94.382172';
@@ -74,6 +72,8 @@ class WeatherData {
           minTemp: Math.round(data.daily[0].temp.min)
         }];
         break;
+      default:
+        break;
     }
   }
 }
@@ -107,14 +107,4 @@ class CurrentWeather extends React.Component {
   }
 }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <CurrentWeather />
-      </header>
-    </div>
-  );
-}
-
-export default App;
+module.exports = CurrentWeather;
