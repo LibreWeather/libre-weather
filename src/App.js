@@ -2,13 +2,13 @@ import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLongArrowAltUp } from '@fortawesome/free-solid-svg-icons'
-import logo from './logo.svg';
-import './App.css';
+
+import logo from './assets/logo.svg';
 
 const OPEN_WEATHER_ROOT = 'https://api.openweathermap.org/data/2.5/onecall';
 const LAT = '38.910843';
 const LON = '-94.382172';
-const APP_ID = '';
+const APP_ID = process.env.OWM_KEY;
 const UNITS = 'imperial';
 
 const getWeatherIconOWM = (conditionCode) => {
@@ -35,8 +35,7 @@ const getWeatherIconOWM = (conditionCode) => {
   return 'CLOUDY';
 };
 
-const capitalize = (s) =>
-{
+const capitalize = (s) => {
     return s && s[0].toUpperCase() + s.slice(1);
 }
 
