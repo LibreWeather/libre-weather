@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 const OPEN_WEATHER_ROOT = 'https://api.openweathermap.org/data/2.5/onecall';
 const LAT = '38.910843';
 const LON = '-94.382172';
+const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 const APP_ID = process.env.OWM_KEY;
 const UNITS = 'imperial';
 
@@ -36,55 +37,51 @@ const getWeatherIconOWM = (conditionCode) => {
   return 'CLOUDY';
 };
 
-const capitalize = (s) => {
-    return s && s[0].toUpperCase() + s.slice(1);
+const DEFAULT_WEATHER_DATA = {
+  current : {
+    conditionIcon: 'CLOUDY',
+    description: '',
+    descriptionShort: '',
+    dewPoint: 999,
+    humidity: 99,
+    pressure: 9999,
+    temp: 999,
+    tempFeelsLike: 999,
+    uvIndex: 99,
+    visibility: 0,
+    windDeg: 0,
+    windSpeed: 999
+  },
+  daily: [{
+    maxTemp: 999,
+    minTemp: 999
+  }]
 }
 
 class WeatherData {
-  constructor(type = 'NA', 
-    data = {
-      current : {
-        conditionIcon: 'CLOUDY',
-        description: '',
-        descriptionShort: '',
-        dewPoint: 999,
-        humidity: 99,
-        temp: 999,
-        tempFeelsLike: 999,
-        uvIndex: 99,
-        windDeg: 0,
-        windSpeed: 999
-      },
-      daily: [{
-        maxTemp: 999,
-        minTemp: 999
-      }]
-    }) {    
-    switch (type) {
-      case 'NA':
-        this.current = data.current;
-        this.daily = data.daily;
-        break;
-      case 'OWM':
-        this.current = {
-          conditionIcon: getWeatherIconOWM(data.current.weather[0].id),
-          description: capitalize(data.current.weather[0].description),
-          descriptionShort: data.current.weather[0].main,
-          dewPoint: data.current.dew_point,
-          humidity: data.current.humidity,
-          tempFeelsLike: Math.round(data.current.feels_like),
-          temp: Math.round(data.current.temp),
-          uvIndex: Math.round(data.current.uvi),
-          windDeg: data.current.wind_deg,
-          windSpeed: Math.round(data.current.wind_speed)
-        };
-        this.daily = [{
-          maxTemp: Math.round(data.daily[0].temp.max),
-          minTemp: Math.round(data.daily[0].temp.min)
-        }];
-        break;
-      default:
-        break;
+  constructor(data = null) {    
+    if (data) {
+      this.current = {
+        conditionIcon: getWeatherIconOWM(data.current.condition),
+        description: data.current.description,
+        descriptionShort: data.current.descriptionShort,
+        dewPoint: Math.round(data.current.dewPoint.value),
+        humidity: data.current.humidity,
+        pressure: data.current.pressure.value,
+        tempFeelsLike: Math.round(data.current.feelsLike.value),
+        temp: Math.round(data.current.temp.value),
+        uvIndex: Math.round(data.current.uvIndex),
+        visibility: Math.round(data.current.visibility.value),
+        windDeg: data.current.windspeed.direction,
+        windSpeed: Math.round(data.current.windspeed.magnitude)
+      };
+      this.daily = [{
+        maxTemp: Math.round(data.daily[0].max.value),
+        minTemp: Math.round(data.daily[0].min.value)
+      }];
+    } else {
+      this.current = DEFAULT_WEATHER_DATA.current;
+      this.daily = DEFAULT_WEATHER_DATA.daily;
     }
   }
 }
@@ -95,31 +92,43 @@ class CurrentWeather extends React.Component {
 
     this.state = {
       weather: new WeatherData(),
-      iconSizePx: 50
+      iconSizePx: 70
     };
     this.render = this.render.bind(this);
   }
 
   componentDidMount() {
-    fetch(`${OPEN_WEATHER_ROOT}?lat=${LAT}&lon=${LON}&appid=${APP_ID}&units=${UNITS}`)
-      .then(res => res.json()).then((data) => this.setState({ weather: new WeatherData('OWM', data) }))
+    var headers = {
+      'x-latitude': LAT,
+      'x-longitude': LON,
+      'x-unit': UNITS
+    }
+    fetch(LIBRE_WEATHER_API_ROOT, { method: 'GET', headers: headers})
+      .then(res => res.json()).then((data) => this.setState({ weather: new WeatherData(data) }))
       .catch(console.log);
   }
 
   render() {
     return (
-      <Container fluid>
-        <Row className="h6">
-          <Col><b>Wind:</b> {this.state.weather.current.windSpeed}mph  <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: this.state.weather.current.windDeg }}/></Col>
-          <Col><b>Humidity:</b> {this.state.weather.current.humidity}%</Col>
-          <Col><b>Dew Pt:</b> {this.state.weather.current.dewPoint}˚</Col>
-          <Col><b>UV Index:</b> {this.state.weather.current.uvIndex}</Col>
+      <Container className="current" fluid>
+        <Row className="currentTopBar h6 justify-content-center">
+          <Col md="auto"><b>Wind:</b> {this.state.weather.current.windSpeed}mph  <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: this.state.weather.current.windDeg }}/></Col>
+          <Col md="auto"><b>Humidity:</b> {this.state.weather.current.humidity}%</Col>
+          <Col md="auto"><b>Dew Pt:</b> {this.state.weather.current.dewPoint}˚</Col>
+          <Col md="auto"><b>UV Index:</b> {this.state.weather.current.uvIndex}</Col>
+          <Col md="auto"><b>Visibility:</b> {this.state.weather.current.visibility} mi</Col>
+          <Col md="auto"><b>Pressure:</b> {this.state.weather.current.pressure} hPa</Col>
         </Row>
-        <Row className="justify-content-center h1">
-          <ReactAnimatedWeather icon={this.state.weather.current.conditionIcon} color='white' size={this.state.iconSizePx}/> {this.state.weather.current.temp}˚ {this.state.weather.current.descriptionShort}
-        </Row>
-        <Row className="justify-content-center h5">
-          <b>Feels Like:</b> {this.state.weather.current.tempFeelsLike}˚ <b>Low:</b> {this.state.weather.daily[0].minTemp}˚ <b>High:</b> {this.state.weather.daily[0].maxTemp}˚
+        <Row className="h1 justify-content-center">
+          <Col md="auto"><ReactAnimatedWeather icon={this.state.weather.current.conditionIcon} color='white' size={this.state.iconSizePx}/></Col>
+          <Col md="auto">
+            <Row>{this.state.weather.current.temp}˚ {this.state.weather.current.descriptionShort}</Row>
+            <Row className="h6 currentBottomBar">
+              <Col md="auto" className="currentFeelsLike"><b>Feels Like:</b> {this.state.weather.current.tempFeelsLike}˚</Col>
+              <Col md="auto"><b>Low:</b> {this.state.weather.daily[0].minTemp}˚</Col>
+              <Col md="auto"><b>High:</b> {this.state.weather.daily[0].maxTemp}˚</Col>
+            </Row>
+          </Col>           
         </Row>
         <Row  className="justify-content-center h2">
           {this.state.weather.current.description}
