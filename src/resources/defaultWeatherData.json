@@ -1,0 +1,46 @@
+{
+    "current": {
+      "condition": 0,
+      "dewPoint": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "description": "",
+      "descriptionShort": "",
+      "feelsLike": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "humidity": 0,
+      "pressure": {
+        "value": 0,
+        "unit": ""
+      },
+      "temp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "uvIndex": 0.0,
+      "visibility": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "windspeed": {
+        "magnitude": 0.0,
+        "direction": 0,
+        "unit": ""
+      }
+    },
+    "daily": [
+      {
+        "max": {
+          "value": 0.0,
+          "unit": ""
+        },
+        "min": {
+          "value": 0.0,
+          "unit": ""
+        }
+      }
+    ]
+  }

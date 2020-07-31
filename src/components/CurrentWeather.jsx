@@ -6,13 +6,6 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
-const OPEN_WEATHER_ROOT = 'https://api.openweathermap.org/data/2.5/onecall';
-const LAT = '38.910843';
-const LON = '-94.382172';
-const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
-const APP_ID = process.env.OWM_KEY;
-const UNITS = 'imperial';
-
 const getWeatherIconOWM = (conditionCode) => {
   if (200 <= conditionCode && 600 > conditionCode) {
     console.log(conditionCode)
@@ -37,75 +30,38 @@ const getWeatherIconOWM = (conditionCode) => {
   return 'CLOUDY';
 };
 
-const DEFAULT_WEATHER_DATA = {
-  current : {
-    conditionIcon: 'CLOUDY',
-    description: '',
-    descriptionShort: '',
-    dewPoint: 999,
-    humidity: 99,
-    pressure: 9999,
-    temp: 999,
-    tempFeelsLike: 999,
-    uvIndex: 99,
-    visibility: 0,
-    windDeg: 0,
-    windSpeed: 999
+const currentWeatherData = (data) => ({
+  current: {
+    conditionIcon: getWeatherIconOWM(data.current.condition),
+    description: data.current.description,
+    descriptionShort: data.current.descriptionShort,
+    dewPoint: Math.round(data.current.dewPoint.value),
+    humidity: data.current.humidity,
+    pressure: data.current.pressure.value,
+    tempFeelsLike: Math.round(data.current.feelsLike.value),
+    temp: Math.round(data.current.temp.value),
+    uvIndex: Math.round(data.current.uvIndex),
+    visibility: Math.round(data.current.visibility.value),
+    windDeg: data.current.windspeed.direction,
+    windSpeed: Math.round(data.current.windspeed.magnitude)
   },
   daily: [{
-    maxTemp: 999,
-    minTemp: 999
+    maxTemp: Math.round(data.daily[0].max.value),
+    minTemp: Math.round(data.daily[0].min.value)
   }]
-}
-
-class WeatherData {
-  constructor(data = null) {    
-    if (data) {
-      this.current = {
-        conditionIcon: getWeatherIconOWM(data.current.condition),
-        description: data.current.description,
-        descriptionShort: data.current.descriptionShort,
-        dewPoint: Math.round(data.current.dewPoint.value),
-        humidity: data.current.humidity,
-        pressure: data.current.pressure.value,
-        tempFeelsLike: Math.round(data.current.feelsLike.value),
-        temp: Math.round(data.current.temp.value),
-        uvIndex: Math.round(data.current.uvIndex),
-        visibility: Math.round(data.current.visibility.value),
-        windDeg: data.current.windspeed.direction,
-        windSpeed: Math.round(data.current.windspeed.magnitude)
-      };
-      this.daily = [{
-        maxTemp: Math.round(data.daily[0].max.value),
-        minTemp: Math.round(data.daily[0].min.value)
-      }];
-    } else {
-      this.current = DEFAULT_WEATHER_DATA.current;
-      this.daily = DEFAULT_WEATHER_DATA.daily;
-    }
-  }
-}
+});
 
 class CurrentWeather extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      weather: new WeatherData(),
-      iconSizePx: 70
+      iconSizePx: 70,
+      weather: currentWeatherData(props.weatherData)
     };
-    this.render = this.render.bind(this);
   }
 
-  componentDidMount() {
-    var headers = {
-      'x-latitude': LAT,
-      'x-longitude': LON,
-      'x-unit': UNITS
-    }
-    fetch(LIBRE_WEATHER_API_ROOT, { method: 'GET', headers: headers})
-      .then(res => res.json()).then((data) => this.setState({ weather: new WeatherData(data) }))
-      .catch(console.log);
+  updateWeatherData = (data) => {
+    this.setState({ weather: currentWeatherData(data) });
   }
 
   render() {
