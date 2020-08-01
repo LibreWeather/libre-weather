@@ -6,7 +6,7 @@ import DEFAULT_WEATHER_DATA  from './resources/defaultWeatherData.json';
 const LAT = '38.910843';
 const LON = '-94.382172';
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
-const UNITS = 'imperial';
+const UNITS = 'IMPERIAL';
 
 class App extends React.Component {
   constructor(props) {

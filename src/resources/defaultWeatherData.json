@@ -1,21 +1,22 @@
 {
+    "source": "DEFAULT",
     "current": {
-      "condition": 0,
-      "dewPoint": {
+      "apparentTemp": {
         "value": 0.0,
         "unit": ""
       },
       "description": "",
-      "descriptionShort": "",
-      "feelsLike": {
+      "dewPoint": {
         "value": 0.0,
         "unit": ""
       },
       "humidity": 0,
+      "icon": "",
       "pressure": {
-        "value": 0,
+        "value": 0.0,
         "unit": ""
       },
+      "summary": "",
       "temp": {
         "value": 0.0,
         "unit": ""
@@ -33,13 +34,15 @@
     },
     "daily": [
       {
-        "max": {
-          "value": 0.0,
-          "unit": ""
-        },
-        "min": {
-          "value": 0.0,
-          "unit": ""
+        "temp": {
+          "max": {
+            "value": 0.0,
+            "unit": ""
+          },
+          "min": {
+            "value": 0.0,
+            "unit": ""
+          }
         }
       }
     ]
