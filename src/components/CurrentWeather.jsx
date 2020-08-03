@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 
 const pressureDisplay = (pressure) => `${Math.round(pressure.value)} mb`;
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
-const visibilityDisplay = (visibility) => `${Math.round(visibility.value)} ${visibility.unit === 'MI' ? 'mi' : 'm'}`;
+const visibilityDisplay = (visibility) => visibility.value >= 100 ? '∞' : `${Math.round(visibility.value)} ${visibility.unit === 'MI' ? 'mi' : 'm'}`;
 const windSpeedDisplay = (windSpeed) => `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;
 
 const currentWeatherData = (data) => ({
@@ -32,8 +32,7 @@ class CurrentWeather extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      iconSizePx: 70,
-      weather: currentWeatherData(props.weatherData)
+      iconSizePx: 70
     };
   }
 
@@ -42,28 +41,29 @@ class CurrentWeather extends React.Component {
   }
 
   render() {
+    const currentWeather = currentWeatherData(this.props.weatherData);
     return (
       <Container className="current" fluid>
         <Row className="currentTopBar h6 justify-content-center">
-          <Col md="auto"><b>Wind:</b> {this.state.weather.windSpeed}  <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: this.state.weather.windDeg }}/></Col>
-          <Col md="auto"><b>Humidity:</b> {this.state.weather.humidity}%</Col>
-          <Col md="auto"><b>Dew Pt:</b> {this.state.weather.dewPoint}</Col>
-          <Col md="auto"><b>UV Index:</b> {this.state.weather.uvIndex}</Col>
-          <Col md="auto"><b>Visibility:</b> {this.state.weather.visibility}</Col>
-          <Col md="auto"><b>Pressure:</b> {this.state.weather.pressure}</Col>
+          <Col md="auto"><b>Wind:</b> {currentWeather.windSpeed}  <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: currentWeather.windDeg }}/></Col>
+          <Col md="auto"><b>Humidity:</b> {currentWeather.humidity}%</Col>
+          <Col md="auto"><b>Dew Pt:</b> {currentWeather.dewPoint}</Col>
+          <Col md="auto"><b>UV Index:</b> {currentWeather.uvIndex}</Col>
+          <Col md="auto"><b>Visibility:</b> {currentWeather.visibility}</Col>
+          <Col md="auto"><b>Pressure:</b> {currentWeather.pressure}</Col>
         </Row>
         <Row className="h1 justify-content-center">
-          <Col md="auto"><ReactAnimatedWeather icon={this.state.weather.conditionIcon} color='white' size={this.state.iconSizePx}/></Col>
+          <Col md="auto"><ReactAnimatedWeather icon={currentWeather.conditionIcon} color='white' size={this.state.iconSizePx}/></Col>
           <Col md="auto">
-            <Row>{this.state.weather.temp} {this.state.weather.summary}</Row>
+            <Row>{currentWeather.temp} {currentWeather.summary}</Row>
             <Row className="h6 currentBottomBar">
-              <Col md="auto" className="currentFeelsLike"><b>Feels Like:</b> {this.state.weather.tempFeelsLike}</Col>
-              <Col md="auto"><b>Low:</b> {this.state.weather.tempMin}</Col>
-              <Col md="auto"><b>High:</b> {this.state.weather.tempMax}</Col>
+              <Col md="auto" className="currentFeelsLike"><b>Feels Like:</b> {currentWeather.tempFeelsLike}</Col>
+              <Col md="auto"><b>Low:</b> {currentWeather.tempMin}</Col>
+              <Col md="auto"><b>High:</b> {currentWeather.tempMax}</Col>
             </Row>
           </Col>           
         </Row>
-        <Row  className="justify-content-center h2">{this.state.weather.description}</Row>
+        <Row  className="justify-content-center h2">{currentWeather.description}</Row>
       </Container>
     );
   }

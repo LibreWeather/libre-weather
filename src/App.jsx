@@ -1,40 +1,43 @@
 import React from 'react';
 
 import CurrentWeather from './components/CurrentWeather';
+import LocationSearch from './components/LocationSearch';
 import DEFAULT_WEATHER_DATA  from './resources/defaultWeatherData.json';
 
-const LAT = '38.910843';
-const LON = '-94.382172';
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
-const UNITS = 'IMPERIAL';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.currentWeatherElement = React.createRef();
 
     this.state = {
-      weather: DEFAULT_WEATHER_DATA
+      weather: DEFAULT_WEATHER_DATA,
+      units: 'IMPERIAL'
     };
   }
 
-  componentDidMount() {
-    var headers = { 'x-latitude': LAT, 'x-longitude': LON, 'x-unit': UNITS };
+  updateWeather = (lat, lon) => {
+    var headers = { 'x-latitude': lat, 'x-longitude': lon, 'x-unit': this.state.units };
     fetch(LIBRE_WEATHER_API_ROOT, { method: 'GET', headers: headers})
-      .then(res => res.json()).then((data) => {
-        this.setState({ weather: data });
-        this.currentWeatherElement.current.updateWeatherData(data);
-      }).catch(console.log);
+      .then((res) => res.json())
+      .then((data) => {
+        this.setState({ 
+          weather: data
+        });
+      })
+      .catch(console.error);
   }
 
   render() {
     return (
       <div className="App">
         <header className="header">
-          <CurrentWeather ref={this.currentWeatherElement} weatherData={this.state.weather}/>
+          <LocationSearch updateWeather={this.updateWeather}/>
+          <CurrentWeather weatherData={this.state.weather}/>
         </header>
       </div>
     );
   }
 }
+
 export default App;

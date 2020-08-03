@@ -3,33 +3,33 @@
     "current": {
       "apparentTemp": {
         "value": 0.0,
-        "unit": ""
+        "unit": "K"
       },
-      "description": "",
+      "description": "Loading...",
       "dewPoint": {
         "value": 0.0,
-        "unit": ""
+        "unit": "K"
       },
       "humidity": 0,
-      "icon": "",
+      "icon": "CLOUDY",
       "pressure": {
         "value": 0.0,
-        "unit": ""
+        "unit": "MB"
       },
-      "summary": "",
+      "summary": "Loading...",
       "temp": {
         "value": 0.0,
-        "unit": ""
+        "unit": "K"
       },
       "uvIndex": 0.0,
       "visibility": {
         "value": 0.0,
-        "unit": ""
+        "unit": "M"
       },
       "windspeed": {
         "magnitude": 0.0,
         "direction": 0,
-        "unit": ""
+        "unit": "MS"
       }
     },
     "daily": [
@@ -37,11 +37,11 @@
         "temp": {
           "max": {
             "value": 0.0,
-            "unit": ""
+            "unit": "K"
           },
           "min": {
             "value": 0.0,
-            "unit": ""
+            "unit": "K"
           }
         }
       }
