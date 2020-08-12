@@ -5,13 +5,13 @@
         "value": 0.0,
         "unit": "K"
       },
+      "condition": "CLOUDY",
       "description": "Loading...",
       "dewPoint": {
         "value": 0.0,
         "unit": "K"
       },
       "humidity": 0,
-      "icon": "CLOUDY",
       "pressure": {
         "value": 0.0,
         "unit": "MB"
@@ -44,6 +44,15 @@
             "unit": "K"
           }
         }
+      }
+    ],
+    "hourly": [
+      {
+        "temp": {
+          "value": 0.0,
+          "unit": "K"
+        },
+        "condition": "CLOUDY"
       }
     ]
   }

@@ -12,7 +12,7 @@ const visibilityDisplay = (visibility) => visibility.value >= 100 ? '∞' : `${M
 const windSpeedDisplay = (windSpeed) => `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;
 
 const currentWeatherData = (data) => ({
-  conditionIcon: data.current.icon,
+  conditionIcon: data.current.condition,
   description: data.current.description,
   dewPoint: tempDisplay(data.current.dewPoint),
   humidity: data.current.humidity,
@@ -34,10 +34,6 @@ class CurrentWeather extends React.Component {
     this.state = {
       iconSizePx: 70
     };
-  }
-
-  updateWeatherData = (data) => {
-    this.setState({ weather: currentWeatherData(data) });
   }
 
   render() {

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import CurrentWeather from './components/CurrentWeather';
+import DailyOverview from './components/DailyOverview';
 import LocationSearch from './components/LocationSearch';
 import DEFAULT_WEATHER_DATA  from './resources/defaultWeatherData.json';
 
@@ -21,6 +22,16 @@ class App extends React.Component {
     fetch(LIBRE_WEATHER_API_ROOT, { method: 'GET', headers: headers})
       .then((res) => res.json())
       .then((data) => {
+
+        // data.hourly[0].condition = 'RAIN';
+        // data.hourly[1].condition = 'RAIN';
+        // data.hourly[2].condition = 'RAIN';
+
+        // data.hourly[7].condition = 'CLEAR';
+        // data.hourly[8].condition = 'CLEAR';
+        // data.hourly[9].condition = 'CLEAR';
+        // data.hourly[10].condition = 'CLEAR';
+
         this.setState({ 
           weather: data
         });
@@ -34,6 +45,7 @@ class App extends React.Component {
         <header className="header">
           <LocationSearch updateWeather={this.updateWeather}/>
           <CurrentWeather weatherData={this.state.weather}/>
+          <DailyOverview weatherData={this.state.weather}/>
         </header>
       </div>
     );
