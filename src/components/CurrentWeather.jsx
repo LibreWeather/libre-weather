@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 
 const pressureDisplay = (pressure) => `${Math.round(pressure.value)} mb`;
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
-const visibilityDisplay = (visibility) => visibility.value >= 100 ? '∞' : `${Math.round(visibility.value)} ${visibility.unit === 'MI' ? 'mi' : 'm'}`;
+const visibilityDisplay = (visibility) => visibility.value >= 10 ? `10+ ${visibility.unit === 'MI' ? 'mi' : 'm'}` : `${Math.round(visibility.value)} ${visibility.unit === 'MI' ? 'mi' : 'm'}`;
 const windSpeedDisplay = (windSpeed) => `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;
 
 const currentWeatherData = (data) => ({
