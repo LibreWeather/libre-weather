@@ -51,15 +51,15 @@ class CurrentWeather extends React.Component {
         <Row className="h1 justify-content-center">
           <Col md="auto"><ReactAnimatedWeather icon={currentWeather.conditionIcon} color='white' size={this.state.iconSizePx}/></Col>
           <Col md="auto">
-            <Row>{currentWeather.temp} {currentWeather.summary}</Row>
+            <Row className="h1 bolder">{currentWeather.temp} {currentWeather.summary}.</Row>
             <Row className="h6 currentBottomBar">
               <Col md="auto" className="currentFeelsLike"><b>Feels Like:</b> {currentWeather.tempFeelsLike}</Col>
               <Col md="auto"><b>Low:</b> {currentWeather.tempMin}</Col>
               <Col md="auto"><b>High:</b> {currentWeather.tempMax}</Col>
             </Row>
-          </Col>           
+          </Col>
         </Row>
-        <Row  className="justify-content-center h2">{currentWeather.description}</Row>
+        <Row  className="justify-content-center h2">{currentWeather.description}.</Row>
       </Container>
     );
   }

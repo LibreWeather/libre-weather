@@ -1,13 +1,11 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
 
-const dailyWeather = (data) => ({  
+const dailyWeather = (data) => ({
   hourly: [].concat(data.hourly.map(({ temp, condition }) => ({
     temp: tempDisplay(temp),
     condition
@@ -84,7 +82,7 @@ const getTempColumns = (hourlyWeather) => {
 class DailyOverview extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {zip: '67042'};
+    this.state = { zip: '67042' };
   }
 
   render() {
