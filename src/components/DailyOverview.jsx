@@ -4,14 +4,15 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import ReactAnimatedWeather from 'react-animated-weather';
 
-
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
 
 const dailyWeather = (data) => ({
-  hourly: [].concat(data.hourly.map(({ temp, condition }) => ({
-    temp: tempDisplay(temp),
-    condition
-  }))),
+  hourly: [].concat(
+    data.hourly.map(({ temp, condition }) => ({
+      temp: tempDisplay(temp),
+      condition,
+    }))
+  ),
 });
 
 const getConditionClass = (condition) => {
@@ -33,13 +34,7 @@ const getConditionClass = (condition) => {
 };
 
 const getConditionLabel = (condition, hrCnt) => {
-  const icon = (
-    <ReactAnimatedWeather
-      icon={condition}
-      color="white"
-      size={15}
-      animate={false}
-      />);
+  const icon = <ReactAnimatedWeather icon={condition} color="white" size={15} animate={false} />;
 
   let label = '';
 
@@ -63,27 +58,27 @@ const getConditionLabel = (condition, hrCnt) => {
     <React.Fragment>
       {icon}&nbsp;{label}
     </React.Fragment>
-  )
+  );
 };
 
 const getHourColumns = (hourlyWeather) => {
   // Normalize hourly data into blocks of contiguous conditions
-  let currentHour = { hrCnt : 1, condition : hourlyWeather[0].condition };
+  let currentHour = { hrCnt: 1, condition: hourlyWeather[0].condition };
   const normalizedData = [currentHour];
   hourlyWeather.slice(1, 24).forEach(({ condition }) => {
     if (condition === currentHour.condition) {
       currentHour.hrCnt++;
     } else {
-      currentHour = { hrCnt : 1, condition };
+      currentHour = { hrCnt: 1, condition };
       normalizedData.push(currentHour);
     }
   });
 
-  return normalizedData.map(({ hrCnt, condition }, index) =>
+  return normalizedData.map(({ hrCnt, condition }, index) => (
     <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ov${index}`}>
       <div className="mx-auto">&nbsp;{getConditionLabel(condition, hrCnt)}</div>
     </Col>
-  );
+  ));
 };
 
 const getTempColumns = (hourlyWeather) => {
@@ -99,24 +94,26 @@ const getTempColumns = (hourlyWeather) => {
     if (index === 1) classes.push('second');
 
     return (
-      <Col className={"overviewTemps " + classes.join(' ')} key={`hr${index}`}>
+      <Col className={'overviewTemps ' + classes.join(' ')} key={`hr${index}`}>
         <span className={classes.join(' ')}></span>
-        { index === 0
-          ? ( <div className="time">Now</div> )
-          : index % 2 === 0
-            ? ( <div className="time later">{`+${index}`}</div> )
-            : ''
-        }
-        { index === 0
-          ? ( <div className="temperature">{hour.temp}</div> )
-          : index % 2 === 0
-            ? ( <div className="temperature later">{hour.temp}</div> )
-            : ''
-        }
+        {index === 0 ? (
+          <div className="time">Now</div>
+        ) : index % 2 === 0 ? (
+          <div className="time later">{`+${index}`}</div>
+        ) : (
+          ''
+        )}
+        {index === 0 ? (
+          <div className="temperature">{hour.temp}</div>
+        ) : index % 2 === 0 ? (
+          <div className="temperature later">{hour.temp}</div>
+        ) : (
+          ''
+        )}
       </Col>
-      );
-    });
-}
+    );
+  });
+};
 
 class DailyOverview extends React.Component {
   constructor(props) {
@@ -125,16 +122,12 @@ class DailyOverview extends React.Component {
   }
 
   render() {
-    console.log(this.props.weatherData)
+    console.log(this.props.weatherData);
     const weather = dailyWeather(this.props.weatherData);
     return (
       <Container className="dailyOverview">
-        <Row className="justify-content-center">
-          {getHourColumns(weather.hourly)}
-        </Row>
-        <Row className="justify-content-center hrs">
-          {getTempColumns(weather.hourly)}
-        </Row>
+        <Row className="justify-content-center">{getHourColumns(weather.hourly)}</Row>
+        <Row className="justify-content-center hrs">{getTempColumns(weather.hourly)}</Row>
       </Container>
     );
   }

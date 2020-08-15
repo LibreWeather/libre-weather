@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Nominatim from "nominatim-browser";
+import * as Nominatim from 'nominatim-browser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 class LocationSearch extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {zip: '67042'};
+    this.state = { zip: '67042' };
     this.updateLocation();
   }
 
@@ -18,13 +18,12 @@ class LocationSearch extends React.Component {
     // TODO This supports a more generic search string
     // Also, should handle multiple results and no results
     Nominatim.geocode({
-      postalcode: this.state.zip
-    })
-    .then((results) => this.props.updateWeather(results[0].lat, results[0].lon));
+      postalcode: this.state.zip,
+    }).then((results) => this.props.updateWeather(results[0].lat, results[0].lon));
   };
 
   handleChange = (event) => {
-    this.setState({zip: event.target.value});
+    this.setState({ zip: event.target.value });
   };
 
   handleSubmit = (event) => {
@@ -36,9 +35,18 @@ class LocationSearch extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <InputGroup className="mb-4">
-          <FormControl placeholder="ZIP Code" aria-label="ZIP Code" aria-describedby="basic-addon2" type="number" onChange={this.handleChange} value={this.state.zip}/>
+          <FormControl
+            placeholder="ZIP Code"
+            aria-label="ZIP Code"
+            aria-describedby="basic-addon2"
+            type="number"
+            onChange={this.handleChange}
+            value={this.state.zip}
+          />
           <InputGroup.Append>
-            <Button variant="outline-secondary" type="submit"><FontAwesomeIcon icon={faSearch}/></Button>
+            <Button variant="outline-secondary" type="submit">
+              <FontAwesomeIcon icon={faSearch} />
+            </Button>
           </InputGroup.Append>
         </InputGroup>
       </Form>
