@@ -4,6 +4,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import ReactAnimatedWeather from 'react-animated-weather';
 
+import makeid from '../utilities/index';
+
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
 
 const dailyWeather = (data) => ({
@@ -55,9 +57,11 @@ const getConditionLabel = (condition, hrCnt) => {
   }
 
   return (
-    <React.Fragment>
-      {icon}&nbsp;{label}
-    </React.Fragment>
+    <>
+      {icon}
+      &nbsp;
+      {label}
+    </>
   );
 };
 
@@ -67,16 +71,19 @@ const getHourColumns = (hourlyWeather) => {
   const normalizedData = [currentHour];
   hourlyWeather.slice(1, 24).forEach(({ condition }) => {
     if (condition === currentHour.condition) {
-      currentHour.hrCnt++;
+      currentHour.hrCnt += 1;
     } else {
       currentHour = { hrCnt: 1, condition };
       normalizedData.push(currentHour);
     }
   });
 
-  return normalizedData.map(({ hrCnt, condition }, index) => (
-    <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ov${index}`}>
-      <div className="mx-auto">&nbsp;{getConditionLabel(condition, hrCnt)}</div>
+  return normalizedData.map(({ hrCnt, condition }) => (
+    <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ov-${makeid()}`}>
+      <div className="mx-auto">
+        &nbsp;
+        {getConditionLabel(condition, hrCnt)}
+      </div>
     </Col>
   ));
 };
@@ -89,13 +96,13 @@ const getTempColumns = (hourlyWeather) => {
   // }
 
   return next24Hours.map((hour, index) => {
-    const classes = ['hr', index % 2 == 0 ? 'even' : 'odd'];
+    const classes = ['hr', index % 2 === 0 ? 'even' : 'odd'];
     if (index === 0) classes.push('first');
     if (index === 1) classes.push('second');
 
     return (
-      <Col className={'overviewTemps ' + classes.join(' ')} key={`hr${index}`}>
-        <span className={classes.join(' ')}></span>
+      <Col className={`overviewTemps ${classes.join(' ')}`} key={`hr-${makeid()}`}>
+        <span className={classes.join(' ')} />
         {index === 0 ? (
           <div className="time">Now</div>
         ) : index % 2 === 0 ? (
@@ -116,14 +123,10 @@ const getTempColumns = (hourlyWeather) => {
 };
 
 class DailyOverview extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { zip: '67042' };
-  }
-
   render() {
-    console.log(this.props.weatherData);
-    const weather = dailyWeather(this.props.weatherData);
+    // console.log(this.props.weatherData);
+    const { weatherData: raw } = this.props;
+    const weather = dailyWeather(raw);
     return (
       <Container className="dailyOverview">
         <Row className="justify-content-center">{getHourColumns(weather.hourly)}</Row>

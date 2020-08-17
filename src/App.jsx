@@ -42,7 +42,7 @@ class App extends React.Component {
       })
       // eslint-disable-next-line no-console
       .catch(console.error);
-  };
+  }
 
   render() {
     const { weather } = this.state;
@@ -50,8 +50,8 @@ class App extends React.Component {
       <div className="App">
         <LocationSearch updateWeather={this.updateWeather} updateUnits={this.updateUnits} />
         <header className="header">
-          <CurrentWeather weatherData={this.state.weather}/>
-          <DailyOverview weatherData={this.state.weather}/>
+          <CurrentWeather weatherData={weather} />
+          <DailyOverview weatherData={weather} />
         </header>
       </div>
     );

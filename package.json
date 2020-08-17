@@ -8,6 +8,7 @@
     "jquery": "^3.5.1",
     "nominatim-browser": "^2.1.0",
     "popper.js": "^1.16.1",
+    "prop-types": "^15.7.2",
     "react-bootstrap": "^1.3.0"
   },
   "devDependencies": {
@@ -93,6 +94,9 @@
       "no-fallthrough": "off",
       "no-param-reassign": "off",
       "no-case-declarations": "off",
+      "no-nested-ternary": "off",
+      "react/prefer-stateless-function": "off",
+      "react/prop-types": [0],
       "import/no-extraneous-dependencies": [
         "error",
         {
