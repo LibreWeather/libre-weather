@@ -9,12 +9,15 @@ import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Navbar from 'react-bootstrap/Navbar';
 
+const DEFAULT_ZIP = '67042';
+const DEFAULT_LOCATION_NAME = 'El Dorado';
+
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      zip: '67042',
-      locationName: 'El Dorado',
+      zip: DEFAULT_ZIP,
+      locationName: DEFAULT_LOCATION_NAME,
     };
 
     this.updateLocation = this.updateLocation.bind(this);

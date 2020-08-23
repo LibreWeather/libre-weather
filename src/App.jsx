@@ -7,6 +7,9 @@ import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import NavigationBar from './components/NavigationBar';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
+const DEFAULT_UNITS = 'IMPERIAL';
+const DEFAULT_LAT = 37.8180061;
+const DEFAULT_LON = -96.8480188;
 
 class App extends React.Component {
   constructor(props) {
@@ -14,9 +17,9 @@ class App extends React.Component {
 
     this.state = {
       weather: DEFAULT_WEATHER_DATA,
-      units: 'IMPERIAL',
-      lat: 37.8180061,
-      lon: -96.8480188,
+      units: DEFAULT_UNITS,
+      lat: DEFAULT_LAT,
+      lon: DEFAULT_LON,
     };
 
     this.setUnits = this.setUnits.bind(this);
