@@ -7,11 +7,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import PropTypes from 'prop-types';
 
-class LocationSearch extends React.Component {
+class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,14 +31,14 @@ class LocationSearch extends React.Component {
     // TODO This supports a more generic search string
     // Also, should handle multiple results and no results
     const { zip } = this.state;
-    const { updateWeather } = this.props;
+    const { setLatLon } = this.props;
 
     Nominatim.geocode({
       addressdetails: true,
       postalcode: zip,
     }).then((results) => {
       this.setState({ locationName: results[0].address.city });
-      updateWeather(results[0].lat, results[0].lon);
+      setLatLon(results[0].lat, results[0].lon);
     });
   }
 
@@ -56,8 +54,8 @@ class LocationSearch extends React.Component {
 
   handleUnitsChange(event) {
     const units = event.target.checked ? 'METRIC' : 'IMPERIAL';
-    const { updateUnits } = this.props;
-    updateUnits(units);
+    const { setUnits } = this.props;
+    setUnits(units);
   }
 
   render() {
@@ -68,12 +66,11 @@ class LocationSearch extends React.Component {
         <Navbar.Brand href="#home" className="py-0">
           Libre Weather
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto" />
-          <Nav.Link id="locationName" className="py-0" disabled>
+
+        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+          <Navbar.Text id="locationName" className="py-0">
             {locationName}
-          </Nav.Link>
+          </Navbar.Text>
           <Form onSubmit={this.handleZipSubmit}>
             <InputGroup>
               <FormControl
@@ -90,20 +87,15 @@ class LocationSearch extends React.Component {
               </InputGroup.Append>
             </InputGroup>
           </Form>
-          <Nav.Link className="py-0" disabled>
-            ˚F
-          </Nav.Link>
+          <Navbar.Text className="py-0">˚F</Navbar.Text>
           <Form>
-            <Form.Switch id="custom-switch" label="˚C" onChange={this.handleUnitsChange} />
+            <Form.Switch id="custom-switch" label="" onChange={this.handleUnitsChange} />
           </Form>
+          <Navbar.Text className="py-0">˚C</Navbar.Text>
         </Navbar.Collapse>
       </Navbar>
     );
   }
 }
-LocationSearch.propTypes = {
-  updateWeather: PropTypes.func.isRequired,
-  updateUnits: PropTypes.func.isRequired,
-};
 
-module.exports = LocationSearch;
+module.exports = NavigationBar;

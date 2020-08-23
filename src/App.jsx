@@ -4,7 +4,7 @@ import React from 'react';
 import CurrentWeather from './components/CurrentWeather';
 import DailyOverview from './components/DailyOverview';
 import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
-import LocationSearch from './components/LocationSearch';
+import NavigationBar from './components/NavigationBar';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 
@@ -19,20 +19,12 @@ class App extends React.Component {
       lon: -96.8480188,
     };
 
-    this.updateUnits = this.updateUnits.bind(this);
-    this.updateWeather = this.updateWeather.bind(this);
+    this.setUnits = this.setUnits.bind(this);
+    this.setLatLon = this.setLatLon.bind(this);
+    this.setWeather = this.setWeather.bind(this);
   }
 
-  updateUnits(units) {
-    this.setState({ units });
-    const { lat, lon } = this.state;
-    this.updateWeather(lat, lon);
-  }
-
-  updateWeather(lat, lon) {
-    this.setState({ lat, lon });
-
-    const { units } = this.state;
+  setWeather(lat, lon, units) {
     const headers = { 'x-latitude': lat, 'x-longitude': lon, 'x-unit': units };
 
     fetch(LIBRE_WEATHER_API_ROOT, { method: 'GET', headers })
@@ -44,11 +36,23 @@ class App extends React.Component {
       .catch(console.error);
   }
 
+  setUnits(units) {
+    this.setState({ units });
+    const { lat, lon } = this.state;
+    this.setWeather(lat, lon, units);
+  }
+
+  setLatLon(lat, lon) {
+    this.setState({ lat, lon });
+    const { units } = this.state;
+    this.setWeather(lat, lon, units);
+  }
+
   render() {
     const { weather } = this.state;
     return (
       <div className="App">
-        <LocationSearch updateWeather={this.updateWeather} updateUnits={this.updateUnits} />
+        <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
         <header className="header">
           <CurrentWeather weatherData={weather} />
           <DailyOverview weatherData={weather} />
