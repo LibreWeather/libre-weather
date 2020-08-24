@@ -33,15 +33,9 @@ const currentWeatherData = (data) => ({
 });
 
 class CurrentWeather extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      iconSizePx: 70,
-    };
-  }
-
   render() {
-    const currentWeather = currentWeatherData(this.props.weatherData);
+    const { weatherData } = this.props;
+    const currentWeather = currentWeatherData(weatherData);
     return (
       <Container className="current" fluid>
         <Row className="currentTopBar h6 justify-content-center">
@@ -67,7 +61,7 @@ class CurrentWeather extends React.Component {
         </Row>
         <Row className="h1 justify-content-center">
           <Col md="auto">
-            <ReactAnimatedWeather icon={currentWeather.conditionIcon} color="white" size={this.state.iconSizePx} />
+            <ReactAnimatedWeather icon={currentWeather.conditionIcon} color="white" size={70} />
           </Col>
           <Col md="auto">
             <Row className="h1 bolder">

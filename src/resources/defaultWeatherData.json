@@ -17,10 +17,13 @@
       "unit": "MB"
     },
     "summary": "Loading...",
+    "sunrise": 0,
+    "sunset": 0,
     "temp": {
       "value": 0.0,
       "unit": "K"
     },
+    "time": 0,
     "uvIndex": 0.0,
     "visibility": {
       "value": 0.0,
@@ -48,11 +51,12 @@
   ],
   "hourly": [
     {
+      "condition": "CLOUDY",
       "temp": {
         "value": 0.0,
         "unit": "K"
       },
-      "condition": "CLOUDY"
+      "time": 0
     }
   ]
 }

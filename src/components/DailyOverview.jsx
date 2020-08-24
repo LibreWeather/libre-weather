@@ -10,9 +10,10 @@ const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K
 
 const dailyWeather = (data) => ({
   hourly: [].concat(
-    data.hourly.map(({ temp, condition }) => ({
-      temp: tempDisplay(temp),
+    data.hourly.map(({ condition, temp, time }) => ({
       condition,
+      temp: tempDisplay(temp),
+      time,
     }))
   ),
 });
@@ -88,12 +89,15 @@ const getHourColumns = (hourlyWeather) => {
   ));
 };
 
+const getHourFromTimestamp = (timestamp) => {
+  return new Date(timestamp * 1000)
+    .toLocaleTimeString({}, { hour12: true, hour: 'numeric' })
+    .toLowerCase()
+    .replace(/ /g, '');
+};
+
 const getTempColumns = (hourlyWeather) => {
   const next24Hours = hourlyWeather.slice(0, 24);
-  // const everyOtherHour = [];
-  // for (let i = 0; i < hourlyWeather.length; i=i+2) {
-  //   everyOtherHour.push(hourlyWeather[i]);
-  // }
 
   return next24Hours.map((hour, index) => {
     const classes = ['hr', index % 2 === 0 ? 'even' : 'odd'];
@@ -106,7 +110,7 @@ const getTempColumns = (hourlyWeather) => {
         {index === 0 ? (
           <div className="time">Now</div>
         ) : index % 2 === 0 ? (
-          <div className="time later">{`+${index}`}</div>
+          <div className="time later">{getHourFromTimestamp(hour.time)}</div>
         ) : (
           ''
         )}
@@ -124,7 +128,6 @@ const getTempColumns = (hourlyWeather) => {
 
 class DailyOverview extends React.Component {
   render() {
-    // console.log(this.props.weatherData);
     const { weatherData: raw } = this.props;
     const weather = dailyWeather(raw);
     return (
