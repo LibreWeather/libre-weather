@@ -38,8 +38,8 @@
     "react-dom": "^16.13.1"
   },
   "scripts": {
-    "start": "parcel ./src/index.html --no-cache",
-    "build": "parcel build ./src/index.html --no-cache",
+    "start": "npx parcel ./src/index.html --no-cache",
+    "build": "npx parcel build ./src/index.html --no-cache",
     "lint": "npx eslint src/.",
     "lint:fix": "npx eslint src/. --fix"
   },
