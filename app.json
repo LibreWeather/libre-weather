@@ -1,0 +1,29 @@
+{
+  "name": "libre-weather",
+  "description": "LibreWeather Web",
+  "keywords": [
+    "weather"
+  ],
+  "repository": "https://github.com/libreweather/libre-weather",
+  "website": "https://libreweather.com",
+  "scripts": {
+  },
+  "env": {
+    "LIBRE_WEATHER_API": {
+      "description": "URL for API Deployment",
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "addons": [],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
