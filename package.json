@@ -41,7 +41,8 @@
     "start": "npx parcel ./src/index.html --no-cache",
     "build": "npx parcel build ./src/index.html --no-cache",
     "lint": "npx eslint src/.",
-    "lint:fix": "npx eslint src/. --fix"
+    "lint:fix": "npx eslint src/. --fix",
+    "serve": "npx http-server dist/. -p $PORT -a $HOST"
   },
   "prettier": {
     "tabWidth": 2,
@@ -119,5 +120,8 @@
   "author": "jkuester",
   "contributors": [
     "tobitenno"
-  ]
+  ],
+  "engines": {
+    "node": "=14.9.0"
+  }
 }
