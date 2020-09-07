@@ -96,7 +96,9 @@
       "no-case-declarations": "off",
       "no-nested-ternary": "off",
       "react/prefer-stateless-function": "off",
-      "react/prop-types": [0],
+      "react/prop-types": [
+        0
+      ],
       "import/no-extraneous-dependencies": [
         "error",
         {

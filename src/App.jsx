@@ -5,6 +5,7 @@ import CurrentWeather from './components/CurrentWeather';
 import DailyOverview from './components/DailyOverview';
 import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import NavigationBar from './components/NavigationBar';
+import CurrentDayContext from './utilities/CurrentDayContext';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 const DEFAULT_UNITS = 'IMPERIAL';
@@ -53,14 +54,21 @@ class App extends React.Component {
 
   render() {
     const { weather } = this.state;
+    const currentDayData = {
+      sunrise: weather.current.sunrise,
+      sunset: weather.current.sunset,
+      time: weather.current.time,
+    };
     return (
-      <div className="App">
-        <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
-        <header className="header">
-          <CurrentWeather weatherData={weather} />
-          <DailyOverview weatherData={weather} />
-        </header>
-      </div>
+      <CurrentDayContext.Provider value={currentDayData}>
+        <div className="App">
+          <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
+          <header className="header">
+            <CurrentWeather weatherData={weather} />
+            <DailyOverview weatherData={weather} />
+          </header>
+        </div>
+      </CurrentDayContext.Provider>
     );
   }
 }
