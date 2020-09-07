@@ -2,7 +2,7 @@ import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import ReactAnimatedWeather from 'react-animated-weather';
+import getWeatherIcon from './WeatherIcon';
 
 import makeid from '../utilities/index';
 
@@ -25,8 +25,7 @@ const getConditionClass = (condition) => {
     case 'SNOW':
     case 'SLEET':
       return 'rain';
-    case 'PARTLY_CLOUDY_DAY':
-    case 'PARTLY_CLOUDY_NIGHT':
+    case 'PARTLY_CLOUDY':
       return 'partlyCloudy';
     case 'CLOUDY':
     case 'FOG':
@@ -36,30 +35,35 @@ const getConditionClass = (condition) => {
   }
 };
 
-const getConditionLabel = (condition, hrCnt) => {
-  const icon = <ReactAnimatedWeather icon={condition} color="white" size={15} animate={false} />;
-
+const getConditionLabel = (condition, hrCnt, time) => {
   let label = '';
-
   switch (condition) {
     // TODO Should we support light rain?
     case 'RAIN':
-    case 'SNOW':
-    case 'SLEET':
       label = hrCnt < 3 ? '' : 'Rain';
-    case 'PARTLY_CLOUDY_DAY':
-    case 'PARTLY_CLOUDY_NIGHT':
-      label = hrCnt < 4 ? '' : 'Partly Cloudy';
+      break;
+    case 'SNOW':
+      label = hrCnt < 3 ? '' : 'Snow';
+      break;
+    case 'SLEET':
+      label = hrCnt < 3 ? '' : 'Sleet';
+      break;
+    case 'PARTLY_CLOUDY':
+      label = hrCnt < 5 ? '' : 'Partly Cloudy';
+      break;
     case 'CLOUDY':
+      label = hrCnt < 5 ? '' : 'Mostly Cloudy';
+      break;
     case 'FOG':
-      label = hrCnt < 4 ? '' : 'Mostly Cloudy';
+      label = hrCnt < 3 ? '' : 'Foggy';
+      break;
     default:
       label = hrCnt < 3 ? '' : 'Clear';
   }
 
   return (
     <>
-      {icon}
+      {getWeatherIcon(condition, 15, time)}
       &nbsp;
       {label}
     </>
@@ -68,22 +72,22 @@ const getConditionLabel = (condition, hrCnt) => {
 
 const getHourColumns = (hourlyWeather) => {
   // Normalize hourly data into blocks of contiguous conditions
-  let currentHour = { hrCnt: 1, condition: hourlyWeather[0].condition };
+  let currentHour = { hrCnt: 1, condition: hourlyWeather[0].condition, time: hourlyWeather[0].time };
   const normalizedData = [currentHour];
-  hourlyWeather.slice(1, 24).forEach(({ condition }) => {
+  hourlyWeather.slice(1, 24).forEach(({ condition, time }) => {
     if (condition === currentHour.condition) {
       currentHour.hrCnt += 1;
     } else {
-      currentHour = { hrCnt: 1, condition };
+      currentHour = { hrCnt: 1, condition, time };
       normalizedData.push(currentHour);
     }
   });
 
-  return normalizedData.map(({ hrCnt, condition }) => (
+  return normalizedData.map(({ hrCnt, condition, time }) => (
     <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ov-${makeid()}`}>
       <div className="mx-auto">
         &nbsp;
-        {getConditionLabel(condition, hrCnt)}
+        {getConditionLabel(condition, hrCnt, time)}
       </div>
     </Col>
   ));

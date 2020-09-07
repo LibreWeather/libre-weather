@@ -5,6 +5,7 @@ import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import getWeatherIcon from './WeatherIcon';
 
 const pressureDisplay = (pressure) => `${Math.round(pressure.value)} mb`;
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
@@ -60,9 +61,7 @@ class CurrentWeather extends React.Component {
           </Col>
         </Row>
         <Row className="h1 justify-content-center">
-          <Col md="auto">
-            <ReactAnimatedWeather icon={currentWeather.conditionIcon} color="white" size={70} />
-          </Col>
+          <Col md="auto">{getWeatherIcon(currentWeather.conditionIcon, 70, null, true)}</Col>
           <Col md="auto">
             <Row className="h1 bolder">
               {currentWeather.temp} {currentWeather.summary}.
