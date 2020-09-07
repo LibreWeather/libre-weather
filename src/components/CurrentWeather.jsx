@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactAnimatedWeather from 'react-animated-weather';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import Col from 'react-bootstrap/Col';
@@ -9,10 +8,11 @@ import getWeatherIcon from './WeatherIcon';
 
 const pressureDisplay = (pressure) => `${Math.round(pressure.value)} mb`;
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
-const visibilityDisplay = (visibility) =>
-  visibility.value >= 10
-    ? `10+ ${visibility.unit === 'MI' ? 'mi' : 'm'}`
-    : `${Math.round(visibility.value)} ${visibility.unit === 'MI' ? 'mi' : 'm'}`;
+const visibilityDisplay = (visibility) => {
+  const visDistance = visibility.unit === 'MI' ? visibility.value : visibility.value / 1000;
+  const visUnit = visibility.unit === 'MI' ? 'mi' : 'km';
+  return visDistance >= 10 ? `10+ ${visUnit}` : `${Math.round(visDistance)} ${visUnit}`;
+};
 const windSpeedDisplay = (windSpeed) =>
   `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;
 
