@@ -1,3 +1,5 @@
+/* globals localStorage */
+
 import React from 'react';
 import * as Nominatim from 'nominatim-browser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,15 +12,17 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from '../assets/logo.svg';
 
-const DEFAULT_ZIP = '67042';
-const DEFAULT_LOCATION_NAME = 'El Dorado';
+const DEFAULT_ZIP = '67202';
+const DEFAULT_LOCATION_NAME = 'Wichita';
+const UNITS = { IMPERIAL: 'IMPERIAL', METRIC: 'METRIC', FREEDOM_UNITS: 'IMPERIAL' };
 
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      zip: DEFAULT_ZIP,
-      locationName: DEFAULT_LOCATION_NAME,
+      zip: localStorage.getItem('zip') || DEFAULT_ZIP,
+      locationName: localStorage.getItem('locationName') || DEFAULT_LOCATION_NAME,
+      units: localStorage.getItem('units') || UNITS.IMPERIAL,
     };
 
     this.updateLocation = this.updateLocation.bind(this);
@@ -41,7 +45,11 @@ class NavigationBar extends React.Component {
       addressdetails: true,
       postalcode: zip,
     }).then((results) => {
-      this.setState({ locationName: results[0].address.city });
+      localStorage.setItem('zip', zip);
+      const locName = results[0].address.city;
+      localStorage.setItem('locationName', locName);
+
+      this.setState({ locationName: locName });
       setLatLon(results[0].lat, results[0].lon);
     });
   }
@@ -57,13 +65,14 @@ class NavigationBar extends React.Component {
   }
 
   handleUnitsChange(event) {
-    const units = event.target.checked ? 'METRIC' : 'IMPERIAL';
+    const units = event.target.checked ? UNITS.METRIC : UNITS.IMPERIAL;
     const { setUnits } = this.props;
     setUnits(units);
+    this.setState({ units });
   }
 
   render() {
-    const { locationName } = this.state;
+    const { locationName, zip, units } = this.state;
 
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -80,7 +89,7 @@ class NavigationBar extends React.Component {
           <Form onSubmit={this.handleZipSubmit}>
             <InputGroup>
               <FormControl
-                placeholder="ZIP Code"
+                placeholder={zip === DEFAULT_ZIP ? 'ZIP Code' : zip}
                 aria-label="ZIP Code"
                 aria-describedby="basic-addon2"
                 type="number"
@@ -95,7 +104,7 @@ class NavigationBar extends React.Component {
           </Form>
           <Navbar.Text className="py-0">˚F</Navbar.Text>
           <Form>
-            <Form.Switch id="custom-switch" label="" onChange={this.handleUnitsChange} />
+            <Form.Switch id="custom-switch" label="" onChange={this.handleUnitsChange} checked={units === 'METRIC'} />
           </Form>
           <Navbar.Text className="py-0">˚C</Navbar.Text>
         </Navbar.Collapse>

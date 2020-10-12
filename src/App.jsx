@@ -1,4 +1,4 @@
-/* globals fetch */
+/* globals fetch, localStorage */
 
 import React from 'react';
 import CurrentWeather from './components/CurrentWeather';
@@ -18,7 +18,7 @@ class App extends React.Component {
 
     this.state = {
       weather: DEFAULT_WEATHER_DATA,
-      units: DEFAULT_UNITS,
+      units: localStorage.getItem('units') || DEFAULT_UNITS,
       lat: DEFAULT_LAT,
       lon: DEFAULT_LON,
     };
@@ -28,20 +28,22 @@ class App extends React.Component {
     this.setWeather = this.setWeather.bind(this);
   }
 
-  setWeather(lat, lon, units) {
-    const headers = { 'x-latitude': lat, 'x-longitude': lon, 'x-unit': units };
+  componentDidMount() {
+    const { units } = this.state;
+    this.setUnits(units);
+  }
 
-    fetch(LIBRE_WEATHER_API_ROOT, { method: 'GET', headers })
+  setWeather(lat, lon, units) {
+    fetch(`${LIBRE_WEATHER_API_ROOT}/${lat},${lon}/unit/${units}`)
       .then((res) => res.json())
-      .then((data) => {
-        this.setState({ weather: data });
-      })
+      .then((weather) => this.setState({ weather }))
       // eslint-disable-next-line no-console
       .catch(console.error);
   }
 
   setUnits(units) {
     this.setState({ units });
+    localStorage.setItem('units', units);
     const { lat, lon } = this.state;
     this.setWeather(lat, lon, units);
   }
