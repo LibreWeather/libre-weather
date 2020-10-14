@@ -1,9 +1,9 @@
-/* globals localStorage */
+/* globals localStorage, navigator, confirm */
 
 import React from 'react';
 import * as Nominatim from 'nominatim-browser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -16,6 +16,8 @@ const DEFAULT_ZIP = '67202';
 const DEFAULT_LOCATION_NAME = 'Wichita';
 const UNITS = { IMPERIAL: 'IMPERIAL', METRIC: 'METRIC', FREEDOM_UNITS: 'IMPERIAL' };
 
+const logger = console;
+
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
@@ -23,35 +25,82 @@ class NavigationBar extends React.Component {
       zip: localStorage.getItem('zip') || DEFAULT_ZIP,
       locationName: localStorage.getItem('locationName') || DEFAULT_LOCATION_NAME,
       units: localStorage.getItem('units') || UNITS.IMPERIAL,
+      useGeo: navigator.geolocation && (localStorage.getItem('useGeo') === 'true' || false),
     };
 
     this.updateLocation = this.updateLocation.bind(this);
     this.handleZipChange = this.handleZipChange.bind(this);
     this.handleZipSubmit = this.handleZipSubmit.bind(this);
     this.handleUnitsChange = this.handleUnitsChange.bind(this);
+    this.getAutoGeoLocation = this.getAutoGeoLocation.bind(this);
+    this.toggleGeo = this.toggleGeo.bind(this);
+    this.setNomData = this.setNomData.bind(this);
+    this.geo = navigator.geolocation;
   }
 
   componentDidMount() {
     this.updateLocation();
   }
 
-  updateLocation() {
-    // TODO This supports a more generic search string
-    // Also, should handle multiple results and no results
-    const { zip } = this.state;
+  /**
+   * Update location data from NominatimResonse
+   * @param {NominatimResponse} result nominatim query response
+   */
+  setNomData(result) {
     const { setLatLon } = this.props;
 
-    Nominatim.geocode({
-      addressdetails: true,
-      postalcode: zip,
-    }).then((results) => {
-      localStorage.setItem('zip', zip);
-      const locName = results[0].address.city;
-      localStorage.setItem('locationName', locName);
+    localStorage.setItem('zip', result.address.postcode);
+    const locName = result.address.city;
+    localStorage.setItem('locationName', locName);
 
-      this.setState({ locationName: locName });
-      setLatLon(results[0].lat, results[0].lon);
-    });
+    this.setState({ locationName: locName });
+    setLatLon(result.lat, result.lon);
+  }
+
+  getAutoGeoLocation() {
+    this.geo.getCurrentPosition(
+      ({ coords }) => {
+        localStorage.setItem('coords', `${coords.latitude},${coords.longitude}`);
+        Nominatim.reverseGeocode({
+          lat: coords.latitude,
+          lon: coords.longitude,
+          addressdetails: true,
+        })
+          .then(this.setNomData)
+          .catch(logger.error);
+      },
+      () => {
+        this.setState({ useGeo: false });
+      }
+    );
+  }
+
+  async updateLocation() {
+    // TODO This supports a more generic search string
+    // Also, should handle multiple results and no results
+    const { zip, useGeo } = this.state;
+
+    if (useGeo && this.geo) {
+      const storedCoords = (localStorage.getItem('coords') || '').split(',');
+      if (storedCoords.length >= 2) {
+        Nominatim.reverseGeocode({
+          lat: storedCoords[0],
+          lon: storedCoords[1],
+          addressdetails: true,
+        })
+          .then(this.setNomData)
+          .catch(logger.error);
+      }
+    } else {
+      // prevent misleading info due to non-existant browser apiwq
+      this.setState({ useGeo: false });
+      Nominatim.geocode({
+        addressdetails: true,
+        postalcode: zip,
+      }).then((results) => {
+        this.setNomData(results[0], zip);
+      });
+    }
   }
 
   handleZipChange(event) {
@@ -71,8 +120,18 @@ class NavigationBar extends React.Component {
     this.setState({ units });
   }
 
+  toggleGeo() {
+    const { useGeo } = this.state;
+    this.setState({ useGeo: !useGeo });
+    localStorage.setItem('useGeo', useGeo ? 'false' : 'true');
+    this.updateLocation();
+    if (!useGeo) {
+      this.getAutoGeoLocation();
+    }
+  }
+
   render() {
-    const { locationName, zip, units } = this.state;
+    const { locationName, zip, units, useGeo } = this.state;
 
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -88,7 +147,18 @@ class NavigationBar extends React.Component {
           </Navbar.Text>
           <Form onSubmit={this.handleZipSubmit}>
             <InputGroup>
+              <InputGroup.Prepend>
+                <Button
+                  variant="outline-secondary"
+                  active={useGeo}
+                  disabled={!navigator.geolocation}
+                  onClick={this.toggleGeo}
+                >
+                  <FontAwesomeIcon icon={faLocationArrow} />
+                </Button>
+              </InputGroup.Prepend>
               <FormControl
+                disabled={useGeo}
                 placeholder={zip === DEFAULT_ZIP ? 'ZIP Code' : zip}
                 aria-label="ZIP Code"
                 aria-describedby="basic-addon2"
@@ -96,7 +166,7 @@ class NavigationBar extends React.Component {
                 onChange={this.handleZipChange}
               />
               <InputGroup.Append>
-                <Button variant="outline-secondary" type="submit">
+                <Button variant="outline-secondary" type="submit" disabled={useGeo}>
                   <FontAwesomeIcon icon={faSearch} />
                 </Button>
               </InputGroup.Append>
