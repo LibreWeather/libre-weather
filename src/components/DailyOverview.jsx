@@ -70,7 +70,7 @@ const getConditionLabel = (condition, hrCnt, time) => {
   );
 };
 
-const getHourColumns = (hourlyWeather) => {
+const getOverviewBarCols = (hourlyWeather) => {
   // Normalize hourly data into blocks of contiguous conditions
   let currentHour = { hrCnt: 1, condition: hourlyWeather[0].condition, time: hourlyWeather[0].time };
   const normalizedData = [currentHour];
@@ -84,11 +84,19 @@ const getHourColumns = (hourlyWeather) => {
   });
 
   return normalizedData.map(({ hrCnt, condition, time }) => (
-    <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ov-${makeid()}`}>
+    <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ovBar-${makeid()}`}>
       <div className="mx-auto">
         &nbsp;
         {getConditionLabel(condition, hrCnt, time)}
       </div>
+    </Col>
+  ));
+};
+
+const getTicCols = () => {
+  return Array.from(Array(24).keys()).map((i) => (
+    <Col className="overviewTics" key={`ovTic-${makeid()}`}>
+      <div className={`${i % 2 == 0 ? 'even' : 'odd'}`}>&nbsp;</div>
     </Col>
   ));
 };
@@ -100,34 +108,14 @@ const getHourFromTimestamp = (timestamp) => {
     .replace(/ /g, '');
 };
 
-const getTempColumns = (hourlyWeather) => {
+const getOverviewDetailsCols = (hourlyWeather) => {
   const next24Hours = hourlyWeather.slice(0, 24);
-
-  return next24Hours.map((hour, index) => {
-    const classes = ['hr', index % 2 === 0 ? 'even' : 'odd'];
-    if (index === 0) classes.push('first');
-    if (index === 1) classes.push('second');
-
-    return (
-      <Col className={`overviewTemps ${classes.join(' ')}`} key={`hr-${makeid()}`}>
-        <span className={classes.join(' ')} />
-        {index === 0 ? (
-          <div className="time">Now</div>
-        ) : index % 2 === 0 ? (
-          <div className="time later">{getHourFromTimestamp(hour.time)}</div>
-        ) : (
-          ''
-        )}
-        {index === 0 ? (
-          <div className="temperature">{hour.temp}</div>
-        ) : index % 2 === 0 ? (
-          <div className="temperature later">{hour.temp}</div>
-        ) : (
-          ''
-        )}
-      </Col>
-    );
-  });
+  return next24Hours.filter((hour, index) => index % 2 == 0).map((hour, index) => (
+    <Col className={`overviewDetails ${index == 0 ? 'first' : ''}`} key={`ovDetails-${makeid()}`}>
+      <div className="overviewDetailsTime">{getHourFromTimestamp(hour.time)}</div>
+      <div className="overviewDetailsTemp">{hour.temp}</div>
+    </Col>
+  ));
 };
 
 class DailyOverview extends React.Component {
@@ -136,8 +124,9 @@ class DailyOverview extends React.Component {
     const weather = dailyWeather(raw);
     return (
       <Container className="dailyOverview">
-        <Row className="justify-content-center">{getHourColumns(weather.hourly)}</Row>
-        <Row className="justify-content-center hrs">{getTempColumns(weather.hourly)}</Row>
+        <Row className="justify-content-center">{getOverviewBarCols(weather.hourly)}</Row>
+        <Row className="justify-content-center">{getTicCols()}</Row>
+        <Row className="justify-content-center overviewDetailsRow">{getOverviewDetailsCols(weather.hourly)}</Row>
       </Container>
     );
   }
