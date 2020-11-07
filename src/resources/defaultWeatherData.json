@@ -37,6 +37,7 @@
   },
   "daily": [
     {
+      "condition": "CLOUDY",
       "temp": {
         "max": {
           "value": 0.0,
@@ -46,7 +47,8 @@
           "value": 0.0,
           "unit": "K"
         }
-      }
+      },
+      "time": 0
     }
   ],
   "hourly": [

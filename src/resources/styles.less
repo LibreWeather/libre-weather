@@ -210,6 +210,44 @@ body {
         }
       }
     }
+
+    .weeklyForecast {
+      font-size: initial;
+      max-width: 48em;
+      margin-top: 2em;
+      .weeklyForecastRow {
+        margin-top: 2em;
+        .iconCol {
+          padding: 0px;
+          margin: 0px;
+        }
+        .forcastDayCol {
+          font-size: initial;
+          font-weight: 900 !important;
+        }
+        .tempRangeCol {
+          font-size: initial;
+          -ms-flex: 0 0 40em;
+          flex: 0 0 40em;
+          .minCol {
+            text-align: right;
+            padding: 0px;
+          }
+          .barCol {
+            background-color: #3c4144;
+            border-radius: 1em;
+            margin-left: 0.25em;
+            margin-right: -0.5em;
+          }
+          .maxCol {
+            text-align: left;
+          }
+        }
+        .toggleCol {
+          padding: 0px;
+        }
+      }
+    }
   }
 
   code {

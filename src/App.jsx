@@ -3,6 +3,7 @@
 import React from 'react';
 import CurrentWeather from './components/CurrentWeather';
 import DailyOverview from './components/DailyOverview';
+import WeeklyForecast from './components/WeeklyForecast';
 import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import NavigationBar from './components/NavigationBar';
 import CurrentDayContext from './utilities/CurrentDayContext';
@@ -68,6 +69,7 @@ class App extends React.Component {
           <header className="header">
             <CurrentWeather weatherData={weather} />
             <DailyOverview weatherData={weather} />
+            <WeeklyForecast weatherData={weather} />
           </header>
         </div>
       </CurrentDayContext.Provider>
