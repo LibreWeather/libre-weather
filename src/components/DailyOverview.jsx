@@ -70,6 +70,13 @@ const getConditionLabel = (condition, hrCnt, time) => {
   );
 };
 
+const getFlexStyle = (width) => {
+  return {
+    "flex": `0 0 ${width}em`, 
+    "-ms-flex": `0 0 ${width}em`,
+  };
+};
+
 const getOverviewBarCols = (hourlyWeather) => {
   // Normalize hourly data into blocks of contiguous conditions
   let currentHour = { hrCnt: 1, condition: hourlyWeather[0].condition, time: hourlyWeather[0].time };
@@ -84,7 +91,7 @@ const getOverviewBarCols = (hourlyWeather) => {
   });
 
   return normalizedData.map(({ hrCnt, condition, time }) => (
-    <Col className={`overviewBar hrs${hrCnt} ${getConditionClass(condition)}`} key={`ovBar-${makeid()}`}>
+    <Col className={`overviewBar ${getConditionClass(condition)}`} style={getFlexStyle(hrCnt * 2)} key={`ovBar-${makeid()}`}>
       <div className="mx-auto">
         &nbsp;
         {getConditionLabel(condition, hrCnt, time)}
