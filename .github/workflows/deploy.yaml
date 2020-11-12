@@ -22,3 +22,4 @@ jobs:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./dist
           force_orphan: true
+          cname: libreweather.com
