@@ -12,6 +12,21 @@ body {
     b {
       font-weight: 300;
     }
+    
+    .hide-scroll {
+      overflow-x: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      
+      & > .row {
+        max-width: 90vw;
+      }
+    }
+    
 
     .h3,
     .h2,

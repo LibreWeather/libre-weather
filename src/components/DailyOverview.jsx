@@ -130,10 +130,10 @@ class DailyOverview extends React.Component {
     const { weatherData: raw } = this.props;
     const weather = dailyWeather(raw);
     return (
-      <Container className="dailyOverview">
-        <Row className="justify-content-center">{getOverviewBarCols(weather.hourly)}</Row>
-        <Row className="justify-content-center">{getTicCols()}</Row>
-        <Row className="justify-content-center overviewDetailsRow">{getOverviewDetailsCols(weather.hourly)}</Row>
+      <Container className="dailyOverview  hide-scroll">
+        <Row className="justify-content-center flex-nowrap">{getOverviewBarCols(weather.hourly)}</Row>
+        <Row className="justify-content-center flex-nowrap">{getTicCols()}</Row>
+        <Row className="justify-content-center overviewDetailsRow flex-nowrap">{getOverviewDetailsCols(weather.hourly)}</Row>
       </Container>
     );
   }
