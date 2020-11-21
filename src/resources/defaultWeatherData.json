@@ -38,6 +38,17 @@
   "daily": [
     {
       "condition": "CLOUDY",
+      "description": "Loading...",
+      "rainVolume":{
+        "value": 0.0,
+        "unit": "MM"
+      },
+      "snowVolume":{
+        "value": 0.0,
+        "unit": "MM"
+      },
+      "sunrise": 0,
+      "sunset": 0,
       "temp": {
         "max": {
           "value": 0.0,

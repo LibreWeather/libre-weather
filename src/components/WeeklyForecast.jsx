@@ -1,20 +1,42 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle, faMinusCircle, faLongArrowAltRight, faSun, faLongArrowAltUp, faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import getWeatherIcon from './WeatherIcon';
 import makeid from '../utilities/index';
 
+const timeDisplay = (time) => {
+  const date = new Date(time * 1000);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  return `${hours % 12}:${minutes < 10 ? '0' : ''}${minutes}${hours < 12 ? 'am' : 'pm'}`;
+};
+
+const volumeDisplay = (volume) => `${volume.value} ${volume.unit === 'IN' ? 'in' : 'mm'}`;
+
+const precipitationData = (rainVolume, snowVolume) => {
+  if (rainVolume.value == null && snowVolume.value == null) {
+    rainVolume.value = 0;
+  } else if (snowVolume.value != null && (rainVolume.value == null || snowVolume.value > rainVolume.value)) {
+    return { type: 'Snow', value: volumeDisplay(snowVolume) };
+  }
+  return { type: 'Rain', value: volumeDisplay(rainVolume) };
+};
+
 const weeklyWeatherData = (data) => {
   const { daily } = data;
-  return daily.slice(0, 7).map(({ condition, temp, time }) => {
+  return daily.slice(0, 7).map(({ condition, description, rainVolume, snowVolume, sunrise, sunset, temp, time }) => {
     const { max, min } = temp;
     return {
       condition,
+      description,
       minTemp: min,
       maxTemp: max,
+      precipitation: precipitationData(rainVolume, snowVolume),
+      sunrise: timeDisplay(sunrise),
+      sunset: timeDisplay(sunset),
       time,
     };
   });
@@ -73,19 +95,48 @@ const getTempRangeCol = (dailyWeather, overallMinTemp, overallMaxTemp) => {
   );
 };
 
-const getDailyRows = (weeklyWeather) => {
-  const conditionDate = new Date();
-  conditionDate.setHours(12);
-  const conditionTime = conditionDate.getTime()/1000;
+class DailyRow extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const overallMin = getOverallMinTemp(weeklyWeather);
-  const overallMax = getOverallMaxTemp(weeklyWeather);
+    this.state = { 
+      drawerDisplay: 'none',
+      drawerIcon: faPlusCircle,
+     };
 
-  return weeklyWeather.map((dailyWeather, index) => {
+    this.handleRowClick = this.handleRowClick.bind(this);
+  }
+
+  handleRowClick() {
+    const { drawerDisplay } = this.state;
+    if ('none' === drawerDisplay) {
+      this.setState({ 
+        drawerDisplay: 'block',
+        drawerIcon: faMinusCircle,
+      });
+    } else  {
+      this.setState({ 
+        drawerDisplay: 'none',
+        drawerIcon: faPlusCircle,
+      });
+    }    
+  }
+
+  render() {
+    const { dailyWeather, index, overallMinTemp, overallMaxTemp } = this.props;
+    const { drawerDisplay, drawerIcon } = this.state;
+
+    const conditionDate = new Date();
+    conditionDate.setHours(12);
+    const conditionTime = conditionDate.getTime()/1000;
+    const {precipitation} = dailyWeather;
+    
+    // TODO The first row in the container is the "button". The next row(s) are toggled
+    // TODO the tempature range details need to be updated to include the times (calculated by looking at the hourly data)
     return (
-      <Row className="justify-content-center weeklyForecastRow" key={`ww-${makeid()}`}>
+      <Row className="justify-content-center weeklyForecastRow" >
         <Container>
-          <Row>
+          <Row className="i buttonRow" onClick={this.handleRowClick}>
             <Col className="iconCol">
               {getWeatherIcon(dailyWeather.condition, 20, conditionTime)}
             </Col>
@@ -93,14 +144,37 @@ const getDailyRows = (weeklyWeather) => {
               {index == 0 ? 'Today' : getDayOfTheWeek(dailyWeather.time)}
             </Col>
             <Col className="tempRangeCol">
-              {getTempRangeCol(dailyWeather, overallMin, overallMax)}
+              {getTempRangeCol(dailyWeather, overallMinTemp, overallMaxTemp)}
             </Col>
             <Col className="toggleCol">
-              <FontAwesomeIcon icon={faPlusCircle} />
+              <FontAwesomeIcon icon={drawerIcon} />
             </Col>
+          </Row>
+          <Row className="justify-content-center" style={{ "display": drawerDisplay }}>
+            <Container>
+              <Row className="justify-content-center h3">{dailyWeather.description}</Row>
+              <Row>
+                <Col>{tempDisplay(dailyWeather.minTemp)} <FontAwesomeIcon icon={faLongArrowAltRight} /> {tempDisplay(dailyWeather.maxTemp)}</Col>
+                <Col>
+                  <FontAwesomeIcon icon={faSun} /> {dailyWeather.sunrise}<FontAwesomeIcon icon={faLongArrowAltUp} /> - {dailyWeather.sunset}<FontAwesomeIcon icon={faLongArrowAltDown} />
+                </Col>
+                <Col><span className="font-weight-bold">{precipitation.type}</span> {precipitation.value}</Col>
+              </Row>
+            </Container>
           </Row>
         </Container>
       </Row>
+    );
+  }
+}
+
+const getDailyRows = (weeklyWeather) => {
+  const overallMin = getOverallMinTemp(weeklyWeather);
+  const overallMax = getOverallMaxTemp(weeklyWeather);
+
+  return weeklyWeather.map((dailyWeather, index) => {
+    return (
+      <DailyRow dailyWeather={dailyWeather} index={index} overallMinTemp={overallMin} overallMaxTemp={overallMax} key={`ww-${makeid()}`}/>
     );
   });
 };
