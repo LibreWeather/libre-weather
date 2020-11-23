@@ -20,7 +20,7 @@ const currentWeatherData = (data) => ({
   conditionIcon: data.current.condition,
   description: data.current.description,
   dewPoint: tempDisplay(data.current.dewPoint),
-  humidity: data.current.humidity,
+  humidity: Math.round(data.current.humidity),
   pressure: pressureDisplay(data.current.pressure),
   summary: data.current.summary,
   temp: tempDisplay(data.current.temp),

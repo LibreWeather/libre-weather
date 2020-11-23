@@ -131,7 +131,6 @@ class DailyRow extends React.Component {
     const conditionTime = conditionDate.getTime()/1000;
     const {precipitation} = dailyWeather;
     
-    // TODO The first row in the container is the "button". The next row(s) are toggled
     // TODO the tempature range details need to be updated to include the times (calculated by looking at the hourly data)
     return (
       <Row className="justify-content-center weeklyForecastRow" >
@@ -150,7 +149,7 @@ class DailyRow extends React.Component {
               <FontAwesomeIcon icon={drawerIcon} />
             </Col>
           </Row>
-          <Row className="justify-content-center" style={{ "display": drawerDisplay }}>
+          <Row className="justify-content-center displayDrawer" style={{ "display": drawerDisplay }}>
             <Container>
               <Row className="justify-content-center h3">{dailyWeather.description}</Row>
               <Row>
