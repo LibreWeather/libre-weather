@@ -10,7 +10,7 @@ const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K
 
 const dailyWeather = (data) => ({
   hourly: [].concat(
-    data.hourly.map(({ condition, temp, time }) => ({
+    data.map(({ condition, temp, time }) => ({
       condition,
       temp: tempDisplay(temp),
       time,
@@ -127,7 +127,7 @@ const getOverviewDetailsCols = (hourlyWeather) => {
 
 class DailyOverview extends React.Component {
   render() {
-    const { weatherData: raw } = this.props;
+    const { hourlyWeatherData: raw } = this.props;
     const weather = dailyWeather(raw);
     return (
       <Container className="dailyOverview">

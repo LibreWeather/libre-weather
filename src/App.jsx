@@ -68,7 +68,7 @@ class App extends React.Component {
           <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
           <header className="header">
             <CurrentWeather weatherData={weather} />
-            <DailyOverview weatherData={weather} />
+            <DailyOverview hourlyWeatherData={weather.hourly} />
             <WeeklyForecast weatherData={weather} />
           </header>
         </div>
