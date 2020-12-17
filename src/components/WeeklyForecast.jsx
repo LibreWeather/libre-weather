@@ -78,11 +78,11 @@ const getTempRangeCol = (dailyWeather, overallMinTemp, overallMaxTemp) => {
   const maxTempPosition = getTempPositionValue(maxTemp.value, overallMinTemp, overallMaxTemp);
   const minColStyle = { 
     "flex": `0 0 ${minTempPosition}em`, 
-    "-ms-flex": `0 0 ${minTempPosition}em`,
+    "msFlex": `0 0 ${minTempPosition}em`,
   };
   const maxColStyle = { 
     "flex": `0 0 ${37 - maxTempPosition}em`, 
-    "-ms-flex": `0 0 ${37 - maxTempPosition}em`,
+    "msFlex": `0 0 ${37 - maxTempPosition}em`,
   };
   return (
     <Container>

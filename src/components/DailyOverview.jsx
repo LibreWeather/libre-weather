@@ -73,7 +73,7 @@ const getConditionLabel = (condition, hrCnt, time) => {
 const getFlexStyle = (width) => {
   return {
     "flex": `0 0 ${width}em`, 
-    "-ms-flex": `0 0 ${width}em`,
+    "msFlex": `0 0 ${width}em`,
   };
 };
 
