@@ -3,7 +3,7 @@
 import React from 'react';
 import * as Nominatim from 'nominatim-browser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faLocationArrow, faCode } from '@fortawesome/free-solid-svg-icons';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';

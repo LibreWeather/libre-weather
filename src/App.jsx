@@ -1,12 +1,17 @@
 /* globals fetch, localStorage */
 
 import React from 'react';
-import CurrentWeather from './components/CurrentWeather';
-import DailyOverview from './components/DailyOverview';
-import WeeklyForecast from './components/WeeklyForecast';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import NavigationBar from './components/NavigationBar';
 import CurrentDayContext from './utilities/CurrentDayContext';
+
+import CurrentWeather from './components/CurrentWeather';
+import DailyOverview from './components/DailyOverview';
+import WeeklyForecast from './components/WeeklyForecast';
+
+import TermsView from './views/TermsView';
+import LicensesView from './views/LicensesView';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 const DEFAULT_UNITS = 'IMPERIAL';
@@ -62,15 +67,28 @@ class App extends React.Component {
       sunset: weather.current.sunset,
       time: weather.current.time,
     };
+
     return (
       <CurrentDayContext.Provider value={currentDayData}>
         <div className="App">
           <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
-          <header className="header">
-            <CurrentWeather weatherData={weather} />
-            <DailyOverview hourlyWeatherData={weather.hourly} />
-            <WeeklyForecast weatherData={weather} />
-          </header>
+          <BrowserRouter>
+            <Switch>
+              <Route exact path='/'>
+                <header className="header">
+                  <CurrentWeather weatherData={weather} />
+                  <DailyOverview hourlyWeatherData={weather.hourly} />
+                  <WeeklyForecast weatherData={weather} />
+                </header>
+              </Route>
+              <Route path='/terms'>
+                <TermsView />
+              </Route>
+              <Route path='/licenses'>
+                <LicensesView />
+              </Route>
+            </Switch>
+          </BrowserRouter>
         </div>
       </CurrentDayContext.Provider>
     );
