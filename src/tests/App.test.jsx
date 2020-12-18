@@ -1,9 +1,12 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import { render, screen } from '@testing-library/react';
+import App from '../App';
+
+require('dotenv').config();
+
+test('env is populated', () => expect(process.env.LIBRE_WEATHER_API).not.toBeFalsy());
 
 test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  render(<App />);
+  expect(screen.getByText(/Libre Weather/i)).toBeInTheDocument();
 });

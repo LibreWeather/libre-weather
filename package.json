@@ -11,18 +11,27 @@
     "react-bootstrap": "^1.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-react-jsx": "^7.12.11",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
     "@fortawesome/free-regular-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
-    "@testing-library/jest-dom": "^4.2.4",
+    "@svgr/parcel-plugin-svgr": "^5.5.0",
+    "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
+    "babel-jest": "^26.6.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "dotenv": "^5.0.1",
+    "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",
@@ -30,22 +39,27 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.0",
+    "jest": "^26.6.3",
     "less": "^3.12.2",
     "license-list": "^0.1.3",
+    "node-fetch": "^2.6.1",
     "parcel-bundler": "^1.12.4",
     "prettier": "^2.0.5",
-    "react": "^16.13.1",
+    "react": "^17.0.1",
     "react-animated-weather": "^4.0.1",
-    "react-dom": "^16.13.1",
+    "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
+    "react-test-renderer": "^17.0.1",
     "regenerator-runtime": "^0.13.7"
   },
   "scripts": {
-    "start": "npx parcel ./src/index.html --no-cache",
-    "build": "npx parcel build ./src/index.html --no-cache",
-    "lint": "npx eslint src/.",
-    "lint:fix": "npx eslint src/. --fix",
-    "serve": "npx http-server dist/. -p $PORT -a $HOST",
+    "start": "parcel ./src/index.html --no-cache",
+    "build": "parcel build ./src/index.html --no-cache",
+    "lint": "eslint src/.",
+    "lint:fix": "eslint src/. --fix",
+    "serve": "npx -p http-server http-server dist/. -p $PORT -a $HOST",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "build:licenses": "node src/utilities/generateLicenses.js"
   },
   "prettier": {
@@ -59,6 +73,14 @@
     "arrowParens": "always",
     "printWidth": 120
   },
+  "eslintIgnore": [
+    ".github/*",
+    "dist/*",
+    "node_modules/*",
+    "app.json",
+    "package.json",
+    "package-lock.json"
+  ],
   "eslintConfig": {
     "extends": [
       "airbnb",
@@ -128,6 +150,25 @@
     "tobitenno"
   ],
   "engines": {
-    "node": "=14.9.0"
+    "node": ">=15.4.0",
+    "npm": ">=7.0.15"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "jest"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-react-jsx"
+    ]
+  },
+  "jest": {
+    "setupFiles": [
+      "dotenv/config"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/tests/setupTests.js"
+    ]
   }
 }

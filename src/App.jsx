@@ -1,6 +1,8 @@
-/* globals fetch, localStorage */
+/* globals localStorage */
 
 import React from 'react';
+import fetch from 'node-fetch';
+
 import NavLink, { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Navbar from 'react-bootstrap/Navbar';
