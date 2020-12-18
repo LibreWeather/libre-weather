@@ -3,7 +3,7 @@
 import React from 'react';
 import * as Nominatim from 'nominatim-browser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faLocationArrow, faCode } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -52,7 +52,7 @@ class NavigationBar extends React.Component {
   setNomData(result) {
     const { setLatLon } = this.props;
 
-    const {village, town, city, county, postcode} = result.address;
+    const { village, town, city, county, postcode } = result.address;
     let locName;
     if (village) {
       locName = village;
@@ -76,14 +76,16 @@ class NavigationBar extends React.Component {
     this.setState({ zip: event.target.value });
   }
 
-  updateLocationFromZip() {    
+  updateLocationFromZip() {
     const { zip } = this.state;
     Nominatim.geocode({
       addressdetails: true,
       postalcode: zip,
-    }).then((results) => {
-      this.setNomData(results[0]);
-    }).catch(logger.error);
+    })
+      .then((results) => {
+        this.setNomData(results[0]);
+      })
+      .catch(logger.error);
   }
 
   handleZipSubmit(event) {
@@ -96,7 +98,7 @@ class NavigationBar extends React.Component {
     event.target.reset();
   }
 
-  updateLocationFromGeo() {    
+  updateLocationFromGeo() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         // Called if success
@@ -105,7 +107,9 @@ class NavigationBar extends React.Component {
             lat: coords.latitude,
             lon: coords.longitude,
             addressdetails: true,
-          }).then(this.setNomData).catch(logger.error);
+          })
+            .then(this.setNomData)
+            .catch(logger.error);
         }
       );
     }
@@ -129,12 +133,13 @@ class NavigationBar extends React.Component {
 
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href="/">
           <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="React Bootstrap logo" />
         </Navbar.Brand>
-        <Navbar.Brand href="#home" className="py-0">
+        <Navbar.Brand href="/" className="py-0">
           Libre Weather
         </Navbar.Brand>
+
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
           <Navbar.Text id="locationName" className="py-0">
             {locationName}
@@ -142,11 +147,7 @@ class NavigationBar extends React.Component {
           <Form onSubmit={this.handleZipSubmit}>
             <InputGroup>
               <InputGroup.Prepend>
-                <Button
-                  variant="outline-secondary"
-                  disabled={!navigator.geolocation}
-                  onClick={this.handleGeoSubmit}
-                >
+                <Button variant="outline-secondary" disabled={!navigator.geolocation} onClick={this.handleGeoSubmit}>
                   <FontAwesomeIcon icon={faLocationArrow} />
                 </Button>
               </InputGroup.Prepend>
