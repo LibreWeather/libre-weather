@@ -17,7 +17,6 @@ import CurrentWeather from './components/CurrentWeather';
 import DailyOverview from './components/DailyOverview';
 import WeeklyForecast from './components/WeeklyForecast';
 
-import TermsView from './views/TermsView';
 import LicensesView from './views/LicensesView';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
@@ -87,9 +86,6 @@ class App extends React.Component {
                   <DailyOverview hourlyWeatherData={weather.hourly} />
                   <WeeklyForecast weatherData={weather} />
                 </header>
-              </Route>
-              <Route path="/terms">
-                <TermsView />
               </Route>
               <Route path="/licenses">
                 <LicensesView />
