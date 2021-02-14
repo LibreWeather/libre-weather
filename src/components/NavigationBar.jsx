@@ -1,4 +1,4 @@
-/* globals localStorage, navigator, confirm */
+/* globals localStorage, navigator */
 
 import React from 'react';
 import * as Nominatim from 'nominatim-browser';
@@ -38,7 +38,8 @@ class NavigationBar extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.useGeo) {
+    const { useGeo } = this.state;
+    if (useGeo) {
       this.updateLocationFromGeo();
     } else {
       this.updateLocationFromZip();
@@ -139,6 +140,8 @@ class NavigationBar extends React.Component {
         <Navbar.Brand href="/" className="py-0">
           Libre Weather
         </Navbar.Brand>
+
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
           <Navbar.Text id="locationName" className="py-0">
