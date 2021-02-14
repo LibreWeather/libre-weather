@@ -10,7 +10,8 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Navbar from 'react-bootstrap/Navbar';
-import logo from '../assets/logo.svg';
+
+import Logo from './Logo';
 
 const DEFAULT_ZIP = '64106';
 const DEFAULT_LOCATION_NAME = 'Kansas City';
@@ -135,7 +136,7 @@ class NavigationBar extends React.Component {
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
         <Navbar.Brand href="/">
-          <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="React Bootstrap logo" />
+          <Logo width="30" height="30" className="d-inline-block align-top" alt="Libre Weather" />
         </Navbar.Brand>
         <Navbar.Brand href="/" className="py-0">
           Libre Weather

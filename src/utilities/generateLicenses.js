@@ -22,6 +22,7 @@ licenseList('.', { dev: true }).then((packages) => {
   );
   fs.writeFile(path.join(__dirname, '../assets/packages.json'), JSON.stringify(stripped), (err) => {
     if (err) throw err;
+    // eslint-disable-next-line no-console
     console.log('Data written to file');
 
     process.exit(0);
