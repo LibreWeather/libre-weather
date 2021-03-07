@@ -1,0 +1,75 @@
+{
+  "source": "DEFAULT",
+  "current": {
+    "apparentTemp": {
+      "value": 0.0,
+      "unit": "K"
+    },
+    "condition": "CLOUDY",
+    "description": "Loading...",
+    "dewPoint": {
+      "value": 0.0,
+      "unit": "K"
+    },
+    "humidity": 0,
+    "pressure": {
+      "value": 0.0,
+      "unit": "MB"
+    },
+    "summary": "Loading...",
+    "sunrise": 0,
+    "sunset": 0,
+    "temp": {
+      "value": 0.0,
+      "unit": "K"
+    },
+    "time": 0,
+    "uvIndex": 0.0,
+    "visibility": {
+      "value": 0.0,
+      "unit": "M"
+    },
+    "windspeed": {
+      "magnitude": 0.0,
+      "direction": 0,
+      "unit": "MS"
+    }
+  },
+  "daily": [
+    {
+      "condition": "CLOUDY",
+      "description": "Loading...",
+      "rainVolume":{
+        "value": 0.0,
+        "unit": "MM"
+      },
+      "snowVolume":{
+        "value": 0.0,
+        "unit": "MM"
+      },
+      "sunrise": 0,
+      "sunset": 0,
+      "temp": {
+        "max": {
+          "value": 0.0,
+          "unit": "K"
+        },
+        "min": {
+          "value": 0.0,
+          "unit": "K"
+        }
+      },
+      "time": 0
+    }
+  ],
+  "hourly": [
+    {
+      "condition": "CLOUDY",
+      "temp": {
+        "value": 0.0,
+        "unit": "K"
+      },
+      "time": 0
+    }
+  ]
+}
