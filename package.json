@@ -150,8 +150,8 @@
     "tobitenno"
   ],
   "engines": {
-    "node": ">=15.4.0",
-    "npm": ">=7.0.15"
+    "node": "14.x",
+    "npm": ">=6.14.11"
   },
   "babel": {
     "presets": [
