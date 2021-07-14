@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMugHot, faCode } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +20,7 @@ class Pack extends React.Component {
 
 export default class LicensesView extends React.Component {
   render() {
-    const packs = packages.map((pack) => <Pack pack={pack} />);
+    const packs = Array.from(new Set(packages)).map((pack) => <Pack pack={pack} key={`${pack.name}${pack.license}`} />);
     return (
       <header className="header">
         <div>

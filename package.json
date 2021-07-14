@@ -130,7 +130,8 @@
         {
           "devDependencies": true
         }
-      ]
+      ],
+      "max-classes-per-file": "off"
     }
   },
   "browserslist": {
