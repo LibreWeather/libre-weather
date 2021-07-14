@@ -83,11 +83,11 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/">
-                <header className="header constrained hide-scroll">
+                <div className="header constrained hide-scroll">
                   <CurrentWeather weatherData={weather} />
                   <DailyOverview hourlyWeatherData={weather.hourly} />
                   <WeeklyForecast weatherData={weather} />
-                </header>
+                </div>
               </Route>
               <Route path="/licenses">
                 <LicensesView />

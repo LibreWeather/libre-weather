@@ -1,6 +1,6 @@
 {
-  "short_name": "LibreWeather",
-  "name": "LibreWeather Frontend",
+  "short_name": "Libre Weather",
+  "name": "Libre Weather",
   "icons": [
     {
       "src": "favicon.ico",
@@ -21,5 +21,7 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#58C2EE",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "scope": ".",
+  "lang": "en"
 }
