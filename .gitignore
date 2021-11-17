@@ -10,7 +10,7 @@
 
 # production
 build/
-.cache/
+.parcel-cache/
 dist/
 
 # misc
@@ -25,3 +25,4 @@ yarn-debug.log*
 yarn-error.log*
 
 .env*
+.idea/

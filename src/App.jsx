@@ -3,7 +3,7 @@
 import React from 'react';
 import fetch from 'node-fetch';
 
-import NavLink, { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -48,7 +48,11 @@ class App extends React.Component {
   }
 
   setWeather(lat, lon, units) {
-    fetch(`${LIBRE_WEATHER_API_ROOT}/${lat},${lon}/unit/${units}`)
+    window.fetch(`${LIBRE_WEATHER_API_ROOT}/${lat},${lon}/unit/${units}`, {
+      headers: {
+        'x-tz': Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+    })
       .then((res) => res.json())
       .then((weather) => this.setState({ weather }))
       // eslint-disable-next-line no-console
