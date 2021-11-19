@@ -47,7 +47,9 @@ class CurrentWeather extends React.Component {
     ) : (
       <Row className="h1 bolder">{currentWeather.temp}</Row>
     );
-    const description = currentWeather.description ? (<Row className="justify-content-center h2">{currentWeather.description}.</Row>) : null;
+    const description = currentWeather.description ? (
+      <Row className="justify-content-center h2">{currentWeather.description}.</Row>
+    ) : null;
     return (
       <Container className="current" fluid>
         <Row className="currentTopBar h6 justify-content-center">
@@ -61,9 +63,11 @@ class CurrentWeather extends React.Component {
           <Col md="auto">
             <b>Dew Pt:</b> {currentWeather.dewPoint}
           </Col>
-          <Col md="auto">
-            <b>UV Index:</b> {currentWeather.uvIndex}
-          </Col>
+          {currentWeather.uvIndex ? (
+            <Col md="auto">
+              <b>UV Index:</b> {currentWeather.uvIndex}
+            </Col>
+          ) : null}
           <Col md="auto">
             <b>Visibility:</b> {currentWeather.visibility}
           </Col>

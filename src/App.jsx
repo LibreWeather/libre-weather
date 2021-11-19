@@ -1,7 +1,6 @@
-/* globals localStorage */
+/* globals localStorage, window */
 
 import React from 'react';
-import fetch from 'node-fetch';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
@@ -48,11 +47,12 @@ class App extends React.Component {
   }
 
   setWeather(lat, lon, units) {
-    window.fetch(`${LIBRE_WEATHER_API_ROOT}/${lat},${lon}/unit/${units}`, {
-      headers: {
-        'x-tz': Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    })
+    window
+      .fetch(`${LIBRE_WEATHER_API_ROOT}/${lat},${lon}/unit/${units}`, {
+        headers: {
+          'x-tz': Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      })
       .then((res) => res.json())
       .then((weather) => this.setState({ weather }))
       // eslint-disable-next-line no-console
