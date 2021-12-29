@@ -9,9 +9,12 @@ import getWeatherIcon from './WeatherIcon';
 const pressureDisplay = (pressure) => `${Math.round(pressure.value)} mb`;
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
 const visibilityDisplay = (visibility) => {
-  const visDistance = visibility.unit === 'MI' ? visibility.value : visibility.value / 1000;
-  const visUnit = visibility.unit === 'MI' ? 'mi' : 'km';
-  return visDistance >= 10 ? `10+ ${visUnit}` : `${Math.round(visDistance)} ${visUnit}`;
+  const rawVis = ['MI', '%'];
+  const visDistance = rawVis.includes(visibility.unit) ? visibility.value : visibility.value / 1000;
+  const rawDistance = ['%'];
+  return !rawDistance.includes(visibility.unit) && visDistance >= 10
+    ? `10+ ${visibility.unit.toLowerCase()}`
+    : `${Math.round(visDistance)} ${visibility.unit.toLowerCase()}`;
 };
 const windSpeedDisplay = (windSpeed) =>
   `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;
@@ -37,6 +40,16 @@ class CurrentWeather extends React.Component {
   render() {
     const { weatherData } = this.props;
     const currentWeather = currentWeatherData(weatherData);
+    const tempSummary = currentWeather.summary?.length ? (
+      <Row className="h1 bolder">
+        {currentWeather.temp} {currentWeather.summary}.
+      </Row>
+    ) : (
+      <Row className="h1 bolder">{currentWeather.temp}</Row>
+    );
+    const description = currentWeather.description ? (
+      <Row className="justify-content-center h2">{currentWeather.description}.</Row>
+    ) : null;
     return (
       <Container className="current" fluid>
         <Row className="currentTopBar h6 justify-content-center">
@@ -50,9 +63,11 @@ class CurrentWeather extends React.Component {
           <Col md="auto">
             <b>Dew Pt:</b> {currentWeather.dewPoint}
           </Col>
-          <Col md="auto">
-            <b>UV Index:</b> {currentWeather.uvIndex}
-          </Col>
+          {currentWeather.uvIndex ? (
+            <Col md="auto">
+              <b>UV Index:</b> {currentWeather.uvIndex}
+            </Col>
+          ) : null}
           <Col md="auto">
             <b>Visibility:</b> {currentWeather.visibility}
           </Col>
@@ -63,9 +78,7 @@ class CurrentWeather extends React.Component {
         <Row className="h1 justify-content-center">
           <Col md="auto">{getWeatherIcon(currentWeather.conditionIcon, 70, null, true)}</Col>
           <Col md="auto">
-            <Row className="h1 bolder">
-              {currentWeather.temp} {currentWeather.summary}.
-            </Row>
+            {tempSummary}
             <Row className="h6 currentBottomBar">
               <Col md="auto" className="currentFeelsLike">
                 <b>Feels Like:</b> {currentWeather.tempFeelsLike}
@@ -79,7 +92,7 @@ class CurrentWeather extends React.Component {
             </Row>
           </Col>
         </Row>
-        <Row className="justify-content-center h2">{currentWeather.description}.</Row>
+        {description}
       </Container>
     );
   }
