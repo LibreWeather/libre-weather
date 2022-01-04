@@ -50,10 +50,10 @@
   },
   "scripts": {
     "start": "parcel ./src/index.html --no-cache",
-    "build": "parcel build ./src/index.html --no-cache",
+    "build": "npm run build:licenses && parcel build ./src/index.html --no-cache",
     "lint": "eslint src/.",
     "lint:fix": "eslint src/. --fix",
-    "serve": "npx -p http-server http-server dist/. -p $PORT -a $HOST",
+    "serve": "npx -p serve serve -p $PORT -s dist/.",
     "test": "jest",
     "coverage": "jest --coverage",
     "build:licenses": "node src/utilities/generateLicenses.js"
