@@ -2,7 +2,8 @@ import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
 import CurrentDayContext from '../utilities/CurrentDayContext';
 
-function getWeatherIcon(condition, sizePx, time, animate = false) {
+// eslint-disable-next-line import/prefer-default-export
+export const WeatherIcon = ({ condition, sizePx, time, animate = false }) => {
   return (
     <CurrentDayContext.Consumer>
       {(context) => {
@@ -16,12 +17,9 @@ function getWeatherIcon(condition, sizePx, time, animate = false) {
             break;
           case 'CLEAR':
             condition = isDay ? 'CLEAR_DAY' : 'CLEAR_NIGHT';
-          default:
         }
         return <ReactAnimatedWeather icon={condition} color="white" size={sizePx} animate={animate} />;
       }}
     </CurrentDayContext.Consumer>
   );
-}
-
-export default getWeatherIcon;
+};

@@ -1,5 +1,3 @@
-/* globals localStorage, window */
-
 import React from 'react';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -14,9 +12,9 @@ import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import CurrentDayContext from './utilities/CurrentDayContext';
 
 import NavigationBar from './components/NavigationBar';
-import CurrentWeather from './components/CurrentWeather';
-import DailyOverview from './components/DailyOverview';
-import WeeklyForecast from './components/WeeklyForecast';
+import CurrentWeather from './components/CurrentWeather/CurrentWeather';
+import DailyOverview from './components/DailyOverview/DailyOverview';
+import WeeklyForecast from './components/WeeklyForecast/WeeklyForecast';
 
 import LicensesView from './views/LicensesView';
 
@@ -28,7 +26,6 @@ const DEFAULT_LON = -96.8480188;
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       weather: DEFAULT_WEATHER_DATA,
       units: localStorage.getItem('units') || DEFAULT_UNITS,
@@ -83,7 +80,7 @@ class App extends React.Component {
     return (
       <CurrentDayContext.Provider value={currentDayData}>
         <div className="App hide-scroll">
-          <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
+          <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} ref={this.navbarRef} />
           <BrowserRouter>
             <Switch>
               <Route exact path="/">
@@ -99,11 +96,11 @@ class App extends React.Component {
             </Switch>
           </BrowserRouter>
         </div>
-        <Navbar fixed="bottom">
-          <Nav.Link href="/licenses">
+        <Navbar fixed="bottom" className="noclick">
+          <Nav.Link href="/licenses" className="clicky">
             <FontAwesomeIcon icon={faOsi} />
           </Nav.Link>
-          <Nav.Link href="https://github.com/LibreWeather/libre-weather" target="_blank">
+          <Nav.Link href="https://github.com/LibreWeather/libre-weather" target="_blank" className="clicky">
             <FontAwesomeIcon icon={faGithub} />
           </Nav.Link>
         </Navbar>

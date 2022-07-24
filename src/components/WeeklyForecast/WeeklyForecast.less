@@ -1,0 +1,78 @@
+@import '@/common/variables';
+
+.weeklyForecast {
+  font-size: initial;
+  max-width: 48em;
+  margin-top: 2em;
+
+  .weeklyForecastRow {
+    margin-top: 2em;
+
+    .buttonRow {
+      padding-top: 0.5em;
+      padding-bottom: 0.3em;
+      border-radius: 0.3em;
+      cursor: pointer;
+    }
+
+    .buttonRow:hover {
+      background-color: @clear-bg;
+    }
+
+    .iconCol {
+      padding: 0;
+      margin: 0;
+    }
+
+    .forecastDayCol {
+      font-size: initial;
+      font-weight: 900 !important;
+    }
+
+    .tempRangeCol {
+      font-size: initial;
+      -ms-flex: 0 0 40em;
+      flex: 0 0 40em;
+
+      .minCol {
+        text-align: right;
+        padding: 0;
+      }
+
+      .barCol {
+        background-color: #3c4144;
+        border-radius: 1em;
+        margin-left: 0.25em;
+        margin-right: -0.5em;
+      }
+
+      .maxCol {
+        text-align: left;
+      }
+    }
+
+    .toggleCol {
+      padding: 0;
+    }
+
+    .displayDrawer {
+      margin-top: 1em;
+    }
+  }
+
+  @media (max-width: 400px ) {
+    .weeklyForecastRow {
+      margin-top: 0.5em;
+      .tempRangeCol {
+        -ms-flex: 0 0 4em;
+        flex: 0 0 4em;
+        .row {
+          flex-wrap: nowrap;
+        }
+      }
+      .buttonRow {
+        flex-wrap: nowrap;
+      }
+    }
+  }
+}

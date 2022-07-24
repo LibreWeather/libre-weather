@@ -84,6 +84,10 @@
       "plugin:prettier/recommended",
       "plugin:react/recommended"
     ],
+    "globals": {
+      "window": "readonly",
+      "localStorage": "readonly"
+    },
     "rules": {
       "valid-jsdoc": [
         "error",
@@ -121,6 +125,8 @@
       "react/prop-types": [
         0
       ],
+      "default-case": "off",
+      "react/jsx-closing-bracket-location": "off",
       "import/no-extraneous-dependencies": [
         "error",
         {
@@ -167,5 +173,8 @@
     "plugins": [
       "@babel/plugin-transform-react-jsx"
     ]
+  },
+  "alias": {
+    "@/common/*": "./src/components/common/$1"
   }
 }

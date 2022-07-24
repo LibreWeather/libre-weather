@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './resources/serviceWorker';
 
-import './resources/styles.less';
+import './components/common/styles.less';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(

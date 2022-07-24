@@ -1,0 +1,41 @@
+.ov-cols (@mult) {
+  .ov-colX (@base-width) {
+    flex: 0 0 calc(@base-width * @ov-col-mult);
+    -ms-flex: 0 0 calc(@base-width * @ov-col-mult);
+    canvas { font-size: 0; }
+  }
+  .ov-col-2  { .ov-colX(2em);  }
+  .ov-col-4  { .ov-colX(4em);  }
+  .ov-col-6  { .ov-colX(6em);  }
+  .ov-col-8  { .ov-colX(8em);  }
+  .ov-col-10 { .ov-colX(10em); }
+  .ov-col-12 { .ov-colX(12em); }
+  .ov-col-14 { .ov-colX(14em); }
+  .ov-col-16 { .ov-colX(16em); }
+  .ov-col-18 { .ov-colX(18em); }
+  .ov-col-20 { .ov-colX(20em); }
+  .ov-col-22 { .ov-colX(22em); }
+  .ov-col-24 { .ov-colX(24em); }
+  .ov-col-26 { .ov-colX(26em); }
+  .ov-col-28 { .ov-colX(28em); }
+  .ov-col-30 { .ov-colX(30em); }
+  .ov-col-32 { .ov-colX(32em); }
+  .ov-col-34 { .ov-colX(34em); }
+  .ov-col-36 { .ov-colX(36em); }
+  .ov-col-38 { .ov-colX(38em); }
+  .ov-col-40 { .ov-colX(40em); }
+  .ov-col-42 { .ov-colX(42em); }
+  .ov-col-44 { .ov-colX(44em); }
+  .ov-col-46 { .ov-colX(46em); }
+  .ov-col-48 { .ov-colX(48em); }
+}
+
+@media (min-width: 0px) {
+  @ov-col-mult: 1;
+  .ov-cols(@ov-col-mult);
+}
+
+@media (max-width: 400px) {
+  @ov-col-mult: 0.5;
+  .ov-cols(@ov-col-mult);
+}

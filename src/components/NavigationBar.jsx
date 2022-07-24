@@ -19,7 +19,7 @@ const UNITS = { IMPERIAL: 'IMPERIAL', METRIC: 'METRIC', FREEDOM_UNITS: 'IMPERIAL
 
 const logger = console;
 
-class NavigationBar extends React.Component {
+export default class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -179,5 +179,3 @@ class NavigationBar extends React.Component {
     );
   }
 }
-
-module.exports = NavigationBar;
