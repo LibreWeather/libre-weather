@@ -1,4 +1,4 @@
-/* globals window, navigator, fetch */
+/* globals navigator, fetch */
 
 /* eslint-disable no-console */
 
