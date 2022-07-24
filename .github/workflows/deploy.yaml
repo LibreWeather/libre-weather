@@ -4,16 +4,24 @@ on:
   push:
     branches:
       - main
-      - initial-dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '16' ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Install Supplemental Dependencies
         run: npm i
+      - name: Lint
+        run: npm run lint
       - name: Build
         run: npm run build
       - name: Deploy
