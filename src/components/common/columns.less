@@ -1,7 +1,7 @@
 .ov-cols (@mult) {
   .ov-colX (@base-width) {
-    flex: 0 0 calc(@base-width * @ov-col-mult);
-    -ms-flex: 0 0 calc(@base-width * @ov-col-mult);
+    flex: 0 0 calc(@base-width * @ov-col-mult) !important;
+    -ms-flex: 0 0 calc(@base-width * @ov-col-mult) !important;
     canvas { font-size: 0; }
   }
   .ov-col-2  { .ov-colX(2em);  }

@@ -1,5 +1,3 @@
-/* globals localStorage, navigator */
-
 import React from 'react';
 import * as Nominatim from 'nominatim-browser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
