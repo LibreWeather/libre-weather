@@ -12,11 +12,8 @@ import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import CurrentDayContext from './utilities/CurrentDayContext';
 
 import NavigationBar from './components/NavigationBar';
-import CurrentWeather from './components/CurrentWeather/CurrentWeather';
-import DailyOverview from './components/DailyOverview/DailyOverview';
-import WeeklyForecast from './components/WeeklyForecast/WeeklyForecast';
-
-import LicensesView from './views/LicensesView';
+import Licenses from './views/Licenses';
+import Weather from './views/Weather/Weather';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 const DEFAULT_UNITS = 'IMPERIAL';
@@ -84,14 +81,10 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/">
-                <div className="header constrained hide-scroll">
-                  <CurrentWeather weatherData={weather} />
-                  <DailyOverview hourlyWeatherData={weather.hourly} />
-                  <WeeklyForecast weatherData={weather} />
-                </div>
+                <Weather weather={weather} />
               </Route>
               <Route path="/licenses">
-                <LicensesView />
+                <Licenses />
               </Route>
             </Switch>
           </BrowserRouter>

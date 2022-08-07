@@ -1,4 +1,5 @@
-@import '@/common/variables';
+@import '../common/variables.less';
+@import '../common/columns.less';
 
 @overview-mult: 1;
 .overview (@mult) {
@@ -26,16 +27,16 @@
       .overviewDetailsTemp { font-size: calc(@mult * 1.25em); }
     }
     .first {
-      margin-left: calc(@mult * 0.5em);
+      margin-left: calc(@mult * -0.5em);
       margin-right: calc(@mult * -0.5em);
     }
   }
 }
 .dailyOverview {
   font-size: initial;
-  &.container {
-    max-width: 100%;
-  }
+  //&.container {
+  //  max-width: 100%;
+  //}
   .clear {
     background-color: @clear-bg;
   }
@@ -54,5 +55,11 @@
   .overview(1);
   @media (max-width: 400px) {
     .overview(0.5);
+  }
+  @media (min-width: 1200px) {
+    .overview(1.25);
+    &.container {
+      max-width: 960px;
+    }
   }
 }

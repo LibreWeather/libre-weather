@@ -32,6 +32,7 @@
     "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jsx-a11y": "^6.3.0",
     "eslint-plugin-prettier": "^3.1.4",
@@ -143,6 +144,16 @@
           "@babel/plugin-transform-react-jsx"
         ]
       }
+    },
+    "settings": {
+      "import/resolver": {
+        "alias": {
+          "map": [
+            ["@components", "./src/components"]
+          ],
+          "extensions": [".js", ".json", ".node", ".jsx"]
+        }
+      }
     }
   },
   "browserslist": {
@@ -175,6 +186,7 @@
     ]
   },
   "alias": {
-    "@/common/*": "./src/components/common/$1"
+    "@/common/*": "./src/components/common/$1",
+    "@components/*": "./src/components/$1"
   }
 }
