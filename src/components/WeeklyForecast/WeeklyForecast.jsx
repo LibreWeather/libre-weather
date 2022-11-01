@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle, faMinusCircle, faLongArrowAltRight, faSun, faLongArrowAltUp, faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlusCircle,
+  faMinusCircle,
+  faLongArrowAltRight,
+  faSun,
+  faLongArrowAltUp,
+  faLongArrowAltDown,
+} from '@fortawesome/free-solid-svg-icons';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import getWeatherIcon from './WeatherIcon';
-import makeid from '../utilities/index';
+import { WeatherIcon } from '../WeatherIcon';
+import makeid from '../../utilities';
+
+import './WeeklyForecast.less';
 
 const timeDisplay = (time) => {
   const date = new Date(time * 1000);
@@ -59,37 +68,45 @@ const getDayOfTheWeek = (time) => {
     default:
       return 'Sat';
   }
-}
+};
 
 const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
 
-const getOverallMinTemp = (weeklyWeather) => 
+const getOverallMinTemp = (weeklyWeather) =>
   Math.min(...weeklyWeather.map((dailyWeather) => dailyWeather.minTemp.value));
 
-const getOverallMaxTemp = (weeklyWeather) => 
+const getOverallMaxTemp = (weeklyWeather) =>
   Math.max(...weeklyWeather.map((dailyWeather) => dailyWeather.maxTemp.value));
 
-const getTempPositionValue = (dayTempVal, totalMin, totalMax) => 
-  ((dayTempVal - totalMin)/(totalMax - totalMin)) * 35 + 2;
+const getTempPositionValue = (dayTempVal, totalMin, totalMax) =>
+  ((dayTempVal - totalMin) / (totalMax - totalMin)) * 35 + 2;
 
-const getTempRangeCol = (dailyWeather, overallMinTemp, overallMaxTemp) => {
+const TempRangeCol = ({ dailyWeather, overallMinTemp, overallMaxTemp }) => {
+  const [variant, setVariant] = useState(window.innerWidth < 400 ? 'mobile' : undefined);
+  useEffect(() => {
+    setVariant(window.innerWidth < 400 ? 'mobile' : undefined);
+  }, []);
   const { minTemp, maxTemp } = dailyWeather;
   const minTempPosition = getTempPositionValue(minTemp.value, overallMinTemp, overallMaxTemp);
   const maxTempPosition = getTempPositionValue(maxTemp.value, overallMinTemp, overallMaxTemp);
-  const minColStyle = { 
-    "flex": `0 0 ${minTempPosition}em`, 
-    "msFlex": `0 0 ${minTempPosition}em`,
+  const minColStyle = {
+    flex: `0 0 ${minTempPosition}em`,
+    msFlex: `0 0 ${minTempPosition}em`,
   };
-  const maxColStyle = { 
-    "flex": `0 0 ${37 - maxTempPosition}em`, 
-    "msFlex": `0 0 ${37 - maxTempPosition}em`,
+  const maxColStyle = {
+    flex: `0 0 ${37 - maxTempPosition}em`,
+    msFlex: `0 0 ${37 - maxTempPosition}em`,
   };
   return (
     <Container>
       <Row>
-        <Col className="minCol" style={minColStyle}>{tempDisplay(minTemp)}</Col>
-        <Col className="barCol"></Col>
-        <Col className="maxCol" style={maxColStyle}>{tempDisplay(maxTemp)}</Col>
+        <Col className="minCol" style={minColStyle}>
+          {tempDisplay(minTemp)}
+        </Col>
+        {variant !== 'mobile' ? <Col className="barCol" /> : undefined}
+        <Col className="maxCol" style={maxColStyle}>
+          {tempDisplay(maxTemp)}
+        </Col>
       </Row>
     </Container>
   );
@@ -99,27 +116,27 @@ class DailyRow extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { 
+    this.state = {
       drawerDisplay: 'none',
       drawerIcon: faPlusCircle,
-     };
+    };
 
     this.handleRowClick = this.handleRowClick.bind(this);
   }
 
   handleRowClick() {
     const { drawerDisplay } = this.state;
-    if ('none' === drawerDisplay) {
-      this.setState({ 
+    if (drawerDisplay === 'none') {
+      this.setState({
         drawerDisplay: 'block',
         drawerIcon: faMinusCircle,
       });
-    } else  {
-      this.setState({ 
+    } else {
+      this.setState({
         drawerDisplay: 'none',
         drawerIcon: faPlusCircle,
       });
-    }    
+    }
   }
 
   render() {
@@ -128,36 +145,45 @@ class DailyRow extends React.Component {
 
     const conditionDate = new Date();
     conditionDate.setHours(12);
-    const conditionTime = conditionDate.getTime()/1000;
-    const {precipitation} = dailyWeather;
-    
-    // TODO the tempature range details need to be updated to include the times (calculated by looking at the hourly data)
+    const conditionTime = conditionDate.getTime() / 1000;
+    const { precipitation } = dailyWeather;
+
+    // TODO the temperature range details need to be updated to include the times (calculated by looking at the hourly data)
     return (
-      <Row className="justify-content-center weeklyForecastRow" >
+      <Row className="justify-content-center weeklyForecastRow">
         <Container>
           <Row className="i buttonRow" onClick={this.handleRowClick}>
             <Col className="iconCol">
-              {getWeatherIcon(dailyWeather.condition, 20, conditionTime)}
+              <WeatherIcon condition={dailyWeather.condition} sizePx={20} time={conditionTime} />
             </Col>
-            <Col className="forcastDayCol">
-              {index == 0 ? 'Today' : getDayOfTheWeek(dailyWeather.time)}
-            </Col>
+            <Col className="forecastDayCol">{index === 0 ? 'Today' : getDayOfTheWeek(dailyWeather.time)}</Col>
             <Col className="tempRangeCol">
-              {getTempRangeCol(dailyWeather, overallMinTemp, overallMaxTemp)}
+              <TempRangeCol
+                dailyWeather={dailyWeather}
+                overallMinTemp={overallMinTemp}
+                overallMaxTemp={overallMaxTemp}
+              />
             </Col>
             <Col className="toggleCol">
               <FontAwesomeIcon icon={drawerIcon} />
             </Col>
           </Row>
-          <Row className="justify-content-center displayDrawer" style={{ "display": drawerDisplay }}>
+          <Row className="justify-content-center displayDrawer" style={{ display: drawerDisplay }}>
             <Container>
               <Row className="justify-content-center h3">{dailyWeather.description}</Row>
               <Row>
-                <Col>{tempDisplay(dailyWeather.minTemp)} <FontAwesomeIcon icon={faLongArrowAltRight} /> {tempDisplay(dailyWeather.maxTemp)}</Col>
                 <Col>
-                  <FontAwesomeIcon icon={faSun} /> {dailyWeather.sunrise}<FontAwesomeIcon icon={faLongArrowAltUp} /> - {dailyWeather.sunset}<FontAwesomeIcon icon={faLongArrowAltDown} />
+                  {tempDisplay(dailyWeather.minTemp)} <FontAwesomeIcon icon={faLongArrowAltRight} />{' '}
+                  {tempDisplay(dailyWeather.maxTemp)}
                 </Col>
-                <Col><span className="font-weight-bold">{precipitation.type}</span> {precipitation.value}</Col>
+                <Col>
+                  <FontAwesomeIcon icon={faSun} /> {dailyWeather.sunrise}
+                  <FontAwesomeIcon icon={faLongArrowAltUp} /> - {dailyWeather.sunset}
+                  <FontAwesomeIcon icon={faLongArrowAltDown} />
+                </Col>
+                <Col>
+                  <span className="font-weight-bold">{precipitation.type}</span> {precipitation.value}
+                </Col>
               </Row>
             </Container>
           </Row>
@@ -167,27 +193,31 @@ class DailyRow extends React.Component {
   }
 }
 
-const getDailyRows = (weeklyWeather) => {
+const DailyRows = ({ weeklyWeather }) => {
   const overallMin = getOverallMinTemp(weeklyWeather);
   const overallMax = getOverallMaxTemp(weeklyWeather);
 
   return weeklyWeather.map((dailyWeather, index) => {
     return (
-      <DailyRow dailyWeather={dailyWeather} index={index} overallMinTemp={overallMin} overallMaxTemp={overallMax} key={`ww-${makeid()}`}/>
+      <DailyRow
+        dailyWeather={dailyWeather}
+        index={index}
+        overallMinTemp={overallMin}
+        overallMaxTemp={overallMax}
+        key={`ww-${makeid()}`}
+      />
     );
   });
 };
 
-class WeeklyForecast extends React.Component {
+export default class WeeklyForecast extends React.Component {
   render() {
     const { weatherData } = this.props;
     const weeklyWeather = weeklyWeatherData(weatherData);
     return (
       <Container className="weeklyForecast" fluid>
-        {getDailyRows(weeklyWeather)}
+        <DailyRows weeklyWeather={weeklyWeather} />
       </Container>
     );
   }
 }
-
-module.exports = WeeklyForecast;

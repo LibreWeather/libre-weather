@@ -1,0 +1,68 @@
+@import '../common/variables.less';
+@import '../common/columns.less';
+
+@overview-mult: 1;
+.overview (@mult) {
+  .overviewBar {
+    padding: calc(@mult * 0.5em) 0 calc(@mult * 0.5em) 0;
+    margin-top: calc(@mult * 2em);
+    line-height: 20px;
+  }
+  .overviewTics {
+    padding: calc(@mult * 0.25em) 0 0 0;
+    -ms-flex: 0 0 calc(@mult * 2em);
+    flex: 0 0 calc(@mult * 2em);
+    div { border-left: 1px solid #999; }
+    .even { height: 5px; }
+    .odd { height: 10px; }
+  }
+  .overviewDetailsRow {
+    margin-left: calc(@mult * -2em);
+    .overviewDetails {
+      padding: 0 0 0 0;
+      -ms-flex: 0 0 calc(@mult * 4em);
+      flex: 0 0 calc(@mult * 4em);
+      text-align: left;
+      .overviewDetailsTime { font-size: calc(@mult * 0.75em); }
+      .overviewDetailsTemp { font-size: calc(@mult * 1.25em); }
+    }
+    .first {
+      margin-left: calc(@mult * -0.5em);
+      margin-right: calc(@mult * -0.5em);
+    }
+  }
+}
+.dailyOverview {
+  font-size: initial;
+  //&.container {
+  //  max-width: 100%;
+  //}
+  .clear {
+    background-color: @clear-bg;
+  }
+  .partlyCloudy {
+    background-color: @partly-cloudy-bg;
+  }
+  .mostlyCloudy {
+    background-color: @mostly-cloudy-bg;
+  }
+  .lightRain {
+    background-color: @light-rain-bg;
+  }
+  .rain {
+    background-color: @rain-bg;
+  }
+  .overview(1);
+  @media (max-width: 400px) {
+    .overview(0.5);
+    .overviewBar {
+      line-height: 1px;
+    }
+  }
+  @media (min-width: 1200px) {
+    .overview(1.25);
+    &.container {
+      max-width: 960px;
+    }
+  }
+}

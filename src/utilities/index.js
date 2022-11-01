@@ -10,3 +10,15 @@ const makeid = () => {
 };
 
 export default makeid;
+
+/**
+ * Get the numeric hours from a timestamp
+ * @param {Date|string|number} timestamp date-resolvable
+ * @returns {string}
+ */
+export const getHourFromTimestamp = (timestamp) => {
+  return new Date(timestamp * 1000)
+    .toLocaleTimeString({}, { hour12: true, hour: 'numeric' })
+    .toLowerCase()
+    .replace(/ /g, '');
+};

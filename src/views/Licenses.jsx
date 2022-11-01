@@ -18,7 +18,7 @@ class Pack extends React.Component {
   }
 }
 
-export default class LicensesView extends React.Component {
+export default class Licenses extends React.Component {
   render() {
     const packs = Array.from(new Set(packages)).map((pack) => <Pack pack={pack} key={`${pack.name}${pack.license}`} />);
     return (

@@ -2,9 +2,20 @@
   justify-content:center;
 }
 
+.v-center {
+  vertical-align: middle;
+}
+
 .constrained {
   max-height: calc(100vh - 250px)!important;
   overflow-y: scroll;
+}
+
+.noclick {
+  pointer-events: none;
+}
+.clicky {
+  pointer-events: auto;
 }
 
 .hide-scroll {
@@ -19,4 +30,18 @@
   & > .row {
     max-width: 90vw;
   }
+}
+
+b {
+  font-weight: 300;
+}
+
+.h3,
+.h2,
+.h1 {
+  font-weight: lighter;
+}
+
+.bolder {
+  font-weight: normal;
 }
