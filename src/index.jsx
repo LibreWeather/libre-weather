@@ -10,6 +10,8 @@ import * as serviceWorker from './resources/serviceWorker';
 import './App.less';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+console.log('init 1');
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
