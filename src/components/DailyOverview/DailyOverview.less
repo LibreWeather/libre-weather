@@ -2,7 +2,8 @@
 @import '../common/columns.less';
 
 @overview-mult: 1;
-.overview (@mult) {
+.overview (@mult, @zoom: 1) {
+  zoom: @zoom;
   .overviewBar {
     padding: calc(@mult * 0.5em) 0 calc(@mult * 0.5em) 0;
     margin-top: calc(@mult * 2em);
@@ -34,9 +35,6 @@
 }
 .dailyOverview {
   font-size: initial;
-  //&.container {
-  //  max-width: 100%;
-  //}
   .clear {
     background-color: @clear-bg;
   }
@@ -54,15 +52,33 @@
   }
   .overview(1);
   @media (max-width: 400px) {
-    .overview(0.5);
+    .overview(1, 0.5);
     .overviewBar {
       line-height: 1px;
     }
+    &.container {
+      max-width: 400px;
+    }
+  }
+  @media (max-width: 1000px) and (min-width: 400px) {
+    .overview(1, 0.75);
+    .overviewBar {
+      line-height: 1px;
+    }
+    &.container {
+      max-width: 1200px;
+    }
   }
   @media (min-width: 1200px) {
-    .overview(1.25);
+    .overview(1, 1.25);
     &.container {
       max-width: 960px;
+    }
+  }
+  @media (min-width: 2400px) {
+    .overview(1, 1.5);
+    &.container {
+      max-width: 1240px;
     }
   }
 }
