@@ -1,0 +1,8 @@
+version: '3.3'
+services:
+  libreweather-frontend:
+    container_name: libreweather_frontend
+    image: libreweather/frontend
+    restart: unless-stopped
+    ports:
+      - '1234:1234'

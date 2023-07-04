@@ -1,0 +1,16 @@
+Dockerfile
+.dockerignore
+.env.development
+.env*
+dist/
+.github/
+.parcel-cache/
+src/tests
+.nvmrc
+.gitattributes
+.gitignore
+docker-compose.yaml
+LICENSE
+jsconfig.json
+Procfile
+README.md
