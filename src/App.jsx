@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './App.less';
 import Navbar from 'react-bootstrap/Navbar';
@@ -80,14 +80,10 @@ class App extends React.Component {
         <div className="App hide-scroll">
           <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} ref={this.navbarRef} />
           <BrowserRouter>
-            <Switch>
-              <Route exact path="/">
-                <Weather weather={weather} />
-              </Route>
-              <Route path="/licenses">
-                <Licenses />
-              </Route>
-            </Switch>
+            <Routes>
+              <Route exact path="/" element={<Weather weather={weather} />} />
+              <Route path="/licenses" element={<Licenses />} />
+            </Routes>
           </BrowserRouter>
         </div>
         <Navbar fixed="bottom" className="noclick">

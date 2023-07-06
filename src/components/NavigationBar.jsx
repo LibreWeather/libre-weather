@@ -116,9 +116,17 @@ export default class NavigationBar extends React.Component {
   }
 
   handleGeoSubmit() {
-    this.setState({ useGeo: true });
-    localStorage.setItem('useGeo', 'true');
-    this.updateLocationFromGeo();
+    const { useGeo } = this.state;
+
+    if (useGeo) {
+      this.setState({ useGeo: false });
+      localStorage.setItem('useGeo', 'false');
+      this.updateLocationFromZip();
+    } else {
+      this.setState({ useGeo: true });
+      localStorage.setItem('useGeo', 'true');
+      this.updateLocationFromGeo();
+    }
   }
 
   handleUnitsChange(event) {
@@ -129,7 +137,7 @@ export default class NavigationBar extends React.Component {
   }
 
   render() {
-    const { locationName, zip, units } = this.state;
+    const { locationName, zip, units, useGeo } = this.state;
 
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -149,7 +157,7 @@ export default class NavigationBar extends React.Component {
           <Form onSubmit={this.handleZipSubmit}>
             <InputGroup>
               <InputGroup.Prepend>
-                <Button variant="outline-secondary" disabled={!navigator.geolocation} onClick={this.handleGeoSubmit}>
+                <Button variant="outline-secondary" disabled={!navigator.geolocation} onClick={this.handleGeoSubmit} active={useGeo}>
                   <FontAwesomeIcon icon={faLocationArrow} />
                 </Button>
               </InputGroup.Prepend>

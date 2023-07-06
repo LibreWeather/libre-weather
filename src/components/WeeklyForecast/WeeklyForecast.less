@@ -8,6 +8,16 @@
   .weeklyForecastRow {
     margin-top: 2em;
 
+    &.open {
+      background-color: @clear-bg;
+      border-radius: 4px;
+      padding-bottom: 0.5em;
+
+      &.open-margin {
+        margin-top: 1em!important;
+      }
+    }
+
     .buttonRow {
       padding-top: 0.5em;
       padding-bottom: 0.3em;
@@ -57,6 +67,16 @@
 
     .displayDrawer {
       margin-top: 1em;
+
+      .daily-low {
+        margin-right: 5px;
+      }
+      .daily-high {
+        margin-left: 5px;
+      }
+      .daily-sunrise, .daily-sunset {
+        margin-right: 3px;
+      }
     }
   }
 
