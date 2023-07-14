@@ -118,7 +118,9 @@ export default class CurrentWeather extends React.Component {
       <Container className="current" fluid>
         <Row className="currentTopBar h6 justify-content-center">
           <Col md="auto">
-            <b>Wind:</b> {currentWeather.windSpeed}{' '}
+            <span className="wind">
+              <b>Wind:</b> {currentWeather.windSpeed}{' '}
+            </span>
             <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: currentWeather.windDeg }} />
           </Col>
           <Col md="auto">

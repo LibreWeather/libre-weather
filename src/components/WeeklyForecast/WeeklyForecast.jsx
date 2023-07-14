@@ -119,6 +119,7 @@ class DailyRow extends React.Component {
     this.state = {
       drawerDisplay: 'none',
       drawerIcon: faPlusCircle,
+      open: false,
     };
 
     this.handleRowClick = this.handleRowClick.bind(this);
@@ -130,18 +131,20 @@ class DailyRow extends React.Component {
       this.setState({
         drawerDisplay: 'block',
         drawerIcon: faMinusCircle,
+        open: true,
       });
     } else {
       this.setState({
         drawerDisplay: 'none',
         drawerIcon: faPlusCircle,
+        open: false,
       });
     }
   }
 
   render() {
     const { dailyWeather, index, overallMinTemp, overallMaxTemp } = this.props;
-    const { drawerDisplay, drawerIcon } = this.state;
+    const { drawerDisplay, drawerIcon, open } = this.state;
 
     const conditionDate = new Date();
     conditionDate.setHours(12);
@@ -150,7 +153,8 @@ class DailyRow extends React.Component {
 
     // TODO the temperature range details need to be updated to include the times (calculated by looking at the hourly data)
     return (
-      <Row className="justify-content-center weeklyForecastRow">
+      <Row
+        className={`justify-content-center weeklyForecastRow ${open ? 'open' : ''} ${index > 0 ? 'open-margin' : ''}`}>
         <Container>
           <Row className="i buttonRow" onClick={this.handleRowClick}>
             <Col className="iconCol">
@@ -173,12 +177,14 @@ class DailyRow extends React.Component {
               <Row className="justify-content-center h3">{dailyWeather.description}</Row>
               <Row>
                 <Col>
-                  {tempDisplay(dailyWeather.minTemp)} <FontAwesomeIcon icon={faLongArrowAltRight} />{' '}
-                  {tempDisplay(dailyWeather.maxTemp)}
+                  <span className="daily-low">{tempDisplay(dailyWeather.minTemp)}</span>{' '}
+                  <FontAwesomeIcon icon={faLongArrowAltRight} />{' '}
+                  <span className="daily-high">{tempDisplay(dailyWeather.maxTemp)}</span>
                 </Col>
                 <Col>
-                  <FontAwesomeIcon icon={faSun} /> {dailyWeather.sunrise}
-                  <FontAwesomeIcon icon={faLongArrowAltUp} /> - {dailyWeather.sunset}
+                  <FontAwesomeIcon icon={faSun} /> <span className="daily-sunrise">{dailyWeather.sunrise}</span>
+                  <FontAwesomeIcon icon={faLongArrowAltUp} /> -{' '}
+                  <span className="daily-sunset">{dailyWeather.sunset}</span>
                   <FontAwesomeIcon icon={faLongArrowAltDown} />
                 </Col>
                 <Col>
