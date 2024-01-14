@@ -5,10 +5,11 @@ import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown';
 
+import { DropdownButton } from 'react-bootstrap';
 import Logo from './Logo';
 
 const DEFAULT_ZIP = '64106';
@@ -16,6 +17,13 @@ const DEFAULT_LOCATION_NAME = 'Kansas City';
 const UNITS = { IMPERIAL: 'IMPERIAL', METRIC: 'METRIC', FREEDOM_UNITS: 'IMPERIAL' };
 
 const logger = console;
+
+const locNameTree = (/** @type {Nominatim.NominatimResponse['address']} */ address) => {
+  const { village, town, city, county, postcode, country } = address;
+  const wrap = (thing) => (thing ? `${thing}, ${country}` : undefined);
+
+  return wrap(village) || wrap(town) || wrap(city) || wrap(county) || postcode;
+};
 
 export default class NavigationBar extends React.Component {
   constructor(props) {
@@ -25,6 +33,8 @@ export default class NavigationBar extends React.Component {
       locationName: localStorage.getItem('locationName') || DEFAULT_LOCATION_NAME,
       units: localStorage.getItem('units') || UNITS.IMPERIAL,
       useGeo: navigator.geolocation && (localStorage.getItem('useGeo') === 'true' || false),
+      locOptions: [],
+      enteredZip: undefined,
     };
 
     this.setNomData = this.setNomData.bind(this);
@@ -46,8 +56,8 @@ export default class NavigationBar extends React.Component {
   }
 
   /**
-   * Update location data from NominatimResonse
-   * @param {NominatimResponse} result nominatim query response
+   * Update location data from NominatimResponse
+   * @param {Nominatim.NominatimResponse} result nominatim query response
    */
   setNomData(result) {
     const { setLatLon } = this.props;
@@ -67,13 +77,13 @@ export default class NavigationBar extends React.Component {
     }
     localStorage.setItem('locationName', locName);
     localStorage.setItem('zip', postcode);
-    this.setState({ locationName: locName, zip: postcode });
+    this.setState({ locationName: locName, zip: postcode, locOptions: [] });
 
     setLatLon(result.lat, result.lon);
   }
 
   handleZipChange(event) {
-    this.setState({ zip: event.target.value });
+    this.setState({ zip: event.target.value, enteredZip: event.target.value });
   }
 
   updateLocationFromZip() {
@@ -83,7 +93,17 @@ export default class NavigationBar extends React.Component {
       postalcode: zip,
     })
       .then((results) => {
-        this.setNomData(results[0]);
+        if (results.length > 1) {
+          this.setState({
+            locOptions: results,
+          });
+        } else {
+          this.setNomData(results[0]);
+          this.setState({
+            enteredZip: undefined,
+            locOptions: [],
+          });
+        }
       })
       .catch(logger.error);
   }
@@ -137,7 +157,7 @@ export default class NavigationBar extends React.Component {
   }
 
   render() {
-    const { locationName, zip, units, useGeo } = this.state;
+    const { locationName, zip, units, useGeo, locOptions, enteredZip } = this.state;
 
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -157,11 +177,36 @@ export default class NavigationBar extends React.Component {
           <Form onSubmit={this.handleZipSubmit}>
             <InputGroup>
               <InputGroup.Prepend>
-                <Button variant="outline-secondary" disabled={!navigator.geolocation} onClick={this.handleGeoSubmit} active={useGeo}>
+                <Button
+                  variant="outline-secondary"
+                  disabled={!navigator.geolocation}
+                  onClick={this.handleGeoSubmit}
+                  active={useGeo}>
                   <FontAwesomeIcon icon={faLocationArrow} />
                 </Button>
+                <DropdownButton
+                  variant="outline-secondary"
+                  title=""
+                  id="location-options"
+                  show={!!locOptions.length && !!enteredZip}>
+                  {locOptions?.map((/** @type {Nominatim.NominatimResponse} */ option) => {
+                    const locName = locNameTree(option.address);
+                    return (
+                      <Dropdown.Item
+                        variant="outline-secondary"
+                        href="#"
+                        key={`location-option--${locName}`}
+                        onClick={() => {
+                          this.setNomData(option);
+                          this.setState({ enteredZip: undefined });
+                        }}>
+                        {locName}
+                      </Dropdown.Item>
+                    );
+                  })}
+                </DropdownButton>
               </InputGroup.Prepend>
-              <FormControl
+              <Form.Control
                 placeholder={zip === DEFAULT_ZIP ? 'ZIP Code' : zip}
                 aria-label="ZIP Code"
                 aria-describedby="basic-addon2"
