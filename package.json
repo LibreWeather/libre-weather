@@ -24,7 +24,7 @@
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^7.2.1",
-    "bootstrap": "^4.5.0",
+    "bootstrap": "^5.0.0",
     "dotenv": "^5.0.1",
     "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.0",
