@@ -4,7 +4,7 @@
   "private": true,
   "license": "AGPL-3.0",
   "dependencies": {
-    "serve": "^14.1.2"
+    "serve": "^14.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
