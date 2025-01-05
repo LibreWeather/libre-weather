@@ -1,4 +1,4 @@
-const makeid = () => {
+export const makeid = () => {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -17,8 +17,7 @@ export default makeid;
  * @returns {string}
  */
 export const getHourFromTimestamp = (timestamp) => {
-  return new Date(timestamp * 1000)
-    .toLocaleTimeString({}, { hour12: true, hour: 'numeric' })
-    .toLowerCase()
-    .replace(/ /g, '');
+  return new Date(timestamp).toLocaleTimeString({}, { hour12: true, hour: 'numeric' }).toLowerCase().replace(/ /g, '');
 };
+
+export * from './formatters';

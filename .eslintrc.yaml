@@ -1,13 +1,26 @@
+parser: '@babel/eslint-parser'
+parserOptions:
+  babelOptions:
+    plugins:
+      - '@babel/plugin-transform-react-jsx'
+settings:
+  import/resolver:
+    alias:
+      map:
+        - - '@components'
+          - ./src/components
+      extensions:
+        - .js
+        - .json
+        - .node
+        - .jsx
+env:
+  browser: true
 extends:
   - airbnb
   - airbnb/hooks
   - 'plugin:prettier/recommended'
   - 'plugin:react/recommended'
-globals:
-  window: readonly
-  localStorage: readonly
-  navigator: readonly
-  document: readonly
 rules:
   valid-jsdoc:
     - error
@@ -45,19 +58,3 @@ rules:
     - devDependencies: true
   max-classes-per-file: 'off'
   react/jsx-one-expression-per-line: 'off'
-parser: '@babel/eslint-parser'
-parserOptions:
-  babelOptions:
-    plugins:
-      - '@babel/plugin-transform-react-jsx'
-settings:
-  import/resolver:
-    alias:
-      map:
-        - - '@components'
-          - ./src/components
-      extensions:
-        - .js
-        - .json
-        - .node
-        - .jsx
