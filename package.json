@@ -67,11 +67,13 @@
     "tobitenno"
   ],
   "engines": {
-    "node": "16.x",
-    "npm": ">=8.11.0"
+    "node": ">20"
   },
   "alias": {
     "@/common/*": "./src/components/common/$1",
     "@components/*": "./src/components/$1"
+  },
+  "overrides": {
+    "axios": "^1"
   }
 }
