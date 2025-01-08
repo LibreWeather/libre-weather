@@ -17,6 +17,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@parcel/babel-preset-env": "^2.13.3",
     "@parcel/packager-raw-url": "^2.8.0",
     "@parcel/transformer-less": "^2.8.0",
     "@parcel/transformer-webmanifest": "^2.8.0",
@@ -25,6 +26,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.0",
+    "buffer": "^6.0.3",
     "dotenv": "^5.0.1",
     "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.0",
@@ -62,143 +64,18 @@
     "build:licenses": "node src/utilities/generateLicenses.js",
     "build:docker": "docker build -t libreweather/frontend:latest ."
   },
-  "prettier": {
-    "tabWidth": 2,
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "semi": true,
-    "quoteProps": "as-needed",
-    "bracketSpacing": true,
-    "jsxBracketSameLine": true,
-    "arrowParens": "always",
-    "printWidth": 120
-  },
-  "eslintIgnore": [
-    ".github/*",
-    "dist/*",
-    "node_modules/*",
-    "app.json",
-    "package.json",
-    "package-lock.json"
-  ],
-  "eslintConfig": {
-    "extends": [
-      "airbnb",
-      "airbnb/hooks",
-      "plugin:prettier/recommended",
-      "plugin:react/recommended"
-    ],
-    "globals": {
-      "window": "readonly",
-      "localStorage": "readonly",
-      "navigator": "readonly"
-    },
-    "rules": {
-      "valid-jsdoc": [
-        "error",
-        {
-          "requireReturn": false,
-          "requireReturnDescription": false,
-          "preferType": {
-            "String": "string",
-            "Number": "number",
-            "Boolean": "boolean",
-            "Function": "function",
-            "object": "Object",
-            "date": "Date",
-            "error": "Error"
-          },
-          "prefer": {
-            "return": "returns"
-          }
-        }
-      ],
-      "no-underscore-dangle": "off",
-      "strict": [
-        "error",
-        "safe"
-      ],
-      "linebreak-style": "off",
-      "no-restricted-syntax": "off",
-      "no-await-in-loop": "off",
-      "global-require": "off",
-      "no-fallthrough": "off",
-      "no-param-reassign": "off",
-      "no-case-declarations": "off",
-      "no-nested-ternary": "off",
-      "react/prefer-stateless-function": "off",
-      "react/prop-types": [
-        0
-      ],
-      "default-case": "off",
-      "react/jsx-closing-bracket-location": "off",
-      "import/no-extraneous-dependencies": [
-        "error",
-        {
-          "devDependencies": true
-        }
-      ],
-      "max-classes-per-file": "off",
-      "react/jsx-one-expression-per-line": "off"
-    },
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-      "babelOptions": {
-        "plugins": [
-          "@babel/plugin-transform-react-jsx"
-        ]
-      }
-    },
-    "settings": {
-      "import/resolver": {
-        "alias": {
-          "map": [
-            [
-              "@components",
-              "./src/components"
-            ]
-          ],
-          "extensions": [
-            ".js",
-            ".json",
-            ".node",
-            ".jsx"
-          ]
-        }
-      }
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "author": "jkuester",
   "contributors": [
     "tobitenno"
   ],
   "engines": {
-    "node": "16.x",
-    "npm": ">=8.11.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-react-jsx"
-    ]
+    "node": ">=20"
   },
   "alias": {
     "@/common/*": "./src/components/common/$1",
     "@components/*": "./src/components/$1"
+  },
+  "overrides": {
+    "axios": "^1"
   }
 }
