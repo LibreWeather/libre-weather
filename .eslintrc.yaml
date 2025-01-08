@@ -1,0 +1,62 @@
+extends:
+  - airbnb
+  - airbnb/hooks
+  - 'plugin:prettier/recommended'
+  - 'plugin:react/recommended'
+globals:
+  window: readonly
+  localStorage: readonly
+  navigator: readonly
+rules:
+  valid-jsdoc:
+    - error
+    - requireReturn: false
+      requireReturnDescription: false
+      preferType:
+        String: string
+        Number: number
+        Boolean: boolean
+        Function: function
+        object: Object
+        date: Date
+        error: Error
+      prefer:
+        return: returns
+  no-underscore-dangle: 'off'
+  strict:
+    - error
+    - safe
+  linebreak-style: 'off'
+  no-restricted-syntax: 'off'
+  no-await-in-loop: 'off'
+  global-require: 'off'
+  no-fallthrough: 'off'
+  no-param-reassign: 'off'
+  no-case-declarations: 'off'
+  no-nested-ternary: 'off'
+  react/prefer-stateless-function: 'off'
+  react/prop-types:
+    - 0
+  default-case: 'off'
+  react/jsx-closing-bracket-location: 'off'
+  import/no-extraneous-dependencies:
+    - error
+    - devDependencies: true
+  max-classes-per-file: 'off'
+  react/jsx-one-expression-per-line: 'off'
+parser: '@babel/eslint-parser'
+parserOptions:
+  babelOptions:
+    plugins:
+      - '@babel/plugin-transform-react-jsx'
+settings:
+  import/resolver:
+    alias:
+      map:
+        - - '@components'
+          - ./src/components
+      extensions:
+        - .js
+        - .json
+        - .node
+        - .jsx
