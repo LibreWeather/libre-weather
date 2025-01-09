@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/LibreWeather/libre-weather/compare/v1.0.1...v1.0.2) (2025-01-09)
+
+
+### Bug Fixes
+
+* dockerfile labels in scope ([1e33cc6](https://github.com/LibreWeather/libre-weather/commit/1e33cc64e69841ce1bbe93e15f1794b4d65d14d7))
+* render failures from axios ([4659716](https://github.com/LibreWeather/libre-weather/commit/465971627f6acffc9da2458c4792823b17dad046))
+
 ## [1.0.1](https://github.com/LibreWeather/libre-weather/compare/v1.0.0...v1.0.1) (2025-01-09)
 
 
