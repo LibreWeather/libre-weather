@@ -75,8 +75,5 @@
     "@/common/*": "./src/components/common/$1",
     "@components/*": "./src/components/$1",
     "@/utilities/*": "./src/utilities/$1"
-  },
-  "overrides": {
-    "axios": "^1"
   }
 }

@@ -12,6 +12,8 @@ plugins:
       dockerPlatform:
         - 'linux/amd64'
         - 'linux/arm64'
+      dockerBuildFlags:
+
   - - '@semantic-release/git'
     - assets:
         - package.json
