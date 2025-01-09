@@ -1,5 +1,3 @@
-/* globals fetch */
-
 /* eslint-disable no-console */
 
 // This optional code is used to register a service worker.
