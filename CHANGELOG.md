@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/LibreWeather/libre-weather/compare/v1.0.0...v1.0.1) (2025-01-09)
+
+
+### Bug Fixes
+
+* don't muck with times ([#42](https://github.com/LibreWeather/libre-weather/issues/42)) ([6d5a3d5](https://github.com/LibreWeather/libre-weather/commit/6d5a3d577fce57e2636b236dde483b8084970f21))
+
 # 1.0.0 (2025-01-08)
 
 
