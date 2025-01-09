@@ -16,14 +16,14 @@ ENV NODE_ENV='production'
 
 RUN npm run build
 
-LABEL org.opencontainers.image.description="LibreWeather Frontend Application"
-LABEL org.opencontainers.image.source=https://github.com/libreweather/libre-weather
-LABEL org.opencontainers.image.licenses=AGPL-3.0
-
 FROM docker.io/node:20-alpine AS run
 RUN npm i -g serve@14.1.2
 COPY --from=build dist/ dist/
 COPY app.sh app.sh
+
+LABEL org.opencontainers.image.description="LibreWeather Frontend Application"
+LABEL org.opencontainers.image.source=https://github.com/libreweather/libre-weather
+LABEL org.opencontainers.image.licenses=AGPL-3.0
 
 CMD ["sh", "app.sh"]
 
