@@ -12,7 +12,7 @@ const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K
 
 const dailyWeather = (data) => ({
   hourly: [].concat(
-    data.map(({ condition, temp, time }) => ({
+    data?.filter(Boolean).map(({ condition, temp, time }) => ({
       condition,
       temp: tempDisplay(temp),
       time,
