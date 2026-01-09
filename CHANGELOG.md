@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/LibreWeather/libre-weather/compare/v1.0.3...v1.0.4) (2026-01-09)
+
+
+### Bug Fixes
+
+* **deps-dev:** bump base-x from 3.0.10 to 3.0.11 ([#43](https://github.com/LibreWeather/libre-weather/issues/43)) ([dd44870](https://github.com/LibreWeather/libre-weather/commit/dd44870b9bdeaf1313d38bf50197665af0908b7d))
+
 ## [1.0.3](https://github.com/LibreWeather/libre-weather/compare/v1.0.2...v1.0.3) (2025-01-10)
 
 
