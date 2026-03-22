@@ -20,7 +20,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "serve": "^14.2.5"
+    "serve": "^14.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
