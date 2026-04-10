@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/LibreWeather/libre-weather/compare/v1.0.4...v1.0.5) (2026-04-10)
+
+
+### Bug Fixes
+
+* **sec:** bump lodash from 4.17.23 to 4.18.1 ([#53](https://github.com/LibreWeather/libre-weather/issues/53)) ([8e86a3c](https://github.com/LibreWeather/libre-weather/commit/8e86a3cba7599a1af6e908b1418149ee5b433544))
+
 ## [1.0.4](https://github.com/LibreWeather/libre-weather/compare/v1.0.3...v1.0.4) (2026-01-09)
 
 
