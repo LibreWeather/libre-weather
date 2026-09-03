@@ -40,7 +40,7 @@
     "@parcel/transformer-less": "^2.8.0",
     "@parcel/transformer-webmanifest": "^2.8.0",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
-    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.6.2",
