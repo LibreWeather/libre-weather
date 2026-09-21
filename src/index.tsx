@@ -8,7 +8,7 @@ import './fonts';
 import './App.less';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

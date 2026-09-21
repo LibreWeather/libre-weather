@@ -2,10 +2,11 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 
 import { timeDisplay, volumeDisplay } from '@/utilities';
-import { DailyRow } from './components/DailyRow';
+import type { Hourly, Temperature, Volume, Weather } from '@/utilities/weatherTypes';
+import { DailyRow, type DailyRowWeather } from './components/DailyRow';
 import './WeeklyForecast.less';
 
-const precipitationData = (rainVolume, snowVolume) => {
+const precipitationData = (rainVolume: Volume, snowVolume: Volume) => {
   if (rainVolume.value == null && snowVolume.value == null) {
     rainVolume.value = 0;
   } else if (snowVolume.value != null && (rainVolume.value == null || snowVolume.value > rainVolume.value)) {
@@ -14,7 +15,7 @@ const precipitationData = (rainVolume, snowVolume) => {
   return { type: 'Rain', value: volumeDisplay(rainVolume) };
 };
 
-const weeklyWeatherData = (data) => {
+const weeklyWeatherData = (data: Weather): DailyRowWeather[] => {
   const { daily } = data;
   return daily.slice(0, 7).map(({ condition, description, rainVolume, snowVolume, sunrise, sunset, temp, time }) => {
     const { max, min } = temp;
@@ -31,7 +32,7 @@ const weeklyWeatherData = (data) => {
   });
 };
 
-const hoursOnDay = (hourly, dayTime) => {
+const hoursOnDay = (hourly: Hourly[] | undefined, dayTime: number) => {
   const day = new Date(dayTime);
   const year = day.getFullYear();
   const month = day.getMonth();
@@ -48,13 +49,13 @@ const hoursOnDay = (hourly, dayTime) => {
   return (hourly || []).filter((hour) => hour.time >= from && hour.time < to);
 };
 
-const getOverallMinTemp = (weeklyWeather) =>
-  Math.min(...weeklyWeather.map((dailyWeather) => dailyWeather.minTemp.value));
+const getOverallMinTemp = (weeklyWeather: DailyRowWeather[]) =>
+  Math.min(...weeklyWeather.map((dailyWeather) => Number(dailyWeather.minTemp.value)));
 
-const getOverallMaxTemp = (weeklyWeather) =>
-  Math.max(...weeklyWeather.map((dailyWeather) => dailyWeather.maxTemp.value));
+const getOverallMaxTemp = (weeklyWeather: DailyRowWeather[]) =>
+  Math.max(...weeklyWeather.map((dailyWeather) => Number(dailyWeather.maxTemp.value)));
 
-const DailyRows = ({ weeklyWeather, hourly }) => {
+const DailyRows = ({ weeklyWeather, hourly }: { weeklyWeather: DailyRowWeather[]; hourly: Hourly[] }) => {
   const overallMin = getOverallMinTemp(weeklyWeather);
   const overallMax = getOverallMaxTemp(weeklyWeather);
 
@@ -71,7 +72,7 @@ const DailyRows = ({ weeklyWeather, hourly }) => {
   });
 };
 
-export default class WeeklyForecast extends React.Component {
+export default class WeeklyForecast extends React.Component<{ weatherData: Weather }> {
   render() {
     const { weatherData } = this.props;
     const weeklyWeather = weeklyWeatherData(weatherData);

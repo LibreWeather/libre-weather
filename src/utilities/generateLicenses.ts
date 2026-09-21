@@ -1,3 +1,4 @@
+// @ts-nocheck
 const licenseList = require('license-list');
 const fs = require('fs');
 const path = require('path');

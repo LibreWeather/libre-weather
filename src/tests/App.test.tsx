@@ -1,8 +1,9 @@
+import dotenv from 'dotenv';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
 
-require('dotenv').config();
+dotenv.config();
 
 test('env is populated', () => expect(process.env.LIBRE_WEATHER_API).not.toBeFalsy());
 

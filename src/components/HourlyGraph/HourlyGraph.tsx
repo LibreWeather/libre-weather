@@ -3,9 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import { getHourFromTimestamp, tempDisplay, volumeDisplay } from '@/utilities';
 import { VIEW_HOURS, TRACK_H, num, extent, polyline, conditionClass } from './graphUtils';
+import {
+  TempUnit,
+  VisibilityUnit,
+  VolumeUnit,
+  WindUnit,
+  type Hourly,
+  type Temperature,
+  type Volume,
+  type WindSpeed,
+} from '@/utilities/weatherTypes';
+import type { ReactNode } from 'react';
 import './HourlyGraph.less';
 
-const round = (value, digits = 0) => {
+const round = (value: number | null | undefined, digits = 0) => {
   if (value == null || !Number.isFinite(value)) {
     return '—';
   }
@@ -13,16 +24,26 @@ const round = (value, digits = 0) => {
   return `${Math.round(value * f) / f}`;
 };
 
-const tempOf = (temp) => (temp ? tempDisplay(temp) : '—');
-const volOf = (volume) => (volume && volume.value != null ? volumeDisplay(volume) : '0');
-const windOf = (wind) => {
+const tempOf = (temp?: Temperature) => (temp ? tempDisplay(temp) : '—');
+const volOf = (volume?: Volume) => (volume && volume.value != null ? volumeDisplay(volume) : '0');
+const windOf = (wind?: WindSpeed | null) => {
   if (!wind || wind.magnitude == null || wind.magnitude === '') {
     return '—';
   }
-  return `${Math.round(num(wind))} ${wind.unit === 'MPH' ? 'mph' : 'm/s'}`;
+  return `${Math.round(num(wind) ?? 0)} ${wind.unit === WindUnit.MPH ? 'mph' : 'm/s'}`;
 };
 
-const Line = ({ points, color, dashed, dotted }) =>
+const Line = ({
+  points,
+  color,
+  dashed,
+  dotted,
+}: {
+  points?: string | null;
+  color: string;
+  dashed?: boolean;
+  dotted?: boolean;
+}) =>
   points ? (
     <polyline
       className={`hourlyGraph-line${dashed ? ' is-dashed' : ''}${dotted ? ' is-dotted' : ''}`}
@@ -30,7 +51,17 @@ const Line = ({ points, color, dashed, dotted }) =>
       stroke={color} />
   ) : null;
 
-const Bars = ({ values, min, max, color }) =>
+const Bars = ({
+  values,
+  min,
+  max,
+  color,
+}: {
+  values: Array<number | null>;
+  min: number;
+  max: number;
+  color: string;
+}) =>
   values.map((value, i) => {
     if (value == null || !Number.isFinite(value) || value <= 0) {
       return null;
@@ -49,7 +80,17 @@ const Bars = ({ values, min, max, color }) =>
     );
   });
 
-const Track = ({ label, range, children, extra }) => (
+const Track = ({
+  label,
+  range,
+  children,
+  extra,
+}: {
+  label: string;
+  range?: string;
+  children?: ReactNode;
+  extra?: ReactNode;
+}) => (
   <div className="hourlyGraph-track">
     <div className="hourlyGraph-label">
       <span>{label}</span>
@@ -60,7 +101,7 @@ const Track = ({ label, range, children, extra }) => (
   </div>
 );
 
-const Plot = ({ children, count }) => (
+const Plot = ({ children, count }: { children?: ReactNode; count: number }) => (
   <svg className="hourlyGraph-plot" preserveAspectRatio="none" viewBox={`0 0 ${count} ${TRACK_H}`}>
     {children}
   </svg>
@@ -69,10 +110,10 @@ const Plot = ({ children, count }) => (
 /**
  * @param {{ heading?: string, hourly: import('@/utilities/weatherTypes').Hourly[] }} props
  */
-const HourlyGraph = ({ heading, hourly }) => {
+const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }) => {
   const hours = useMemo(() => (hourly || []).filter(Boolean), [hourly]);
-  const scroller = useRef(null);
-  const drag = useRef(null);
+  const scroller = useRef<HTMLDivElement | null>(null);
+  const drag = useRef<{ id: number; x: number; scroll: number } | null>(null);
   const [hover, setHover] = useState(0);
 
   const chart = useMemo(() => {
@@ -142,11 +183,15 @@ const HourlyGraph = ({ heading, hourly }) => {
 
   const active = hours[hover] || hours[0];
   const unit = hours.find((h) => h.temp?.unit)?.temp.unit;
-  const tempUnit = unit === 'K' ? 'K' : '˚';
-  const precipUnit = active?.precipVolume?.unit === 'IN' ? 'in' : 'mm';
-  const visUnit = active?.visibility?.unit === 'MI' ? 'mi' : active?.visibility?.unit === '%' ? '%' : 'm';
+  const tempUnit = unit === TempUnit.K ? 'K' : '˚';
+  const precipUnit = active?.precipVolume?.unit === VolumeUnit.IN ? 'in' : 'mm';
+  const visUnit = active?.visibility?.unit === VisibilityUnit.MI ?
+    'mi' :
+    active?.visibility?.unit === VisibilityUnit.Percent ?
+      '%' :
+      'm';
 
-  const onPointerDown = (event) => {
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'touch') {
       return;
     }
@@ -158,7 +203,7 @@ const HourlyGraph = ({ heading, hourly }) => {
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const onPointerMove = (event) => {
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!drag.current || drag.current.id !== event.pointerId || !scroller.current) {
       return;
     }
@@ -173,7 +218,7 @@ const HourlyGraph = ({ heading, hourly }) => {
     <section
       aria-label={`Hourly forecast, ${VIEW_HOURS} hour window`}
       className="hourlyGraph"
-      style={{ '--hours': chart.count, '--view-hours': VIEW_HOURS }}>
+      style={{ ['--hours' as string]: chart.count, ['--view-hours' as string]: VIEW_HOURS } as React.CSSProperties}>
       <div className="hourlyGraph-head">
         <span>{heading || `${VIEW_HOURS} hour window`}</span>
         <span className="hourlyGraph-hint">scroll →</span>
@@ -208,7 +253,7 @@ const HourlyGraph = ({ heading, hourly }) => {
               <Line color="#9fd3ff" points={chart.precipLine} />
             </Plot>
           </Track>
-          <Track label="Wind" range={`${round(chart.windExt[1])} ${active?.windspeed?.unit === 'MPH' ? 'mph' : 'm/s'}`}>
+          <Track label="Wind" range={`${round(chart.windExt[1])} ${active?.windspeed?.unit === WindUnit.MPH ? 'mph' : 'm/s'}`}>
             <Plot count={chart.count}>
               <Line color="#d7c4a8" dashed points={chart.gustLine} />
               <Line color="#c5d0de" points={chart.windLine} />
@@ -278,7 +323,7 @@ const HourlyGraph = ({ heading, hourly }) => {
             Humidity {round(num(active.humidity))}% · clouds {round(num(active.cloudCover))}%
           </span>
           <span>
-            UV {round(num(active.uvIndex), 1)} · sun {round(num(active.sunshineDuration) / 36)}%
+            UV {round(num(active.uvIndex), 1)} · sun {round((num(active.sunshineDuration) ?? 0) / 36)}%
           </span>
           <span>
             {round(num(active.pressure))} mb · vis {round(num(active.visibility), 1)} {visUnit}
