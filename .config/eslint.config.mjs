@@ -116,6 +116,16 @@ export default [
       },
     },
   },
+  {
+    files: ['cypress/**/*.{js,jsx}', 'cypress.config.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: {
+        ...globals.mocha,
+        ...globals.cypress,
+      },
+    },
+  },
   ...jsonc.configs['flat/recommended-with-json'],
   ...yml.configs['flat/recommended'],
   {
