@@ -1,0 +1,222 @@
+@import '../common/variables.less';
+
+.hourlyGraph {
+  --view-hours: 8;
+  width: 100%;
+  min-width: 0;
+  margin: 0.85rem 0 0;
+  font-size: 0.75rem;
+  color: @default-font-color;
+}
+
+.hourlyGraph-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+.hourlyGraph-hint {
+  opacity: 0.55;
+}
+
+.hourlyGraph-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  min-width: 0;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+  cursor: grab;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.28);
+    border-radius: 99px;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.hourlyGraph-pane {
+  position: relative;
+  width: calc(100% * var(--hours) / var(--view-hours));
+  min-width: 100%;
+}
+
+.hourlyGraph-ribbon,
+.hourlyGraph-times,
+.hourlyGraph-windDirs,
+.hourlyGraph-hits {
+  display: grid;
+  grid-template-columns: repeat(var(--hours), minmax(0, 1fr));
+}
+
+.hourlyGraph-ribbon {
+  height: 0.55rem;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.hourlyGraph-ribbon-cell {
+  min-width: 0;
+  scroll-snap-align: start;
+
+  &.clear {
+    background-color: @clear-bg;
+  }
+  &.partlyCloudy {
+    background-color: @partly-cloudy-bg;
+  }
+  &.mostlyCloudy {
+    background-color: @mostly-cloudy-bg;
+  }
+  &.rain {
+    background-color: @rain-bg;
+  }
+}
+
+.hourlyGraph-track {
+  position: relative;
+  height: 52px;
+  margin-top: 0.15rem;
+}
+
+.hourlyGraph-label {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 4.4rem;
+  height: 100%;
+  padding: 0 0.35rem 0 0;
+  background: linear-gradient(90deg, @default-bg 72%, fade(@default-bg, 0));
+  pointer-events: none;
+  font-size: 0.68rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.hourlyGraph-range {
+  opacity: 0.55;
+  font-size: 0.62rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.hourlyGraph-plot {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hourlyGraph-line {
+  fill: none;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.hourlyGraph-line.is-dashed {
+  stroke-dasharray: 4 3;
+}
+
+.hourlyGraph-line.is-dotted {
+  stroke-dasharray: 1.5 3;
+}
+
+.hourlyGraph-bar {
+  opacity: 0.85;
+}
+
+.hourlyGraph-windDirs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hourlyGraph-windDir {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.15rem;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.hourlyGraph-times {
+  margin-top: 0.2rem;
+}
+
+.hourlyGraph-time {
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  font-size: 0.68rem;
+  opacity: 0.7;
+  scroll-snap-align: start;
+}
+
+.hourlyGraph-hits {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.hourlyGraph-hit {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: inherit;
+
+  &:hover,
+  &.is-active {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.hourlyGraph-tip {
+  margin-top: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 4px;
+  background: fade(#1b1e24, 85%);
+  line-height: 1.35;
+}
+
+.hourlyGraph-tip-title {
+  margin-bottom: 0.15rem;
+  font-size: 0.8rem;
+}
+
+.hourlyGraph-tip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.1rem 0.85rem;
+}
+
+@media (max-width: @phone-max) {
+  .hourlyGraph-label {
+    width: 3.4rem;
+    font-size: 0.62rem;
+  }
+
+  .hourlyGraph-tip-grid {
+    grid-template-columns: 1fr;
+  }
+}
