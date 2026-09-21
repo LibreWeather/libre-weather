@@ -12,6 +12,15 @@ jobs:
           fix: 'false'
           verify: 'true'
           config: .config/pinact.yaml
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Build image
+        run: docker build -t libreweather/frontend:ci .
   lint:
     name: Lint
     runs-on: ubuntu-latest
