@@ -37,3 +37,33 @@ jobs:
       - name: Run linters
         run: npm run lint
       - run: npx commitlint --config .config/commitlint.config.mjs --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+  e2e:
+    name: Cypress
+    runs-on: ubuntu-latest
+    env:
+      LIBRE_WEATHER_API: http://localhost:3000/weather
+      CYPRESS_BASE_URL: http://localhost:1234
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install Dependencies
+        run: npm ci
+      - name: Start Parcel
+        run: npm start -- --port 1234 &
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:1234 >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Parcel did not start'
+          exit 1
+      - name: Run Cypress
+        run: npm run test:e2e
