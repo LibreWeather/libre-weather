@@ -39,109 +39,60 @@ const currentWeatherData = (data) => ({
 });
 
 export default class CurrentWeather extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      width: window.innerWidth,
-    };
-    this.handleResize = () => {
-      this.setState({ width: window.innerWidth });
-    };
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
   render() {
-    const { width } = this.state;
     const { weatherData } = this.props;
-
     const currentWeather = currentWeatherData(weatherData);
-    const TempSummary = () => {
-      return currentWeather.summary?.length ? (
-        <Row className={`h1 bolder ${width < 400 ? 'justify-content-center' : ''}`}>
-          {currentWeather.temp} {currentWeather.summary}.
-        </Row>
-      ) : (
-        <Row className={`h1 bolder ${width < 400 ? 'justify-content-center' : ''}`}>{currentWeather.temp}</Row>
-      );
-    };
     const description = currentWeather.description ? (
       <Row className="justify-content-center h2">{currentWeather.description}.</Row>
     ) : null;
 
-    const IconCol = () => (
-      <Col md="auto">
-        <WeatherIcon condition={currentWeather.conditionIcon} sizePx={70} time={null} animate />
-      </Col>
-    );
-    const SummaryCol = () => (
-      <Col md="auto">
-        <TempSummary />
-        <Row className="h6 currentBottomBar">
-          <Col md="auto" className="currentFeelsLike">
-            <b>Feels Like:</b> {currentWeather.tempFeelsLike}
-          </Col>
-          <Col md="auto">
-            <b>Low:</b> {currentWeather.tempMin}
-          </Col>
-          <Col md="auto">
-            <b>High:</b> {currentWeather.tempMax}
-          </Col>
-        </Row>
-      </Col>
-    );
-    const Summary = () => {
-      return width < 400 ? (
-        <div>
-          <Row className="h1 justify-content-center">
-            <IconCol />
-          </Row>
-          <Row className="h1 justify-content-center">
-            <SummaryCol />
-          </Row>
-        </div>
-      ) : (
-        <Row className="h1 justify-content-center">
-          <IconCol />
-          <SummaryCol />
-        </Row>
-      );
-    };
-
     return (
       <Container className="current" fluid>
         <Row className="currentTopBar h6 justify-content-center">
-          <Col md="auto">
+          <Col xs="auto">
             <span className="wind">
               <b>Wind:</b> {currentWeather.windSpeed}{' '}
             </span>
             <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: currentWeather.windDeg }} />
           </Col>
-          <Col md="auto">
+          <Col xs="auto">
             <b>Humidity:</b> {currentWeather.humidity}%
           </Col>
-          <Col md="auto">
+          <Col xs="auto">
             <b>Dew Pt:</b> {currentWeather.dewPoint}
           </Col>
           {currentWeather.uvIndex ? (
-            <Col md="auto">
+            <Col xs="auto">
               <b>UV Index:</b> {currentWeather.uvIndex}
             </Col>
           ) : null}
-          <Col md="auto">
+          <Col xs="auto">
             <b>Visibility:</b> {currentWeather.visibility}
           </Col>
-          <Col md="auto">
+          <Col xs="auto">
             <b>Pressure:</b> {currentWeather.pressure}
           </Col>
         </Row>
-        <Summary />
+        <div className="currentHero">
+          <WeatherIcon condition={currentWeather.conditionIcon} sizePx={70} time={null} animate />
+          <div className="currentSummary">
+            <div className="currentTemp h1 bolder">
+              {currentWeather.temp}
+              {currentWeather.summary?.length ? ` ${currentWeather.summary}.` : ''}
+            </div>
+            <div className="currentMeta h6">
+              <span>
+                <b>Feels Like:</b> {currentWeather.tempFeelsLike}
+              </span>
+              <span>
+                <b>Low:</b> {currentWeather.tempMin}
+              </span>
+              <span>
+                <b>High:</b> {currentWeather.tempMax}
+              </span>
+            </div>
+          </div>
+        </div>
         {description}
       </Container>
     );
