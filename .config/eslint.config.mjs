@@ -1,3 +1,4 @@
+import tseslint from 'typescript-eslint';
 import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import { importX } from 'eslint-plugin-import-x';
@@ -32,7 +33,7 @@ export default [
     ],
   },
   {
-    files: ['**/*.{js,jsx,mjs,cjs}'],
+    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
     ...js.configs.recommended,
     languageOptions: {
       ecmaVersion: 'latest',
@@ -41,6 +42,7 @@ export default [
         ...globals.browser,
         ...globals.node,
       },
+      parser: tseslint.parser,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -51,11 +53,12 @@ export default [
       '@stylistic': stylistic,
       'import-x': importX,
       'react-hooks': reactHooks,
+      '@typescript-eslint': tseslint.plugin,
     },
     settings: {
       'import-x/resolver': {
         node: {
-          extensions: ['.js', '.jsx', '.json'],
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
         },
       },
     },
@@ -81,7 +84,7 @@ export default [
           functions: 'never',
         },
       ],
-      'no-underscore-dangle': 'off',
+      'no-undef': 'off',
       strict: ['error', 'safe'],
       'no-restricted-syntax': 'off',
       'no-await-in-loop': 'off',
@@ -109,7 +112,7 @@ export default [
     },
   },
   {
-    files: ['src/tests/**/*.{js,jsx}'],
+    files: ['src/tests/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       globals: {
         ...globals.jest,

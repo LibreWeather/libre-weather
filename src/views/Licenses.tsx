@@ -6,7 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMugHot, faCode } from '@fortawesome/free-solid-svg-icons';
 import packages from '../assets/packages.json';
 
-class Pack extends React.Component {
+type PackInfo = { name: string; license: string };
+
+class Pack extends React.Component<{ pack: PackInfo }> {
   render() {
     const { pack } = this.props;
     const bit = `${pack.name} : ${pack.license}`;
@@ -20,7 +22,7 @@ class Pack extends React.Component {
 
 export default class Licenses extends React.Component {
   render() {
-    const packs = Array.from(new Set(packages)).map((pack) => <Pack pack={pack} key={`${pack.name}${pack.license}`} />);
+    const packs = (packages as PackInfo[]).map((pack) => <Pack pack={pack} key={`${pack.name}${pack.license}`} />);
     return (
       <header className="header">
         <div>
