@@ -1,16 +1,21 @@
 import React from 'react';
-import * as Nominatim from '@/utilities/nominatim';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faOsi } from '@fortawesome/free-brands-svg-icons';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import { DropdownButton } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { geocode, reverseGeocode } from '../utilities/nominatim';
 import Logo from './Logo';
+
+import './NavigationBar.less';
 
 const DEFAULT_ZIP = '64106';
 const DEFAULT_LOCATION_NAME = 'Kansas City';
@@ -18,7 +23,7 @@ const UNITS = { IMPERIAL: 'IMPERIAL', METRIC: 'METRIC', FREEDOM_UNITS: 'IMPERIAL
 
 const logger = console;
 
-const locNameTree = (/** @type {Nominatim.NominatimResponse['address']} */ address) => {
+const locNameTree = (/** @type {import('../utilities/nominatim').NominatimAddress} */ address) => {
   const { village, town, city, county, postcode, country } = address;
   const wrap = (thing) => (thing ? `${thing}, ${country}` : undefined);
 
@@ -57,7 +62,7 @@ export default class NavigationBar extends React.Component {
 
   /**
    * Update location data from NominatimResponse
-   * @param {Nominatim.NominatimResponse} result nominatim query response
+   * @param {import('../utilities/nominatim').NominatimResponse} result nominatim query response
    */
   setNomData(result) {
     const { setLatLon } = this.props;
@@ -88,7 +93,7 @@ export default class NavigationBar extends React.Component {
 
   updateLocationFromZip() {
     const { zip } = this.state;
-    Nominatim.geocode({
+    geocode({
       addressdetails: true,
       postalcode: zip,
     })
@@ -123,7 +128,7 @@ export default class NavigationBar extends React.Component {
       navigator.geolocation.getCurrentPosition(
         // Called if success
         ({ coords }) => {
-          Nominatim.reverseGeocode({
+          reverseGeocode({
             lat: coords.latitude,
             lon: coords.longitude,
             addressdetails: true,
@@ -160,23 +165,32 @@ export default class NavigationBar extends React.Component {
     const { locationName, zip, units, useGeo, locOptions, enteredZip } = this.state;
 
     return (
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Navbar.Brand href="/">
-          <Logo width="30" height="30" className="d-inline-block align-top" alt="Libre Weather" />
-        </Navbar.Brand>
-        <Navbar.Brand href="/" className="py-0">
-          Libre Weather
-        </Navbar.Brand>
+      <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="app-navbar">
+        <div className="app-brand">
+          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 py-0">
+            <Logo width="30" height="30" className="d-inline-block" alt="Libre Weather" />
+            <span>Libre Weather</span>
+          </Navbar.Brand>
+          <Nav className="app-brand-links flex-row">
+            <Nav.Link as={Link} to="/licenses" aria-label="Licenses">
+              <FontAwesomeIcon icon={faOsi} />
+            </Nav.Link>
+            <Nav.Link
+              aria-label="GitHub"
+              href="https://github.com/LibreWeather/libre-weather"
+              rel="noreferrer"
+              target="_blank">
+              <FontAwesomeIcon icon={faGithub} />
+            </Nav.Link>
+          </Nav>
+        </div>
 
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-          <Navbar.Text id="locationName" className="py-0">
-            {locationName}
-          </Navbar.Text>
-          <Form onSubmit={this.handleZipSubmit}>
-            <InputGroup>
-              <InputGroup.Prepend>
+        <Navbar.Collapse id="basic-navbar-nav">
+          <div className="app-settings">
+            <Form className="app-settings-location" onSubmit={this.handleZipSubmit}>
+              <InputGroup>
                 <Button
                   variant="outline-secondary"
                   disabled={!navigator.geolocation}
@@ -184,46 +198,54 @@ export default class NavigationBar extends React.Component {
                   active={useGeo}>
                   <FontAwesomeIcon icon={faLocationArrow} />
                 </Button>
-                <DropdownButton
-                  variant="outline-secondary"
-                  title=""
-                  id="location-options"
-                  show={!!locOptions.length && !!enteredZip}>
-                  {locOptions?.map((/** @type {Nominatim.NominatimResponse} */ option) => {
-                    const locName = locNameTree(option.address);
-                    return (
-                      <Dropdown.Item
-                        variant="outline-secondary"
-                        href="#"
-                        key={`location-option--${locName}`}
-                        onClick={() => {
-                          this.setNomData(option);
-                          this.setState({ enteredZip: undefined });
-                        }}>
-                        {locName}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-              </InputGroup.Prepend>
-              <Form.Control
-                placeholder={zip === DEFAULT_ZIP ? 'ZIP Code' : zip}
-                aria-label="ZIP Code"
-                aria-describedby="basic-addon2"
-                type="number"
-                onChange={this.handleZipChange} />
-              <InputGroup.Append>
+                {locOptions.length ? (
+                  <DropdownButton
+                    variant="outline-secondary"
+                    title=""
+                    id="location-options"
+                    show={!!enteredZip}>
+                    {locOptions.map((/** @type {import('../utilities/nominatim').NominatimResponse} */ option) => {
+                      const locName = locNameTree(option.address);
+                      return (
+                        <Dropdown.Item
+                          variant="outline-secondary"
+                          href="#"
+                          key={`location-option--${locName}`}
+                          onClick={() => {
+                            this.setNomData(option);
+                            this.setState({ enteredZip: undefined });
+                          }}>
+                          {locName}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </DropdownButton>
+                ) : null}
+                <InputGroup.Text id="locationName" className="app-settings-place">
+                  {locationName}
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder={zip === DEFAULT_ZIP ? 'ZIP Code' : zip}
+                  aria-label="ZIP Code"
+                  aria-describedby="locationName"
+                  type="number"
+                  onChange={this.handleZipChange} />
                 <Button variant="outline-secondary" type="submit">
                   <FontAwesomeIcon icon={faSearch} />
                 </Button>
-              </InputGroup.Append>
-            </InputGroup>
-          </Form>
-          <Navbar.Text className="py-0">˚F</Navbar.Text>
-          <Form>
-            <Form.Switch id="custom-switch" label="" onChange={this.handleUnitsChange} checked={units === 'METRIC'} />
-          </Form>
-          <Navbar.Text className="py-0">˚C</Navbar.Text>
+              </InputGroup>
+            </Form>
+            <div className="app-settings-units">
+              <span>˚F</span>
+              <Form.Switch
+                id="custom-switch"
+                className="app-units-switch"
+                label=""
+                onChange={this.handleUnitsChange}
+                checked={units === 'METRIC'} />
+              <span>˚C</span>
+            </div>
+          </div>
         </Navbar.Collapse>
       </Navbar>
     );

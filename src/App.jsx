@@ -3,11 +3,6 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './App.less';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faOsi } from '@fortawesome/free-brands-svg-icons';
 
 import DEFAULT_WEATHER_DATA from './resources/defaultWeatherData.json';
 import CurrentDayContext from './utilities/CurrentDayContext';
@@ -42,6 +37,9 @@ class App extends React.Component {
   }
 
   setWeather(lat, lon, units) {
+    if (!LIBRE_WEATHER_API_ROOT) {
+      return;
+    }
     window
       .fetch(`${LIBRE_WEATHER_API_ROOT}/${lat},${lon}/unit/${units}`, {
         headers: {
@@ -50,7 +48,6 @@ class App extends React.Component {
       })
       .then((res) => res.json())
       .then((weather) => this.setState({ weather }))
-
       .catch(console.error);
   }
 
@@ -77,23 +74,15 @@ class App extends React.Component {
 
     return (
       <CurrentDayContext.Provider value={currentDayData}>
-        <div className="App hide-scroll">
-          <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} ref={this.navbarRef} />
-          <BrowserRouter>
+        <BrowserRouter>
+          <div className="App hide-scroll">
+            <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
             <Routes>
-              <Route exact path="/" element={<Weather weather={weather} />} />
+              <Route path="/" element={<Weather weather={weather} />} />
               <Route path="/licenses" element={<Licenses />} />
             </Routes>
-          </BrowserRouter>
-        </div>
-        <Navbar fixed="bottom" className="noclick">
-          <Nav.Link href="/licenses" className="clicky">
-            <FontAwesomeIcon icon={faOsi} />
-          </Nav.Link>
-          <Nav.Link href="https://github.com/LibreWeather/libre-weather" target="_blank" className="clicky">
-            <FontAwesomeIcon icon={faGithub} />
-          </Nav.Link>
-        </Navbar>
+          </div>
+        </BrowserRouter>
       </CurrentDayContext.Provider>
     );
   }
