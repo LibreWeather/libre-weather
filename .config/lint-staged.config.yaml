@@ -1,0 +1,8 @@
+'*.{js,jsx,mjs,cjs}':
+  - eslint --config .config/eslint.config.mjs --cache --fix
+'*.{json,yml,yaml}':
+  - eslint --config .config/eslint.config.mjs --cache --fix
+package.json:
+  - eslint --config .config/eslint.config.mjs --cache --fix
+  - npm dedupe
+  - npx sort-package-json
