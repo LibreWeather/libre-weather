@@ -1,3 +1,5 @@
+import { Condition } from '@/utilities/weatherTypes';
+
 export const VIEW_HOURS = 8;
 export const TRACK_H = 52;
 
@@ -5,30 +7,29 @@ export const TRACK_H = 52;
  * @param {unknown} value
  * @returns {number|null}
  */
-export const num = (value) => {
+export const num = (value: unknown): number | null => {
   if (value == null || value === '') {
     return null;
   }
   if (typeof value === 'object') {
-    const raw = value.value ?? value.magnitude;
+    const raw = (value as { value?: unknown; magnitude?: unknown }).value ??
+      (value as { magnitude?: unknown }).magnitude;
     if (raw == null || raw === '') {
       return null;
     }
-    const parsed = Number.parseFloat(raw);
+    const parsed = Number.parseFloat(String(raw));
     return Number.isFinite(parsed) ? parsed : null;
   }
-  const parsed = Number.parseFloat(value);
+  const parsed = Number.parseFloat(String(value));
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-/**
- * @param {Array<number|null|undefined>} values
- * @param {number} [pad]
- * @param {[number, number]} [fallback]
- * @returns {[number, number]}
- */
-export const extent = (values, pad = 0, fallback = [0, 1]) => {
-  const xs = values.filter((value) => value != null && Number.isFinite(value));
+export const extent = (
+  values: Array<number | null | undefined>,
+  pad = 0,
+  fallback: [number, number] = [0, 1]
+): [number, number] => {
+  const xs = values.filter((value): value is number => value != null && Number.isFinite(value));
   if (!xs.length) {
     return fallback;
   }
@@ -50,7 +51,7 @@ export const extent = (values, pad = 0, fallback = [0, 1]) => {
  * @param {number} [margin]
  * @returns {number}
  */
-export const scaleY = (value, min, max, height, margin = 4) => {
+export const scaleY = (value: number | null, min: number, max: number, height: number, margin = 4) => {
   if (value == null || !Number.isFinite(value) || max === min) {
     return height / 2;
   }
@@ -65,7 +66,7 @@ export const scaleY = (value, min, max, height, margin = 4) => {
  * @param {number} height
  * @returns {string}
  */
-export const polyline = (values, min, max, height) =>
+export const polyline = (values: Array<number | null>, min: number, max: number, height: number) =>
   values
     .map((value, i) =>
       value == null || !Number.isFinite(value) ? null : `${i + 0.5},${scaleY(value, min, max, height)}`
@@ -73,16 +74,16 @@ export const polyline = (values, min, max, height) =>
     .filter(Boolean)
     .join(' ');
 
-export const conditionClass = (condition) => {
+export const conditionClass = (condition: Condition) => {
   switch (condition) {
-    case 'RAIN':
-    case 'SNOW':
-    case 'SLEET':
+    case Condition.RAIN:
+    case Condition.SNOW:
+    case Condition.SLEET:
       return 'rain';
-    case 'PARTLY_CLOUDY':
+    case Condition.PARTLY_CLOUDY:
       return 'partlyCloudy';
-    case 'CLOUDY':
-    case 'FOG':
+    case Condition.CLOUDY:
+    case Condition.FOG:
       return 'mostlyCloudy';
     default:
       return 'clear';
@@ -98,7 +99,13 @@ export const conditionClass = (condition) => {
  * @param {number} scrollLeft
  * @returns {number}
  */
-export const hourIndexAt = (clientX, rect, hourCount, viewHours, scrollLeft) => {
+export const hourIndexAt = (
+  clientX: number,
+  rect: Pick<DOMRect, 'left' | 'width'>,
+  hourCount: number,
+  viewHours: number,
+  scrollLeft: number
+) => {
   const paneWidth = rect.width * (hourCount / viewHours);
   const x = ((clientX - rect.left) / rect.width) * paneWidth + scrollLeft;
   const col = Math.floor((x / paneWidth) * hourCount);

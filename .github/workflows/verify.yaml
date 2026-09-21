@@ -36,6 +36,8 @@ jobs:
         run: npm ci
       - name: Run linters
         run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
       - run: npx commitlint --config .config/commitlint.config.mjs --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
   e2e:
     name: Cypress
