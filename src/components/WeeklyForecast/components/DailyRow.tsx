@@ -14,10 +14,36 @@ import { WeatherIcon } from '@components/WeatherIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { tempDisplay, getDayOfTheWeek } from '@/utilities';
 import HourlyGraph from '@components/HourlyGraph/HourlyGraph';
+import { Condition, type Hourly, type Temperature } from '@/utilities/weatherTypes';
 import { TempRangeCol } from './TempRangeCol';
 
-export class DailyRow extends React.Component {
-  constructor(props) {
+export type DailyRowWeather = {
+  condition: Condition;
+  description: string;
+  minTemp: Temperature;
+  maxTemp: Temperature;
+  precipitation: { type: string; value: string };
+  sunrise: string;
+  sunset: string;
+  time: number;
+};
+
+type DailyRowProps = {
+  dailyWeather: DailyRowWeather;
+  hourly: Hourly[];
+  index: number;
+  overallMinTemp: number;
+  overallMaxTemp: number;
+};
+
+type DailyRowState = {
+  drawerDisplay: 'none' | 'block';
+  drawerIcon: typeof faPlusCircle;
+  open: boolean;
+};
+
+export class DailyRow extends React.Component<DailyRowProps, DailyRowState> {
+  constructor(props: DailyRowProps) {
     super(props);
 
     this.state = {

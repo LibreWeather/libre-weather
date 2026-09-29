@@ -7,9 +7,10 @@ process.env.LIBRE_WEATHER_API ??= 'https://example.test/weather';
 
 if (typeof window !== 'undefined') {
   window.fetch = () => Promise.reject(new Error('offline'));
-  window.matchMedia ??= (query) => ({
+  window.matchMedia ??= ((query: string) => ({
     matches: false,
     media: query,
+    onchange: null,
     addEventListener() {},
     removeEventListener() {},
     addListener() {},
@@ -17,9 +18,9 @@ if (typeof window !== 'undefined') {
     dispatchEvent() {
       return false;
     },
-  });
-  HTMLCanvasElement.prototype.getContext = () => ({
-    canvas: {},
+  })) as unknown as typeof window.matchMedia;
+  HTMLCanvasElement.prototype.getContext = (() => ({
+    canvas: { width: 64, height: 64 },
     fillRect() {},
     clearRect() {},
     getImageData() {
@@ -50,5 +51,5 @@ if (typeof window !== 'undefined') {
     transform() {},
     rect() {},
     clip() {},
-  });
+  })) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 }
