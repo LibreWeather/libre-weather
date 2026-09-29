@@ -2,11 +2,10 @@
 
 .weeklyForecast {
   font-size: initial;
-  max-width: 48em;
   margin-top: 2em;
 
   .weeklyForecastRow {
-    margin-top: 2em;
+    margin-top: 1.25em;
 
     &.open {
       background-color: @clear-bg;
@@ -14,7 +13,7 @@
       padding-bottom: 0.5em;
 
       &.open-margin {
-        margin-top: 1em!important;
+        margin-top: 1em !important;
       }
     }
 
@@ -32,37 +31,60 @@
     .iconCol {
       padding: 0;
       margin: 0;
+      flex: 0 0 auto;
     }
 
     .forecastDayCol {
       font-size: initial;
-      font-weight: 900 !important;
+      font-weight: 700 !important;
+      white-space: nowrap;
+      flex: 0 0 auto;
     }
 
     .tempRangeCol {
       font-size: initial;
-      -ms-flex: 0 0 40em;
-      flex: 0 0 40em;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
 
-      .minCol {
-        text-align: right;
-        padding: 0;
-      }
+    .tempRange {
+      display: grid;
+      grid-template-columns: 2.75rem minmax(2.5rem, 1fr) 2.75rem;
+      align-items: center;
+      column-gap: 0.4rem;
+      min-width: 0;
+      width: 100%;
+    }
 
-      .barCol {
-        background-color: #3c4144;
-        border-radius: 1em;
-        margin-left: 0.25em;
-        margin-right: -0.5em;
-      }
+    .tempRange-min {
+      text-align: right;
+      white-space: nowrap;
+    }
 
-      .maxCol {
-        text-align: left;
-      }
+    .tempRange-max {
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .tempRange-track {
+      position: relative;
+      height: 0.65rem;
+      min-width: 0;
+      background-color: #3c4144;
+      border-radius: 1em;
+    }
+
+    .tempRange-bar {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background-color: #6c7a84;
+      border-radius: 1em;
     }
 
     .toggleCol {
       padding: 0;
+      flex: 0 0 auto;
     }
 
     .displayDrawer {
@@ -74,24 +96,32 @@
       .daily-high {
         margin-left: 5px;
       }
-      .daily-sunrise, .daily-sunset {
+      .daily-sunrise,
+      .daily-sunset {
         margin-right: 3px;
       }
     }
   }
 
-  @media (max-width: 400px ) {
+  @media (max-width: @phone-max) {
+    margin-top: 1em;
+
     .weeklyForecastRow {
-      margin-top: 0.5em;
-      .tempRangeCol {
-        -ms-flex: 0 0 4em;
-        flex: 0 0 4em;
-        .row {
-          flex-wrap: nowrap;
-        }
-      }
+      margin-top: 0.4em;
+
       .buttonRow {
-        flex-wrap: nowrap;
+        padding-top: 0.35em;
+        padding-bottom: 0.2em;
+      }
+
+      .tempRange {
+        grid-template-columns: 2.25rem minmax(1.5rem, 1fr) 2.25rem;
+        column-gap: 0.25rem;
+        font-size: 0.9em;
+      }
+
+      .tempRange-track {
+        height: 0.5rem;
       }
     }
   }

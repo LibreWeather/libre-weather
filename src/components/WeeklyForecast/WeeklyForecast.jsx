@@ -58,7 +58,7 @@ export default class WeeklyForecast extends React.Component {
     const { weatherData } = this.props;
     const weeklyWeather = weeklyWeatherData(weatherData);
     return (
-      <Container className="weeklyForecast" fluid>
+      <Container className="weeklyForecast forecast-col" fluid>
         <DailyRows weeklyWeather={weeklyWeather} />
       </Container>
     );

@@ -1,0 +1,118 @@
+@import './common/variables.less';
+
+.app-navbar {
+  padding: 0.45rem @page-gutter;
+
+  .navbar-brand {
+    font-family: @font-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-right: 0.15rem;
+  }
+
+  .navbar-toggler {
+    padding: 0.2rem 0.45rem;
+    font-size: 0.95rem;
+  }
+
+  .navbar-collapse {
+    align-items: stretch;
+  }
+}
+
+.app-brand {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+  margin-right: 0.75rem;
+}
+
+.app-brand-links {
+  .nav-link {
+    padding: 0.3rem 0.45rem;
+    color: rgba(255, 255, 255, 0.72);
+
+    &:hover,
+    &:focus {
+      color: #fff;
+    }
+  }
+}
+
+.app-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.75rem 0 0.35rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.app-settings-location {
+  min-width: 0;
+  width: 50%;
+  max-width: 50%;
+  margin-left: 25%;
+  align-self: flex-start;
+
+  .input-group {
+    flex-wrap: nowrap;
+  }
+}
+
+.app-settings-place {
+  max-width: 7.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+}
+
+.app-settings-units {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  align-self: center;
+
+  .app-units-switch {
+    display: flex;
+    align-items: center;
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding-left: 2.5em;
+
+    .form-check-label {
+      display: none;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .app-settings {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+    margin-left: auto;
+    padding: 0;
+    gap: 0.75rem;
+  }
+
+  .app-settings-location {
+    width: auto;
+    max-width: none;
+    min-width: 22rem;
+    flex: 1 1 22rem;
+    align-self: auto;
+    margin-left: 0;
+  }
+
+  .app-settings-place {
+    max-width: 10rem;
+  }
+}

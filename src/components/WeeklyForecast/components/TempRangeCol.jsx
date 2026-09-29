@@ -1,39 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React from 'react';
 import { tempDisplay } from '../../../utilities/formatters';
 
-const getTempPositionValue = (dayTempVal, totalMin, totalMax) =>
-  ((dayTempVal - totalMin) / (totalMax - totalMin)) * 35 + 2;
+const toPct = (val, totalMin, totalMax) => {
+  if (totalMax === totalMin) {
+    return 50;
+  }
+  return ((val - totalMin) / (totalMax - totalMin)) * 100;
+};
 
 export const TempRangeCol = ({ dailyWeather, overallMinTemp, overallMaxTemp }) => {
-  const [variant, setVariant] = useState(window.innerWidth < 400 ? 'mobile' : undefined);
-  useEffect(() => {
-    setVariant(window.innerWidth < 400 ? 'mobile' : undefined);
-  }, []);
   const { minTemp, maxTemp } = dailyWeather;
-  const minTempPosition = getTempPositionValue(minTemp.value, overallMinTemp, overallMaxTemp);
-  const maxTempPosition = getTempPositionValue(maxTemp.value, overallMinTemp, overallMaxTemp);
-  const minColStyle = {
-    flex: `0 0 ${minTempPosition}em`,
-    msFlex: `0 0 ${minTempPosition}em`,
-  };
-  const maxColStyle = {
-    flex: `0 0 ${37 - maxTempPosition}em`,
-    msFlex: `0 0 ${37 - maxTempPosition}em`,
-  };
+  const start = toPct(minTemp.value, overallMinTemp, overallMaxTemp);
+  const end = toPct(maxTemp.value, overallMinTemp, overallMaxTemp);
+  const width = Math.max(end - start, 6);
+
   return (
-    <Container>
-      <Row>
-        <Col className="minCol" style={minColStyle}>
-          {tempDisplay(minTemp)}
-        </Col>
-        {variant !== 'mobile' ? <Col className="barCol" /> : undefined}
-        <Col className="maxCol" style={maxColStyle}>
-          {tempDisplay(maxTemp)}
-        </Col>
-      </Row>
-    </Container>
+    <div className="tempRange">
+      <span className="tempRange-min">{tempDisplay(minTemp)}</span>
+      <div className="tempRange-track" aria-hidden="true">
+        <span
+          className="tempRange-bar"
+          style={{ left: `${start}%`, width: `${width}%` }} />
+      </div>
+      <span className="tempRange-max">{tempDisplay(maxTemp)}</span>
+    </div>
   );
 };

@@ -1,3 +1,5 @@
+@import './variables.less';
+
 .row-center {
   justify-content:center;
 }
@@ -32,16 +34,58 @@
   }
 }
 
-b {
-  font-weight: 300;
+.forecast-col {
+  max-width: @forecast-max;
+  width: 100%;
+  margin-inline: auto;
 }
 
-.h3,
+h1,
+h2,
+h3,
+.h1,
 .h2,
-.h1 {
-  font-weight: lighter;
+.h3 {
+  font-family: @font-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h4,
+h5,
+h6,
+.h4,
+.h5,
+.h6 {
+  font-family: @font-sans;
+  font-weight: 500;
+}
+
+.type-data,
+.currentTopBar,
+.currentMeta,
+.hourDetails,
+.hourlyGraph,
+.tempRange,
+.daily-low,
+.daily-high,
+.daily-sunrise,
+.daily-sunset {
+  font-family: @font-mono;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+
+.hourlyGraph-head,
+.hourlyGraph-label,
+.hourlyGraph-tip-title {
+  font-family: @font-sans;
+  font-feature-settings: 'tnum' 1, 'cv05' 1;
+}
+
+b {
+  font-weight: 550;
 }
 
 .bolder {
-  font-weight: normal;
+  font-weight: 650;
 }
