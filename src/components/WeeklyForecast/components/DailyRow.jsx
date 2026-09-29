@@ -13,6 +13,7 @@ import Col from 'react-bootstrap/Col';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { tempDisplay, getDayOfTheWeek } from '@/utilities';
+import HourlyGraph from '@components/HourlyGraph/HourlyGraph';
 import { TempRangeCol } from './TempRangeCol';
 
 export class DailyRow extends React.Component {
@@ -46,7 +47,7 @@ export class DailyRow extends React.Component {
   }
 
   render() {
-    const { dailyWeather, index, overallMinTemp, overallMaxTemp } = this.props;
+    const { dailyWeather, hourly, index, overallMinTemp, overallMaxTemp } = this.props;
     const { drawerDisplay, drawerIcon, open } = this.state;
 
     const conditionDate = new Date();
@@ -98,6 +99,7 @@ export class DailyRow extends React.Component {
                   <span className="fw-bold">{precipitation.type}</span> {precipitation.value}
                 </Col>
               </Row>
+              {open ? <HourlyGraph heading="Hours" hourly={hourly} /> : null}
             </Container>
           </Row>
         </Container>
