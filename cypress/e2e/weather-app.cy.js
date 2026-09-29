@@ -2,6 +2,10 @@
 
 const API = '**/weather/**';
 
+// Anchored to local noon so the 48 hourly entries always cover today, tomorrow, and day+2
+// regardless of when the suite runs.
+const NOW = new Date().setHours(12, 0, 0, 0);
+
 const weatherStub = {
   source: 'METEO',
   current: {
@@ -12,10 +16,10 @@ const weatherStub = {
     humidity: 73,
     pressure: { value: 1011, unit: 'MB' },
     summary: 'Cloudy',
-    sunrise: Date.now() - 8 * 3600000,
-    sunset: Date.now() + 4 * 3600000,
+    sunrise: NOW - 8 * 3600000,
+    sunset: NOW + 4 * 3600000,
     temp: { value: 69, unit: 'F' },
-    time: Date.now(),
+    time: NOW,
     uvIndex: 2,
     visibility: { value: 9, unit: 'MI' },
     windspeed: { magnitude: 8, direction: 180, unit: 'MPH' },
@@ -30,14 +34,14 @@ const weatherStub = {
     precipProbability: day % 2 ? 70 : 10,
     rainVolume: { value: day % 2 ? 0.2 : 0, unit: 'IN' },
     snowVolume: { value: 0, unit: 'IN' },
-    sunrise: Date.now(),
-    sunset: Date.now() + 3600000,
+    sunrise: NOW,
+    sunset: NOW + 3600000,
     sunshineDuration: 18000,
     temp: {
       min: { value: 50 + day, unit: 'F' },
       max: { value: 77 + day, unit: 'F' },
     },
-    time: Date.now() + day * 86400000,
+    time: NOW + day * 86400000,
     uvIndex: 4,
     windspeed: { magnitude: 8, direction: 200, unit: 'MPH' },
   })),
@@ -55,7 +59,7 @@ const weatherStub = {
     snowVolume: { value: 0, unit: 'IN' },
     sunshineDuration: hour % 24 > 8 && hour % 24 < 16 ? 3600 : 0,
     temp: { value: 60 + (hour % 12), unit: 'F' },
-    time: Date.now() + hour * 3600000,
+    time: NOW + hour * 3600000,
     uvIndex: hour % 24 > 8 ? 4 : 0,
     visibility: { value: 8, unit: 'MI' },
     windGust: { magnitude: 12, direction: 190, unit: 'MPH' },
