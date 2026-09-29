@@ -2,35 +2,35 @@
   "source": "DEFAULT",
   "current": {
     "apparentTemp": {
-      "value": 0.0,
+      "value": 0,
       "unit": "K"
     },
     "condition": "CLOUDY",
     "description": "Loading...",
     "dewPoint": {
-      "value": 0.0,
+      "value": 0,
       "unit": "K"
     },
     "humidity": 0,
     "pressure": {
-      "value": 0.0,
+      "value": 0,
       "unit": "MB"
     },
     "summary": "Loading...",
     "sunrise": 0,
     "sunset": 0,
     "temp": {
-      "value": 0.0,
+      "value": 0,
       "unit": "K"
     },
     "time": 0,
-    "uvIndex": 0.0,
+    "uvIndex": 0,
     "visibility": {
-      "value": 0.0,
+      "value": 0,
       "unit": "M"
     },
     "windspeed": {
-      "magnitude": 0.0,
+      "magnitude": 0,
       "direction": 0,
       "unit": "MS"
     }
@@ -39,37 +39,1312 @@
     {
       "condition": "CLOUDY",
       "description": "Loading...",
-      "rainVolume":{
-        "value": 0.0,
+      "rainVolume": {
+        "value": 0,
         "unit": "MM"
       },
-      "snowVolume":{
-        "value": 0.0,
+      "snowVolume": {
+        "value": 0,
         "unit": "MM"
       },
       "sunrise": 0,
       "sunset": 0,
       "temp": {
         "max": {
-          "value": 0.0,
+          "value": 0,
           "unit": "K"
         },
         "min": {
-          "value": 0.0,
+          "value": 0,
           "unit": "K"
         }
       },
-      "time": 0
+      "time": 0,
+      "apparentTemp": {
+        "min": {
+          "value": 0,
+          "unit": "K"
+        },
+        "max": {
+          "value": 0,
+          "unit": "K"
+        }
+      },
+      "cloudCover": 0,
+      "daylightDuration": 0,
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipHours": 0,
+      "precipProbability": 0,
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "sunshineDuration": 0,
+      "uvIndex": 0,
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
     }
   ],
   "hourly": [
     {
-      "condition": "CLOUDY",
-      "temp": {
-        "value": 0.0,
+      "apparentTemp": {
+        "value": 0,
         "unit": "K"
       },
-      "time": 0
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 0,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 3600000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 7200000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 10800000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "PARTLY_CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 14400000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "PARTLY_CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 18000000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "PARTLY_CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 21600000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "PARTLY_CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 25200000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "PARTLY_CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 28800000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 32400000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 36000000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 39600000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 43200000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLOUDY",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 46800000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "RAIN",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 50400000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "RAIN",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 54000000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "RAIN",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 57600000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "RAIN",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 61200000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "RAIN",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 64800000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "RAIN",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 68400000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 72000000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 75600000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 79200000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
+    },
+    {
+      "apparentTemp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "cloudCover": 0,
+      "condition": "CLEAR",
+      "description": "Loading...",
+      "dewPoint": {
+        "value": 0,
+        "unit": "K"
+      },
+      "humidity": 0,
+      "precipProbability": 0,
+      "precipVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "pressure": {
+        "value": 0,
+        "unit": "MB"
+      },
+      "rainVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "snowVolume": {
+        "value": 0,
+        "unit": "MM"
+      },
+      "sunshineDuration": 0,
+      "temp": {
+        "value": 0,
+        "unit": "K"
+      },
+      "time": 82800000,
+      "uvIndex": 0,
+      "visibility": {
+        "value": 0,
+        "unit": "M"
+      },
+      "windGust": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      },
+      "windspeed": {
+        "magnitude": 0,
+        "direction": 0,
+        "unit": "MS"
+      }
     }
   ]
 }
