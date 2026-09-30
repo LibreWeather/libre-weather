@@ -1,7 +1,0 @@
-dist/
-.env
-.gitattributes
-.github/
-.gitignore
-app.json
-src/**/*.json

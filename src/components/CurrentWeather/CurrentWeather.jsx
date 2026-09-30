@@ -14,9 +14,9 @@ const visibilityDisplay = (visibility) => {
   const rawVis = ['MI', '%'];
   const visDistance = rawVis.includes(visibility.unit) ? visibility.value : visibility.value / 1000;
   const rawDistance = ['%'];
-  return !rawDistance.includes(visibility.unit) && visDistance >= 10
-    ? `10+ ${visibility.unit.toLowerCase()}`
-    : `${Math.round(visDistance)} ${visibility.unit.toLowerCase()}`;
+  return !rawDistance.includes(visibility.unit) && visDistance >= 10 ?
+    `10+ ${visibility.unit.toLowerCase()}` :
+    `${Math.round(visDistance)} ${visibility.unit.toLowerCase()}`;
 };
 const windSpeedDisplay = (windSpeed) =>
   `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;

@@ -48,8 +48,7 @@ const DailyRows = ({ weeklyWeather }) => {
         index={index}
         overallMinTemp={overallMin}
         overallMaxTemp={overallMax}
-        key={`ww-${makeid()}`}
-      />
+        key={`ww-${makeid()}`} />
     );
   });
 };
