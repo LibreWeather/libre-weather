@@ -10,9 +10,11 @@ const Bone = ({ className = '' }: { className?: string }) => <span className={`b
 
 type WeatherSkeletonProps = {
   animated?: boolean;
+  /** Real content shown below the summary placeholder, where it sits once the forecast loads. */
+  children?: React.ReactNode;
 };
 
-const WeatherSkeleton = ({ animated = true }: WeatherSkeletonProps) => (
+const WeatherSkeleton = ({ animated = true, children }: WeatherSkeletonProps) => (
   <div
     className={`weatherSkeleton${animated ? ' is-animated' : ''}`}
     aria-busy={animated}
@@ -30,6 +32,7 @@ const WeatherSkeleton = ({ animated = true }: WeatherSkeletonProps) => (
       </div>
     </div>
     <Bone className="bone-description" />
+    {children}
 
     <div className="weatherSkeleton-overview forecast-col">
       <Bone className="bone-bar" />
