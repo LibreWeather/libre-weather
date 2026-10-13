@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './App.less';
 
+import InstallBanner from './components/InstallBanner/InstallBanner';
 import NavigationBar from './components/NavigationBar';
 import { AlertsProvider } from './providers/AlertsProvider';
 import { PlaceProvider } from './providers/PlaceProvider';
@@ -22,6 +23,7 @@ const App = () => (
               <Route path="/" element={<Weather />} />
               <Route path="/licenses" element={<Licenses />} />
             </Routes>
+            <InstallBanner />
           </div>
         </BrowserRouter>
       </AlertsProvider>
