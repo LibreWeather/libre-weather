@@ -1,8 +1,7 @@
-'use strict';
+import type { AlertsResponse, WeatherAlert } from '../../src/utilities/alertTypes';
+import { HOUR, fixedNow, visitStubbed, withPreferences } from '../support/stubs';
 
-const { HOUR, fixedNow, visitStubbed } = require('../support/stubs');
-
-const alert = (overrides = {}) => {
+const alert = (overrides: Partial<WeatherAlert> = {}): WeatherAlert => {
   const now = fixedNow();
   return {
     id: 'urn:oid:1',
@@ -24,7 +23,12 @@ const alert = (overrides = {}) => {
   };
 };
 
-const reply = (alerts, extra = {}) => ({ coverage: true, sources: ['NWS'], alerts, ...extra });
+const reply = (alerts: WeatherAlert[], extra: Partial<AlertsResponse> = {}): AlertsResponse => ({
+  coverage: true,
+  sources: ['NWS'],
+  alerts,
+  ...extra,
+});
 
 describe('Weather alerts', () => {
   it('asks for alerts at the resolved location', () => {
@@ -178,7 +182,7 @@ describe('Weather alerts', () => {
       alert({ id: 'svr', event: 'Severe Thunderstorm Watch', severity: 'SEVERE' }),
       alert({ id: 'wind', event: 'Wind Advisory' }),
     ]);
-    const compact = (win) => win.localStorage.setItem('preferences', JSON.stringify({ layout: 'compact' }));
+    const compact = withPreferences({ layout: 'compact' });
 
     it('shrinks each alert to a chip and fits several on a row', () => {
       visitStubbed({ alerts: three, onBeforeLoad: compact });

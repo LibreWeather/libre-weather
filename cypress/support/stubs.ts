@@ -1,12 +1,18 @@
-'use strict';
+import type { Interception, StaticResponse } from 'cypress/types/net-stubbing';
+import type { Preferences } from '../../src/utilities/preferences';
+import type { Weather } from '../../src/utilities/weatherTypes';
 
-const HOUR = 60 * 60 * 1000;
-const DAY = 24 * HOUR;
+export const HOUR = 60 * 60 * 1000;
+export const DAY = 24 * HOUR;
+
+type Unit = 'IMPERIAL' | 'METRIC';
+
+type Place = { lat: string; lon: string; address: Record<string, string> };
 
 // Local 2:30pm today, so "now" lands mid-day and mid-hour on every run.
-const fixedNow = () => new Date().setHours(14, 30, 0, 0);
+export const fixedNow = () => new Date().setHours(14, 30, 0, 0);
 
-const PLACES = {
+export const PLACES: Record<string, Place[]> = {
   64106: [{ lat: '39.1031', lon: '-94.5822', address: { city: 'Kansas City', postcode: '64106', country: 'USA' } }],
   90210: [{ lat: '34.0901', lon: '-118.4065', address: { city: 'Beverly Hills', postcode: '90210', country: 'USA' } }],
   10001: [{ lat: '40.7506', lon: '-73.9972', address: { city: 'New York', postcode: '10001', country: 'USA' } }],
@@ -16,13 +22,17 @@ const PLACES = {
   ],
 };
 
-const REVERSE = { lat: '40.7128', lon: '-74.0060', address: { town: 'Geoville', postcode: '10001', country: 'USA' } };
+export const REVERSE: Place = {
+  lat: '40.7128',
+  lon: '-74.0060',
+  address: { town: 'Geoville', postcode: '10001', country: 'USA' },
+};
 
-const buildWeather = (now, unit = 'IMPERIAL') => {
+export const buildWeather = (now: number, unit: Unit = 'IMPERIAL') => {
   const metric = unit === 'METRIC';
-  const t = (f) => ({ value: metric ? Math.round(((f - 32) * 5) / 9) : f, unit: metric ? 'C' : 'F' });
-  const speed = (mph, direction) => ({ magnitude: mph, direction, unit: metric ? 'MS' : 'MPH' });
-  const vol = (inches) => ({ value: inches, unit: metric ? 'MM' : 'IN' });
+  const t = (f: number) => ({ value: metric ? Math.round(((f - 32) * 5) / 9) : f, unit: metric ? 'C' : 'F' });
+  const speed = (mph: number, direction: number) => ({ magnitude: mph, direction, unit: metric ? 'MS' : 'MPH' });
+  const vol = (inches: number) => ({ value: inches, unit: metric ? 'MM' : 'IN' });
   const midnight = new Date(now).setHours(0, 0, 0, 0);
 
   return {
@@ -81,15 +91,24 @@ const buildWeather = (now, unit = 'IMPERIAL') => {
   };
 };
 
-/**
- * Stub the weather API and Nominatim, freeze Date at a fixed time, then visit.
- * `weather` overrides the API reply; pass a StaticResponse such as `{ statusCode: 500 }` to fail it.
- * `weatherDelay` holds back the default reply so loading states can be observed.
- * `alerts` overrides the alerts reply (an AlertsResponse body or a StaticResponse).
- * `languages` pins `navigator.languages` so locale-derived defaults don't depend on the test machine.
- * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object, weatherDelay?: number, alerts?: object, languages?: string[] }} [opts]
- */
-const visitStubbed = ({
+type StubReply = StaticResponse | Partial<Weather> | object;
+
+export type VisitOptions = {
+  path?: string;
+  now?: number;
+  onBeforeLoad?: (win: Cypress.AUTWindow) => void;
+  /** Overrides the API reply; pass a StaticResponse such as `{ statusCode: 500 }` to fail it. */
+  weather?: StubReply;
+  /** Holds back the default reply so loading states can be observed. */
+  weatherDelay?: number;
+  /** Overrides the alerts reply (an AlertsResponse body or a StaticResponse). */
+  alerts?: StubReply;
+  /** Pins `navigator.languages` so locale-derived defaults don't depend on the test machine. */
+  languages?: string[];
+};
+
+/** Stub the weather API and Nominatim, freeze Date at a fixed time, then visit. */
+export const visitStubbed = ({
   path = '/',
   now = fixedNow(),
   onBeforeLoad,
@@ -97,14 +116,14 @@ const visitStubbed = ({
   weatherDelay = 0,
   alerts = { coverage: true, sources: ['NWS'], alerts: [] },
   languages = ['en-US'],
-} = {}) => {
+}: VisitOptions = {}) => {
   cy.intercept('GET', '**/alerts/**', alerts).as('alerts');
   cy.intercept('GET', '**/weather/**', (req) => {
     const unit = /\/unit\/METRIC/i.test(req.url) ? 'METRIC' : 'IMPERIAL';
     req.reply(weather ?? { body: buildWeather(now, unit), delay: weatherDelay });
   }).as('weather');
   cy.intercept('GET', 'https://nominatim.openstreetmap.org/search*', (req) => {
-    req.reply(PLACES[req.query.postalcode] ?? []);
+    req.reply(PLACES[String(req.query.postalcode)] ?? []);
   }).as('geocode');
   cy.intercept('GET', 'https://nominatim.openstreetmap.org/reverse*', REVERSE).as('reverse');
   cy.clock(now, ['Date']);
@@ -118,24 +137,41 @@ const visitStubbed = ({
   return now;
 };
 
+export type InterceptedRequest = Interception['request'];
+
 // The app may fire duplicate requests on load, so match against every call rather than the next one.
-const expectRequest = (alias, test, label = `a matching ${alias} request`) =>
-  cy.get(`@${alias}.all`).should((calls) => {
+export const expectRequest = (
+  alias: string,
+  test: (request: InterceptedRequest) => boolean,
+  label = `a matching ${alias} request`
+) =>
+  cy.get<Interception[]>(`@${alias}.all`).should((calls) => {
     expect(calls.some(({ request }) => test(request)), label).to.be.true;
   });
 
-/** Yields the parsed `preferences` object from localStorage. */
-const savedPreferences = () =>
-  cy.window().then((win) => JSON.parse(win.localStorage.getItem('preferences') || '{}'));
+export const weatherFor = (pattern: RegExp) =>
+  expectRequest('weather', ({ url }) => pattern.test(url), `weather request ${pattern}`);
 
-module.exports = {
-  DAY,
-  HOUR,
-  PLACES,
-  REVERSE,
-  buildWeather,
-  expectRequest,
-  fixedNow,
-  savedPreferences,
-  visitStubbed,
+/** Yields the parsed `preferences` object from localStorage. */
+export const savedPreferences = () =>
+  cy
+    .window()
+    .then((win): Partial<Preferences> => JSON.parse(win.localStorage.getItem('preferences') || '{}'));
+
+/** Dispatches a fake `beforeinstallprompt`, as Chromium does when the app is installable. */
+export const fireInstallPrompt = (
+  win: Cypress.AUTWindow,
+  outcome: 'accepted' | 'dismissed' = 'dismissed',
+  prompt: () => Promise<void> = () => Promise.resolve()
+) => {
+  const event = Object.assign(new win.Event('beforeinstallprompt', { cancelable: true }), {
+    prompt,
+    userChoice: Promise.resolve({ outcome }),
+  });
+  win.dispatchEvent(event);
+};
+
+/** `onBeforeLoad` hook that seeds saved preferences. */
+export const withPreferences = (preferences: Partial<Preferences>) => (win: Cypress.AUTWindow) => {
+  win.localStorage.setItem('preferences', JSON.stringify(preferences));
 };

@@ -1,6 +1,5 @@
-'use strict';
-
-const { buildWeather, expectRequest, fixedNow, visitStubbed } = require('../support/stubs');
+import type { Interception } from 'cypress/types/net-stubbing';
+import { buildWeather, expectRequest, fixedNow, visitStubbed } from '../support/stubs';
 
 describe('Weather view', () => {
   it('loads current conditions from the weather API', () => {
@@ -64,7 +63,7 @@ describe('Weather view', () => {
   it('does not fetch weather for a made-up location before the real one resolves', () => {
     visitStubbed();
     cy.get('.currentTemp').should('be.visible');
-    cy.get('@weather.all').then((calls) => {
+    cy.get<Interception[]>('@weather.all').then((calls) => {
       expect(calls.map(({ request }) => request.url)).to.have.length(1);
       expect(calls[0].request.url).to.match(/\/39\.1031,-94\.5822\//);
     });
@@ -228,7 +227,7 @@ describe('Weather view', () => {
 
     it('draws each line across the full chart width', () => {
       cy.get('.hourlyGraph-plot polyline').first().invoke('attr', 'points').then((points) => {
-        const xs = points.trim().split(/\s+/).map((pair) => Number(pair.split(',')[0]));
+        const xs = String(points).trim().split(/\s+/).map((pair) => Number(pair.split(',')[0]));
         expect(Math.min(...xs)).to.eq(0);
         expect(Math.max(...xs)).to.eq(24);
       });

@@ -1,17 +1,12 @@
-'use strict';
-
-const { savedPreferences, visitStubbed } = require('../support/stubs');
+import { fireInstallPrompt, savedPreferences, visitStubbed } from '../support/stubs';
 
 const IPHONE_UA =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1';
 
 /** Fires a fake Chromium `beforeinstallprompt` and returns its `prompt` stub. */
-const offerInstall = (outcome = 'accepted') =>
+const offerInstall = (outcome: 'accepted' | 'dismissed' = 'accepted') =>
   cy.window().then((win) => {
-    const event = new win.Event('beforeinstallprompt', { cancelable: true });
-    event.prompt = cy.stub().as('prompt').resolves();
-    event.userChoice = Promise.resolve({ outcome });
-    win.dispatchEvent(event);
+    fireInstallPrompt(win, outcome, cy.stub().as('prompt').resolves());
   });
 
 describe('Install banner', () => {

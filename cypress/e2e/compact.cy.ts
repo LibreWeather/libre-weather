@@ -1,10 +1,4 @@
-'use strict';
-
-const { savedPreferences, visitStubbed } = require('../support/stubs');
-
-const withPreferences = (preferences) => (win) => {
-  win.localStorage.setItem('preferences', JSON.stringify(preferences));
-};
+import { savedPreferences, visitStubbed, withPreferences } from '../support/stubs';
 
 describe('Condensed view', () => {
   describe('navbar summary', () => {

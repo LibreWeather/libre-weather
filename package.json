@@ -19,7 +19,7 @@
     "start": "parcel ./src/index.html --no-cache",
     "test": "jest --config .config/jest.config.cjs",
     "test:e2e": "cypress run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p cypress"
   },
   "babel": {
     "plugins": [

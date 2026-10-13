@@ -1,6 +1,4 @@
-'use strict';
-
-const { visitStubbed } = require('../support/stubs');
+import { visitStubbed } from '../support/stubs';
 
 describe('Navigation bar', () => {
   it('shows the brand cluster with licenses and GitHub next to the wordmark', () => {

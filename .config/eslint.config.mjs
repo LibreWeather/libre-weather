@@ -120,9 +120,8 @@ export default [
     },
   },
   {
-    files: ['cypress/**/*.{js,jsx}', 'cypress.config.cjs'],
+    files: ['cypress/**/*.ts', 'cypress.config.ts'],
     languageOptions: {
-      sourceType: 'commonjs',
       globals: {
         ...globals.mocha,
         ...globals.cypress,

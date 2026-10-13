@@ -1,12 +1,12 @@
-'use strict';
-
-const { expectRequest, fixedNow, HOUR, savedPreferences, visitStubbed } = require('../support/stubs');
-
-const weatherFor = (pattern) => expectRequest('weather', ({ url }) => pattern.test(url), `weather request ${pattern}`);
-
-const withPreferences = (preferences) => (win) => {
-  win.localStorage.setItem('preferences', JSON.stringify(preferences));
-};
+import {
+  HOUR,
+  fireInstallPrompt,
+  fixedNow,
+  savedPreferences,
+  visitStubbed,
+  weatherFor,
+  withPreferences,
+} from '../support/stubs';
 
 const openPreferences = () => {
   cy.get('.currentTemp').should('be.visible');
@@ -14,7 +14,7 @@ const openPreferences = () => {
   cy.get('dialog.prefsPanel').should('have.attr', 'open');
 };
 
-const choose = (field, option) => cy.contains('.prefs-field', field).contains('label', option).click();
+const choose = (field: string, option: string) => cy.contains('.prefs-field', field).contains('label', option).click();
 
 const closePreferences = () => {
   cy.get('.prefsPanel-close').click();
@@ -201,12 +201,7 @@ describe('Preferences', () => {
     it('can bring the install banner back after dismissing it', () => {
       visitStubbed({ onBeforeLoad: withPreferences({ installBannerDismissed: true }) });
       cy.get('.currentTemp').should('be.visible');
-      cy.window().then((win) => {
-        const event = new win.Event('beforeinstallprompt', { cancelable: true });
-        event.prompt = () => Promise.resolve();
-        event.userChoice = Promise.resolve({ outcome: 'dismissed' });
-        win.dispatchEvent(event);
-      });
+      cy.window().then((win) => fireInstallPrompt(win));
       cy.get('.installBanner').should('not.exist');
       openPreferences();
       cy.contains('button', 'Show install banner again').click();

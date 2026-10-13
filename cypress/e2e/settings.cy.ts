@@ -1,9 +1,6 @@
-'use strict';
+import { REVERSE, expectRequest, visitStubbed, weatherFor } from '../support/stubs';
 
-const { REVERSE, expectRequest, visitStubbed } = require('../support/stubs');
-
-const weatherFor = (pattern) => expectRequest('weather', ({ url }) => pattern.test(url), `weather request ${pattern}`);
-const geocodeFor = (zip) =>
+const geocodeFor = (zip: string) =>
   expectRequest('geocode', ({ query }) => query.postalcode === zip, `geocode request for ${zip}`);
 
 describe('Settings bar', () => {

@@ -1,11 +1,9 @@
-'use strict';
+import { defineConfig } from 'cypress';
 
-const { defineConfig } = require('cypress');
-
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL || 'http://localhost:1234',
-    specPattern: 'cypress/e2e/**/*.cy.{js,jsx}',
+    specPattern: 'cypress/e2e/**/*.cy.ts',
     supportFile: false,
     video: false,
     defaultCommandTimeout: 8000,
