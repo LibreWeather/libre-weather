@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/LibreWeather/libre-weather/compare/v1.1.0...v1.2.0) (2026-10-13)
+
+
+### Features
+
+* chart today from midnight with a now marker ([e4fdbc9](https://github.com/LibreWeather/libre-weather/commit/e4fdbc94167a9744d2c81322ebb4a10649121ada))
+
 # [1.1.0](https://github.com/LibreWeather/libre-weather/compare/v1.0.5...v1.1.0) (2026-10-13)
 
 
