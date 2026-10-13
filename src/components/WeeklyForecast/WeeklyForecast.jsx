@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 
-import { makeid, timeDisplay, volumeDisplay } from '@/utilities';
+import { timeDisplay, volumeDisplay } from '@/utilities';
 import { DailyRow } from './components/DailyRow';
 import './WeeklyForecast.less';
 
@@ -31,13 +31,30 @@ const weeklyWeatherData = (data) => {
   });
 };
 
+const hoursOnDay = (hourly, dayTime) => {
+  const day = new Date(dayTime);
+  const year = day.getFullYear();
+  const month = day.getMonth();
+  const date = day.getDate();
+  const matched = (hourly || []).filter((hour) => {
+    const at = new Date(hour.time);
+    return at.getFullYear() === year && at.getMonth() === month && at.getDate() === date;
+  });
+  if (matched.length) {
+    return matched;
+  }
+  const from = dayTime;
+  const to = dayTime + 24 * 60 * 60 * 1000;
+  return (hourly || []).filter((hour) => hour.time >= from && hour.time < to);
+};
+
 const getOverallMinTemp = (weeklyWeather) =>
   Math.min(...weeklyWeather.map((dailyWeather) => dailyWeather.minTemp.value));
 
 const getOverallMaxTemp = (weeklyWeather) =>
   Math.max(...weeklyWeather.map((dailyWeather) => dailyWeather.maxTemp.value));
 
-const DailyRows = ({ weeklyWeather }) => {
+const DailyRows = ({ weeklyWeather, hourly }) => {
   const overallMin = getOverallMinTemp(weeklyWeather);
   const overallMax = getOverallMaxTemp(weeklyWeather);
 
@@ -45,10 +62,11 @@ const DailyRows = ({ weeklyWeather }) => {
     return (
       <DailyRow
         dailyWeather={dailyWeather}
+        hourly={hoursOnDay(hourly, dailyWeather.time)}
         index={index}
+        key={`ww-${dailyWeather.time}-${index}`}
         overallMinTemp={overallMin}
-        overallMaxTemp={overallMax}
-        key={`ww-${makeid()}`} />
+        overallMaxTemp={overallMax} />
     );
   });
 };
@@ -59,7 +77,7 @@ export default class WeeklyForecast extends React.Component {
     const weeklyWeather = weeklyWeatherData(weatherData);
     return (
       <Container className="weeklyForecast forecast-col" fluid>
-        <DailyRows weeklyWeather={weeklyWeather} />
+        <DailyRows hourly={weatherData.hourly} weeklyWeather={weeklyWeather} />
       </Container>
     );
   }
