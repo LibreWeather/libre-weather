@@ -1,6 +1,0 @@
-".github/*"
-"dist/*"
-"node_modules/*"
-"app.json"
-"package.json"
-"package-lock.json"

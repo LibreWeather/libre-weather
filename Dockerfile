@@ -1,11 +1,11 @@
-FROM docker.io/node:20-alpine AS build
+FROM docker.io/node:24-alpine AS build
 # dependencies
 COPY package.json .
 COPY package-lock.json .
 
-#config files
+# config files
 COPY .browserslistrc .
-COPY .babelrc.json .
+COPY .config/ .config/
 
 # source code
 COPY src/ src/
@@ -16,7 +16,7 @@ ENV NODE_ENV='production'
 
 RUN npm run build
 
-FROM docker.io/node:20-alpine AS run
+FROM docker.io/node:24-alpine AS run
 RUN npm i -g serve@14.1.2
 COPY --from=build dist/ dist/
 COPY app.sh app.sh
@@ -26,4 +26,3 @@ LABEL org.opencontainers.image.source=https://github.com/libreweather/libre-weat
 LABEL org.opencontainers.image.licenses=AGPL-3.0
 
 CMD ["sh", "app.sh"]
-

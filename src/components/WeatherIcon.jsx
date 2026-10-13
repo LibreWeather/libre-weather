@@ -2,7 +2,9 @@ import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
 import CurrentDayContext from '../utilities/CurrentDayContext';
 
-// eslint-disable-next-line import/prefer-default-export
+// react-animated-weather sets defaultProps on a function component; React 18 overlay-errors that.
+delete ReactAnimatedWeather.defaultProps;
+
 export const WeatherIcon = ({ condition, sizePx, time, animate = false }) => {
   return (
     <CurrentDayContext.Consumer>

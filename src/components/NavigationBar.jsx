@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Nominatim from 'nominatim-browser';
+import * as Nominatim from '@/utilities/nominatim';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 
@@ -211,8 +211,7 @@ export default class NavigationBar extends React.Component {
                 aria-label="ZIP Code"
                 aria-describedby="basic-addon2"
                 type="number"
-                onChange={this.handleZipChange}
-              />
+                onChange={this.handleZipChange} />
               <InputGroup.Append>
                 <Button variant="outline-secondary" type="submit">
                   <FontAwesomeIcon icon={faSearch} />

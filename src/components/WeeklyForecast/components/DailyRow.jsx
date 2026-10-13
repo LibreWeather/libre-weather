@@ -68,8 +68,7 @@ export class DailyRow extends React.Component {
               <TempRangeCol
                 dailyWeather={dailyWeather}
                 overallMinTemp={overallMinTemp}
-                overallMaxTemp={overallMaxTemp}
-              />
+                overallMaxTemp={overallMaxTemp} />
             </Col>
             <Col className="toggleCol">
               <FontAwesomeIcon icon={drawerIcon} />

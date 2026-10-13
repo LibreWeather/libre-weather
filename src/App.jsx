@@ -50,7 +50,7 @@ class App extends React.Component {
       })
       .then((res) => res.json())
       .then((weather) => this.setState({ weather }))
-      // eslint-disable-next-line no-console
+
       .catch(console.error);
   }
 
