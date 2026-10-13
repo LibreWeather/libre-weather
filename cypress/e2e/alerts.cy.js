@@ -57,7 +57,64 @@ describe('Weather alerts', () => {
       .and('contain.text', 'Secure outdoor objects.')
       .and('contain.text', 'Jackson, MO')
       .and('contain.text', 'National Weather Service');
-    cy.contains('.weatherAlert-body a', 'Full alert').should('have.attr', 'href', 'https://api.weather.gov/alerts/urn:oid:1');
+  });
+
+  it('opens the full alert in a dialog that closes back to the forecast', () => {
+    visitStubbed({ alerts: reply([alert({ url: 'https://forecast.weather.gov/MapClick.php?lat=39.1&lon=-94.58' })]) });
+    cy.contains('.weatherAlert-summary', 'Wind Advisory').click();
+    cy.contains('button', 'View full alert').click();
+
+    cy.location('search').should('eq', '?alert=urn%3Aoid%3A1');
+    cy.get('dialog.alertDialog').should('have.attr', 'open');
+    cy.get('dialog.alertDialog')
+      .should('have.class', 'severity-moderate')
+      .within(() => {
+        cy.contains('h2', 'Wind Advisory');
+        cy.contains('dt', 'Urgency').next().should('have.text', 'Expected');
+        cy.contains('dt', 'Certainty').next().should('have.text', 'Likely');
+        cy.contains('dt', 'Issued by').next().should('contain.text', 'NWS Kansas City');
+        cy.contains('.alertDialog-instruction', 'Secure outdoor objects.');
+        cy.contains('a', 'View on National Weather Service')
+          .should('have.attr', 'href', 'https://forecast.weather.gov/MapClick.php?lat=39.1&lon=-94.58')
+          .and('have.attr', 'target', '_blank');
+      });
+
+    cy.get('.alertDialog-close').click();
+    cy.get('dialog.alertDialog').should('not.exist');
+    cy.location('search').should('eq', '');
+    cy.get('.currentTemp').should('be.visible');
+  });
+
+  it('closes the dialog from the backdrop and the back button', () => {
+    visitStubbed({ alerts: reply([alert()]) });
+    cy.contains('.weatherAlert-summary', 'Wind Advisory').click();
+    cy.contains('button', 'View full alert').click();
+    cy.get('dialog.alertDialog').should('have.attr', 'open');
+    // Backdrop clicks land on the <dialog> itself rather than its panel.
+    cy.get('dialog.alertDialog').then(($dialog) => {
+      $dialog[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    cy.get('dialog.alertDialog').should('not.exist');
+
+    cy.contains('button', 'View full alert').click();
+    cy.get('dialog.alertDialog').should('have.attr', 'open');
+    cy.go('back');
+    cy.get('dialog.alertDialog').should('not.exist');
+    cy.location('search').should('eq', '');
+  });
+
+  it('opens a shared alert link directly', () => {
+    visitStubbed({ path: '/?alert=urn%3Aoid%3A1', alerts: reply([alert()]) });
+    cy.get('dialog.alertDialog').should('have.attr', 'open');
+    cy.get('dialog.alertDialog').should('contain.text', 'Wind Advisory');
+    cy.get('.alertDialog-close').click();
+    cy.get('dialog.alertDialog').should('not.exist');
+    cy.location('search').should('eq', '');
+  });
+
+  it('explains when a shared alert is no longer active', () => {
+    visitStubbed({ path: '/?alert=urn%3Aoid%3Agone', alerts: reply([alert()]) });
+    cy.get('dialog.alertDialog').should('contain.text', 'Alert no longer active');
   });
 
   it('notes when an alert has not started yet', () => {

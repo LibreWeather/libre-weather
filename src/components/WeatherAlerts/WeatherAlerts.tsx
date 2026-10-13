@@ -1,9 +1,11 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAlerts } from '../../providers/AlertsProvider';
 import { SOURCE_NAMES, type WeatherAlert } from '@/utilities/alertTypes';
+import AlertDialog from './AlertDialog';
 
 import './WeatherAlerts.less';
 
@@ -15,7 +17,7 @@ const untilLabel = (alert: WeatherAlert) => {
   return end ? `until ${formatTime(end)}` : null;
 };
 
-const AlertItem = ({ alert }: { alert: WeatherAlert }) => {
+const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string) => void }) => {
   const until = untilLabel(alert);
   const startsLater = alert.onset && alert.onset > Date.now();
   return (
@@ -38,30 +40,58 @@ const AlertItem = ({ alert }: { alert: WeatherAlert }) => {
         {alert.areas ? <p className="weatherAlert-meta">Areas: {alert.areas}</p> : null}
         <p className="weatherAlert-meta">
           Issued by {alert.sender} · {SOURCE_NAMES[alert.source] ?? alert.source}
-          {alert.url ? (
-            <>
-              {' · '}
-              <a href={alert.url} target="_blank" rel="noreferrer">
-                Full alert
-              </a>
-            </>
-          ) : null}
         </p>
+        <button type="button" className="weatherAlert-more" onClick={() => onOpen(alert.id)}>
+          View full alert
+        </button>
       </div>
     </details>
   );
 };
 
+const ALERT_PARAM = 'alert';
+
 const WeatherAlerts = () => {
-  const { alerts } = useAlerts();
-  if (!alerts.length) return null;
+  const { alerts, status } = useAlerts();
+  const [params, setParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const openId = params.get(ALERT_PARAM);
+  const settled = status === 'ready' || status === 'error';
+  const openAlert = openId ? alerts.find((alert) => alert.id === openId) ?? null : null;
+
+  const open = (id: string) => {
+    const next = new URLSearchParams(params);
+    next.set(ALERT_PARAM, id);
+    setParams(next, { state: { alertOpenedInApp: true } });
+  };
+
+  const close = () => {
+    if ((location.state as { alertOpenedInApp?: boolean } | null)?.alertOpenedInApp) {
+      navigate(-1);
+      return;
+    }
+    const next = new URLSearchParams(params);
+    next.delete(ALERT_PARAM);
+    setParams(next, { replace: true });
+  };
+
+  const dialog =
+    openId && (openAlert || settled) ? <AlertDialog alert={openAlert} onClose={close} key={openId} /> : null;
+
+  if (!alerts.length) return dialog;
 
   return (
-    <section className="weatherAlerts forecast-col" aria-label={`${alerts.length} active weather alert${alerts.length > 1 ? 's' : ''}`}>
-      {alerts.map((alert) => (
-        <AlertItem alert={alert} key={alert.id} />
-      ))}
-    </section>
+    <>
+      <section
+        className="weatherAlerts forecast-col"
+        aria-label={`${alerts.length} active weather alert${alerts.length > 1 ? 's' : ''}`}>
+        {alerts.map((alert) => (
+          <AlertItem alert={alert} key={alert.id} onOpen={open} />
+        ))}
+      </section>
+      {dialog}
+    </>
   );
 };
 
