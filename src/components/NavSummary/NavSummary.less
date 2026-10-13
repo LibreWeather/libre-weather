@@ -1,0 +1,75 @@
+@import '../common/variables.less';
+
+.navSummary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 0;
+  margin: 0;
+  padding: 0.15rem 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #fff;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-0.35rem);
+  pointer-events: none;
+  transition:
+    max-width 0.25s ease,
+    opacity 0.2s ease,
+    transform 0.25s ease,
+    padding 0.25s ease;
+
+  canvas {
+    flex: 0 0 auto;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
+.navSummary-temp {
+  font-weight: 700;
+}
+
+.navSummary-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+html.hero-offscreen {
+  .navSummary {
+    max-width: 16rem;
+    padding: 0.15rem 0.5rem;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  @media (max-width: @phone-max) {
+    .app-navbar .navbar-brand > span,
+    .app-navbar .app-brand-links {
+      display: none;
+    }
+
+    .app-navbar .app-brand {
+      margin-right: 0.25rem;
+    }
+
+    .navSummary {
+      max-width: 12rem;
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { usePreferences } from '../../providers/PreferencesProvider';
 import { browserUses12HourClock } from '../../utilities/locale';
 import {
+  COMPACT_QUERY,
   REDUCED_MOTION_QUERY,
   REDUCED_TRANSPARENCY_QUERY,
   resolveUnitSystem,
@@ -137,6 +138,14 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
 
           <section>
             <h3>Display</h3>
+            <Segmented
+              name="layout"
+              label="Compact layout"
+              options={[
+                { value: 'auto', label: `Auto (${mediaLabel(COMPACT_QUERY)})` },
+                { value: 'compact', label: 'On' },
+                { value: 'comfortable', label: 'Off' },
+              ]} />
             <Segmented
               name="motion"
               label="Reduce motion"

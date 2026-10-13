@@ -2,9 +2,11 @@ import React from 'react';
 
 import { setClockPreference, uses12HourClock } from '../utilities/locale';
 import {
+  COMPACT_QUERY,
   REDUCED_MOTION_QUERY,
   REDUCED_TRANSPARENCY_QUERY,
   loadPreferences,
+  resolveCompact,
   resolveReduceMotion,
   resolveReduceTransparency,
   resolveUnitSystem,
@@ -22,6 +24,7 @@ export type ResolvedPreferences = {
   twelveHour: boolean;
   reduceMotion: boolean;
   reduceTransparency: boolean;
+  compact: boolean;
 };
 
 export type PreferencesContextValue = {
@@ -49,7 +52,7 @@ const useMediaVersion = (queries: string[]) => {
 
 export const PreferencesProvider = ({ children }: { children: React.ReactNode }) => {
   const [preferences, setPreferences] = React.useState(() => loadPreferences(localStorage));
-  const mediaVersion = useMediaVersion([REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY]);
+  const mediaVersion = useMediaVersion([REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY, COMPACT_QUERY]);
 
   // Formatters are plain functions, so the clock setting is applied before children render.
   setClockPreference(preferences.clock);
@@ -63,6 +66,7 @@ export const PreferencesProvider = ({ children }: { children: React.ReactNode })
       twelveHour: uses12HourClock(),
       reduceMotion: resolveReduceMotion(preferences.motion),
       reduceTransparency: resolveReduceTransparency(preferences.transparency),
+      compact: resolveCompact(preferences.layout),
     };
     // mediaVersion re-resolves `auto` after an OS change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,7 +76,8 @@ export const PreferencesProvider = ({ children }: { children: React.ReactNode })
     const root = document.documentElement;
     root.classList.toggle('reduce-motion', resolved.reduceMotion);
     root.classList.toggle('reduce-transparency', resolved.reduceTransparency);
-  }, [resolved.reduceMotion, resolved.reduceTransparency]);
+    root.classList.toggle('compact', resolved.compact);
+  }, [resolved.reduceMotion, resolved.reduceTransparency, resolved.compact]);
 
   const setPreference = React.useCallback(<K extends keyof Preferences>(key: K, value: Preferences[K]) => {
     setPreferences((current) => {

@@ -16,6 +16,7 @@ import useDialogParam from '../hooks/useDialogParam';
 import { usePlace } from '../providers/PlaceProvider';
 import { placeLabel } from '../utilities/nominatim';
 import Logo from './Logo';
+import NavSummary from './NavSummary/NavSummary';
 import PreferencesPanel from './Preferences/PreferencesPanel';
 
 import './NavigationBar.less';
@@ -66,6 +67,8 @@ const NavigationBar = () => {
           </Nav.Link>
         </Nav>
       </div>
+
+      <NavSummary />
 
       <button
         type="button"

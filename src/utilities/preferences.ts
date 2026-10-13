@@ -7,6 +7,7 @@ export type PrecipPref = 'auto' | 'in' | 'mm';
 export type ClockPref = 'auto' | '12' | '24';
 export type MotionPref = 'auto' | 'reduce' | 'full';
 export type TransparencyPref = 'auto' | 'reduce' | 'full';
+export type LayoutPref = 'auto' | 'compact' | 'comfortable';
 
 export type Preferences = {
   temperature: TemperaturePref;
@@ -16,6 +17,7 @@ export type Preferences = {
   alerts: boolean;
   motion: MotionPref;
   transparency: TransparencyPref;
+  layout: LayoutPref;
   installBannerDismissed: boolean;
 };
 
@@ -27,6 +29,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   alerts: true,
   motion: 'auto',
   transparency: 'auto',
+  layout: 'auto',
   installBannerDismissed: false,
 };
 
@@ -53,6 +56,7 @@ export const sanitizePreferences = (raw: unknown): Preferences => {
     alerts: typeof value.alerts === 'boolean' ? value.alerts : d.alerts,
     motion: pick(value.motion, ['auto', 'reduce', 'full'], d.motion),
     transparency: pick(value.transparency, ['auto', 'reduce', 'full'], d.transparency),
+    layout: pick(value.layout, ['auto', 'compact', 'comfortable'], d.layout),
     installBannerDismissed:
       typeof value.installBannerDismissed === 'boolean' ? value.installBannerDismissed : d.installBannerDismissed,
   };
@@ -109,6 +113,7 @@ const mediaMatches = (query: string) =>
 
 export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 export const REDUCED_TRANSPARENCY_QUERY = '(prefers-reduced-transparency: reduce)';
+export const COMPACT_QUERY = '(max-width: 767px)';
 
 export const resolveReduceMotion = (motion: MotionPref) =>
   motion === 'reduce' || (motion === 'auto' && mediaMatches(REDUCED_MOTION_QUERY));
@@ -116,3 +121,7 @@ export const resolveReduceMotion = (motion: MotionPref) =>
 /** `auto` follows the OS setting where the browser exposes it (Chromium and Firefox). */
 export const resolveReduceTransparency = (transparency: TransparencyPref) =>
   transparency === 'reduce' || (transparency === 'auto' && mediaMatches(REDUCED_TRANSPARENCY_QUERY));
+
+/** `auto` is compact on phone-width screens. */
+export const resolveCompact = (layout: LayoutPref) =>
+  layout === 'compact' || (layout === 'auto' && mediaMatches(COMPACT_QUERY));

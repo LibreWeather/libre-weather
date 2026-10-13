@@ -5,12 +5,11 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { WeatherIcon } from '../WeatherIcon';
-import { windLabel } from '../../utilities/formatters';
+import { usePreferences } from '../../providers/PreferencesProvider';
+import { tempDisplay, windLabel } from '../../utilities/formatters';
 import {
-  TempUnit,
   VisibilityUnit,
   type Pressure,
-  type Temperature,
   type Visibility,
   type Weather,
   type WindSpeed,
@@ -18,9 +17,10 @@ import {
 
 import './CurrentWeather.less';
 
+/** Clearance under the sticky navbar before the hero counts as scrolled away. */
+const NAVBAR_CLEARANCE_PX = 72;
+
 const pressureDisplay = (pressure: Pressure) => `${Math.round(Number(pressure.value))} mb`;
-const tempDisplay = (temp: Temperature) =>
-  `${Math.round(Number(temp.value))}${temp.unit === TempUnit.K ? 'K' : '˚'}`;
 const visibilityDisplay = (visibility: Visibility) => {
   const rawVis = [VisibilityUnit.MI, VisibilityUnit.Percent];
   const visDistance = rawVis.includes(visibility.unit) ? Number(visibility.value) : Number(visibility.value) / 1000;
@@ -49,63 +49,87 @@ const currentWeatherData = (data: Weather) => ({
   windSpeed: windSpeedDisplay(data.current.windspeed),
 });
 
-export default class CurrentWeather extends React.Component<{ weatherData: Weather }> {
-  render() {
-    const { weatherData } = this.props;
-    const currentWeather = currentWeatherData(weatherData);
-    const description = currentWeather.description ? (
-      <Row className="justify-content-center h2">{currentWeather.description}.</Row>
-    ) : null;
+/** Marks `<html>` with `hero-offscreen` while the hero is scrolled up behind the navbar. */
+const useHeroOffscreen = (hero: React.RefObject<HTMLElement | null>) => {
+  React.useEffect(() => {
+    const node = hero.current;
+    const root = document.documentElement;
+    if (!node || typeof IntersectionObserver === 'undefined') return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        root.classList.toggle('hero-offscreen', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { rootMargin: `-${NAVBAR_CLEARANCE_PX}px 0px 0px 0px` }
+    );
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      root.classList.remove('hero-offscreen');
+    };
+  }, [hero]);
+};
 
-    return (
-      <Container className="current" fluid>
-        <Row className="currentTopBar h6 justify-content-center">
+const CurrentWeather = ({ weatherData }: { weatherData: Weather }) => {
+  const { resolved } = usePreferences();
+  const hero = React.useRef<HTMLDivElement>(null);
+  useHeroOffscreen(hero);
+  const currentWeather = currentWeatherData(weatherData);
+  const { compact } = resolved;
+  const description = currentWeather.description ? `${currentWeather.description}.` : null;
+
+  return (
+    <Container className="current" fluid>
+      <Row className="currentTopBar h6 justify-content-center">
+        <Col xs="auto">
+          <span className="wind">
+            <b>Wind:</b> {currentWeather.windSpeed}{' '}
+          </span>
+          <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: Number(currentWeather.windDeg) }} />
+        </Col>
+        <Col xs="auto">
+          <b>Humidity:</b> {currentWeather.humidity}%
+        </Col>
+        <Col xs="auto">
+          <b>Dew Pt:</b> {currentWeather.dewPoint}
+        </Col>
+        {currentWeather.uvIndex ? (
           <Col xs="auto">
-            <span className="wind">
-              <b>Wind:</b> {currentWeather.windSpeed}{' '}
+            <b>UV Index:</b> {currentWeather.uvIndex}
+          </Col>
+        ) : null}
+        <Col xs="auto">
+          <b>Visibility:</b> {currentWeather.visibility}
+        </Col>
+        <Col xs="auto">
+          <b>Pressure:</b> {currentWeather.pressure}
+        </Col>
+      </Row>
+      <div className="currentHero" ref={hero}>
+        <WeatherIcon condition={currentWeather.conditionIcon} sizePx={compact ? 40 : 70} time={null} animate />
+        <div className="currentSummary">
+          <div className="currentTemp h1 bolder">
+            {currentWeather.temp}
+            {currentWeather.summary?.length ? ` ${currentWeather.summary}.` : ''}
+          </div>
+          <div className="currentMeta h6">
+            <span>
+              <b>Feels Like:</b> {currentWeather.tempFeelsLike}
             </span>
-            <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: Number(currentWeather.windDeg) }} />
-          </Col>
-          <Col xs="auto">
-            <b>Humidity:</b> {currentWeather.humidity}%
-          </Col>
-          <Col xs="auto">
-            <b>Dew Pt:</b> {currentWeather.dewPoint}
-          </Col>
-          {currentWeather.uvIndex ? (
-            <Col xs="auto">
-              <b>UV Index:</b> {currentWeather.uvIndex}
-            </Col>
-          ) : null}
-          <Col xs="auto">
-            <b>Visibility:</b> {currentWeather.visibility}
-          </Col>
-          <Col xs="auto">
-            <b>Pressure:</b> {currentWeather.pressure}
-          </Col>
-        </Row>
-        <div className="currentHero">
-          <WeatherIcon condition={currentWeather.conditionIcon} sizePx={70} time={null} animate />
-          <div className="currentSummary">
-            <div className="currentTemp h1 bolder">
-              {currentWeather.temp}
-              {currentWeather.summary?.length ? ` ${currentWeather.summary}.` : ''}
-            </div>
-            <div className="currentMeta h6">
-              <span>
-                <b>Feels Like:</b> {currentWeather.tempFeelsLike}
-              </span>
-              <span>
-                <b>Low:</b> {currentWeather.tempMin}
-              </span>
-              <span>
-                <b>High:</b> {currentWeather.tempMax}
-              </span>
-            </div>
+            <span>
+              <b>Low:</b> {currentWeather.tempMin}
+            </span>
+            <span>
+              <b>High:</b> {currentWeather.tempMax}
+            </span>
+            {compact && description ? <span className="currentMeta-description">{description}</span> : null}
           </div>
         </div>
-        {description}
-      </Container>
-    );
-  }
-}
+      </div>
+      {!compact && description ? (
+        <Row className="currentDescription justify-content-center h2">{description}</Row>
+      ) : null}
+    </Container>
+  );
+};
+
+export default CurrentWeather;

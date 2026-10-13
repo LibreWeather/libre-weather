@@ -3,6 +3,7 @@ import {
   DEFAULT_PREFERENCES,
   STORAGE_KEY,
   loadPreferences,
+  resolveCompact,
   resolveVolumeUnit,
   resolveWindUnit,
   sanitizePreferences,
@@ -37,6 +38,11 @@ describe('preferences storage', () => {
     });
   });
 
+  test('keeps a valid layout and drops an unknown one', () => {
+    expect(sanitizePreferences({ layout: 'compact' }).layout).toBe('compact');
+    expect(sanitizePreferences({ layout: 'dense' }).layout).toBe('auto');
+  });
+
   test('survives corrupt JSON', () => {
     localStorage.setItem(STORAGE_KEY, '{nope');
     expect(loadPreferences(localStorage)).toEqual(DEFAULT_PREFERENCES);
@@ -53,6 +59,30 @@ describe('unit resolution', () => {
   test('explicit choices win', () => {
     expect(resolveWindUnit('kmh', UnitSystem.IMPERIAL)).toBe(WindUnit.KMH);
     expect(resolveVolumeUnit('in', UnitSystem.METRIC)).toBe(VolumeUnit.IN);
+  });
+});
+
+describe('compact layout', () => {
+  const stubPhone = (phone: boolean) => {
+    window.matchMedia = ((query: string) => ({ matches: phone && query === '(max-width: 767px)' })) as never;
+  };
+  const originalMatchMedia = window.matchMedia;
+  afterEach(() => {
+    window.matchMedia = originalMatchMedia;
+  });
+
+  test('auto is compact on phones only', () => {
+    stubPhone(true);
+    expect(resolveCompact('auto')).toBe(true);
+    stubPhone(false);
+    expect(resolveCompact('auto')).toBe(false);
+  });
+
+  test('explicit choices ignore the screen size', () => {
+    stubPhone(false);
+    expect(resolveCompact('compact')).toBe(true);
+    stubPhone(true);
+    expect(resolveCompact('comfortable')).toBe(false);
   });
 });
 

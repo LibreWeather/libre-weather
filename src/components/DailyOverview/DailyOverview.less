@@ -124,4 +124,31 @@
       visibility: hidden;
     }
   }
+
+  html.compact & {
+    // Shrink the contents, not the container, whose em-based max-width keeps it aligned with the week.
+    > * {
+      font-size: 0.875rem;
+    }
+
+    .overviewBar {
+      padding: 0.3em 0;
+      line-height: 14px;
+    }
+
+    .overviewTics {
+      .even {
+        height: 3px;
+      }
+      .odd,
+      &:nth-child(3n + 1) .even,
+      &:nth-child(3n + 1) .odd {
+        height: 6px;
+      }
+    }
+
+    .hourDetails .overviewDetails .overviewDetailsTemp {
+      font-size: 1em;
+    }
+  }
 }
