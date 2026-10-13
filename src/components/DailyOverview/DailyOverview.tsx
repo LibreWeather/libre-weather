@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
-import { WeatherIcon } from '../WeatherIcon';
+import { WeatherIcon } from '@components/WeatherIcon';
 
 import './DailyOverview.less';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
-import { usePreferences } from '../providers/PreferencesProvider';
-import CurrentDayContext from '../utilities/CurrentDayContext';
-import { Condition } from '../utilities/weatherTypes';
+import { usePreferences } from '../../providers/PreferencesProvider';
+import CurrentDayContext from '../../utilities/CurrentDayContext';
+import { Condition } from '../../utilities/weatherTypes';
 
 type AnimatedWeather = typeof ReactAnimatedWeather & { defaultProps?: unknown };
 delete (ReactAnimatedWeather as AnimatedWeather).defaultProps;

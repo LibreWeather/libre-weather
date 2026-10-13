@@ -1,11 +1,11 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import CurrentWeather from '@components/CurrentWeather/CurrentWeather';
-import DailyOverview from '@components/DailyOverview/DailyOverview';
-import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts/WeatherAlerts';
-import WeatherSkeleton from '@components/WeatherSkeleton/WeatherSkeleton';
+import CurrentWeather from '@components/CurrentWeather';
+import DailyOverview from '@components/DailyOverview';
+import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts';
+import WeatherSkeleton from '@components/WeatherSkeleton';
 import { usePreferences } from '../../providers/PreferencesProvider';
-import WeeklyForecast from '@components/WeeklyForecast/WeeklyForecast';
+import WeeklyForecast from '@components/WeeklyForecast';
 import { placeLabel, type NominatimResponse } from '@/utilities/nominatim';
 import { usePlace } from '../../providers/PlaceProvider';
 import { useWeather } from '../../providers/WeatherProvider';

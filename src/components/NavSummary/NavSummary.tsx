@@ -3,7 +3,7 @@ import React from 'react';
 import { usePreferences } from '../../providers/PreferencesProvider';
 import { useWeather } from '../../providers/WeatherProvider';
 import { tempDisplay } from '../../utilities/formatters';
-import { WeatherIcon } from '../WeatherIcon';
+import { WeatherIcon } from '@components/WeatherIcon';
 
 import './NavSummary.less';
 

@@ -13,7 +13,7 @@ import Col from 'react-bootstrap/Col';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { tempDisplay, getDayOfTheWeek } from '@/utilities';
-import HourlyGraph from '@components/HourlyGraph/HourlyGraph';
+import HourlyGraph from '@components/HourlyGraph';
 import { Condition, type Hourly, type Temperature } from '@/utilities/weatherTypes';
 import { TempRangeCol } from './TempRangeCol';
 

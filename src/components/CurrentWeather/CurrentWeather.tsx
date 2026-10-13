@@ -4,7 +4,7 @@ import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import { WeatherIcon } from '../WeatherIcon';
+import { WeatherIcon } from '@components/WeatherIcon';
 import { usePreferences } from '../../providers/PreferencesProvider';
 import { tempDisplay, windLabel } from '../../utilities/formatters';
 import {

@@ -12,7 +12,7 @@ import {
   type Preferences,
 } from '../../utilities/preferences';
 import { UnitSystem } from '../../utilities/weatherTypes';
-import { isStandalone } from '../InstallBanner/InstallBanner';
+import { isStandalone } from '@components/InstallBanner';
 
 import './PreferencesPanel.less';
 

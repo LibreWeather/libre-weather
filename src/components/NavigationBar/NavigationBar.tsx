@@ -12,12 +12,12 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import { DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import useDialogParam from '../hooks/useDialogParam';
-import { usePlace } from '../providers/PlaceProvider';
-import { placeLabel } from '../utilities/nominatim';
-import Logo from './Logo';
-import NavSummary from './NavSummary/NavSummary';
-import PreferencesPanel from './Preferences/PreferencesPanel';
+import Logo from '@components/Logo';
+import NavSummary from '@components/NavSummary';
+import PreferencesPanel from '@components/Preferences';
+import useDialogParam from '../../hooks/useDialogParam';
+import { usePlace } from '../../providers/PlaceProvider';
+import { placeLabel } from '../../utilities/nominatim';
 
 import './NavigationBar.less';
 

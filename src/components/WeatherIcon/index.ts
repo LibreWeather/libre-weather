@@ -1,0 +1,1 @@
+export { WeatherIcon } from './WeatherIcon';
