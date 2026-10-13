@@ -65,6 +65,7 @@ const DailyRows = ({ weeklyWeather, hourly }: { weeklyWeather: DailyRowWeather[]
         dailyWeather={dailyWeather}
         hourly={hoursOnDay(hourly, dailyWeather.time)}
         index={index}
+        defaultOpen={index === 0}
         key={`ww-${dailyWeather.time}-${index}`}
         overallMinTemp={overallMin}
         overallMaxTemp={overallMax} />

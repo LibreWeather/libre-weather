@@ -34,6 +34,7 @@ type DailyRowProps = {
   index: number;
   overallMinTemp: number;
   overallMaxTemp: number;
+  defaultOpen?: boolean;
 };
 
 type DailyRowState = {
@@ -46,10 +47,11 @@ export class DailyRow extends React.Component<DailyRowProps, DailyRowState> {
   constructor(props: DailyRowProps) {
     super(props);
 
+    const open = Boolean(props.defaultOpen);
     this.state = {
-      drawerDisplay: 'none',
-      drawerIcon: faPlusCircle,
-      open: false,
+      drawerDisplay: open ? 'block' : 'none',
+      drawerIcon: open ? faMinusCircle : faPlusCircle,
+      open,
     };
 
     this.handleRowClick = this.handleRowClick.bind(this);

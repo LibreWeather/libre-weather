@@ -141,19 +141,23 @@ describe('Weather view', () => {
       cy.get('.forecastDayCol').first().should('have.text', 'Today');
     });
 
-    it('opens and closes a row', () => {
+    it('opens Today and keeps later days closed on load', () => {
+      cy.get('.weeklyForecastRow').first().should('have.class', 'open');
+      cy.get('.weeklyForecastRow').first().find('.displayDrawer').should('be.visible').and('contain.text', 'Overcast');
+      cy.get('.weeklyForecastRow.open').should('have.length', 1);
+    });
+
+    it('closes and reopens a row', () => {
       cy.get('.weeklyForecastRow').first().as('today');
-      cy.get('@today').find('.displayDrawer').should('not.be.visible');
-      cy.get('@today').find('.buttonRow').click();
-      cy.get('@today').should('have.class', 'open');
-      cy.get('@today').find('.displayDrawer').should('be.visible').and('contain.text', 'Overcast');
       cy.get('@today').find('.buttonRow').click();
       cy.get('@today').should('not.have.class', 'open');
       cy.get('@today').find('.displayDrawer').should('not.be.visible');
+      cy.get('@today').find('.buttonRow').click();
+      cy.get('@today').should('have.class', 'open');
+      cy.get('@today').find('.displayDrawer').should('be.visible');
     });
 
     it('pads the open drawer away from its edges', () => {
-      cy.get('.weeklyForecastRow').first().find('.buttonRow').click();
       cy.get('.weeklyForecastRow').first().find('.displayDrawer').should(($drawer) => {
         const style = getComputedStyle($drawer[0]);
         expect(parseFloat(style.paddingBottom)).to.be.greaterThan(8);
@@ -169,7 +173,6 @@ describe('Weather view', () => {
     });
 
     it('charts Today from midnight, scrolled to now with a now marker', () => {
-      cy.contains('.forecastDayCol', 'Today').click();
       cy.get('.hourlyGraph').should('be.visible');
       cy.get('.hourlyGraph-time').should('have.length', 24).first().should('have.text', '12am');
       cy.get('.hourlyGraph-track').its('length').should('be.gte', 6);
@@ -181,7 +184,6 @@ describe('Weather view', () => {
     });
 
     it('updates the details panel for the focused hour', () => {
-      cy.contains('.forecastDayCol', 'Today').click();
       cy.get('.hourlyGraph-hit').eq(3).focus();
       cy.get('.hourlyGraph-tip-title').should('contain.text', '3am').and('contain.text', 'Rain');
       cy.get('.hourlyGraph-hit').eq(3).should('have.class', 'is-active');
@@ -190,7 +192,6 @@ describe('Weather view', () => {
     });
 
     it('draws each line across the full chart width', () => {
-      cy.contains('.forecastDayCol', 'Today').click();
       cy.get('.hourlyGraph-plot polyline').first().invoke('attr', 'points').then((points) => {
         const xs = points.trim().split(/\s+/).map((pair) => Number(pair.split(',')[0]));
         expect(Math.min(...xs)).to.eq(0);
