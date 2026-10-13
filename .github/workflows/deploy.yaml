@@ -32,6 +32,8 @@ jobs:
       - run: npm run lint
       - name: Validate current commit (last commit) with commitlint
         run: npx commitlint --config .config/commitlint.config.mjs --last --verbose
+      - name: Resolve semantic-release plugins from action
+        run: echo "NODE_PATH=$(echo "$(dirname "$RUNNER_WORKSPACE")"/_actions/cycjimmy/semantic-release-action/*/node_modules)" >> "$GITHUB_ENV"
       - name: Release
         uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
         env:
