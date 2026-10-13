@@ -85,9 +85,18 @@ const buildWeather = (now, unit = 'IMPERIAL') => {
  * Stub the weather API and Nominatim, freeze Date at a fixed time, then visit.
  * `weather` overrides the API reply; pass a StaticResponse such as `{ statusCode: 500 }` to fail it.
  * `weatherDelay` holds back the default reply so loading states can be observed.
- * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object, weatherDelay?: number }} [opts]
+ * `alerts` overrides the alerts reply (an AlertsResponse body or a StaticResponse).
+ * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object, weatherDelay?: number, alerts?: object }} [opts]
  */
-const visitStubbed = ({ path = '/', now = fixedNow(), onBeforeLoad, weather, weatherDelay = 0 } = {}) => {
+const visitStubbed = ({
+  path = '/',
+  now = fixedNow(),
+  onBeforeLoad,
+  weather,
+  weatherDelay = 0,
+  alerts = { coverage: true, sources: ['NWS'], alerts: [] },
+} = {}) => {
+  cy.intercept('GET', '**/alerts/**', alerts).as('alerts');
   cy.intercept('GET', '**/weather/**', (req) => {
     const unit = /\/unit\/METRIC/i.test(req.url) ? 'METRIC' : 'IMPERIAL';
     req.reply(weather ?? { body: buildWeather(now, unit), delay: weatherDelay });

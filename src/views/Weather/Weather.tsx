@@ -2,6 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import CurrentWeather from '@components/CurrentWeather/CurrentWeather';
 import DailyOverview from '@components/DailyOverview/DailyOverview';
+import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts/WeatherAlerts';
 import WeatherSkeleton from '@components/WeatherSkeleton/WeatherSkeleton';
 import WeeklyForecast from '@components/WeeklyForecast/WeeklyForecast';
 import { placeLabel, type NominatimResponse } from '@/utilities/nominatim';
@@ -66,7 +67,9 @@ const WeatherView = () => {
     return (
       <div className="header">
         {notice}
-        <WeatherSkeleton animated={loading} />
+        <WeatherSkeleton animated={loading}>
+          <WeatherAlerts />
+        </WeatherSkeleton>
       </div>
     );
   }
@@ -75,8 +78,10 @@ const WeatherView = () => {
     <div className={`header${loading ? ' is-refreshing' : ''}`} aria-busy={loading}>
       {notice}
       <CurrentWeather weatherData={weather} />
+      <WeatherAlerts />
       <DailyOverview hourlyWeatherData={weather.hourly} />
       <WeeklyForecast weatherData={weather} />
+      <AlertsCoverageNote />
     </div>
   );
 };

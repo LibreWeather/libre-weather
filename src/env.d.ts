@@ -1,6 +1,7 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     LIBRE_WEATHER_API?: string;
+    LIBRE_WEATHER_ALERTS_API?: string;
     NODE_ENV?: string;
     PUBLIC_URL?: string;
   }
