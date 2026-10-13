@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/LibreWeather/libre-weather/compare/v1.2.0...v1.3.0) (2026-10-13)
+
+
+### Features
+
+* **ui:** floating navbar, grouped forecast card, rounded overview; expand cypress e2e ([6160087](https://github.com/LibreWeather/libre-weather/commit/61600876922cbe640d30f156989b8e1c0acbe860))
+
 # [1.2.0](https://github.com/LibreWeather/libre-weather/compare/v1.1.0...v1.2.0) (2026-10-13)
 
 
