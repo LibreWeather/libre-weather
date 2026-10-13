@@ -1,4 +1,4 @@
-import { formatClock, formatHour, uses12HourClock } from '../utilities/locale';
+import { formatClock, formatHour, uses12HourClock } from '@/utilities/locale';
 
 const at = (hours: number, minutes = 0) => new Date(2026, 9, 13, hours, minutes).getTime();
 

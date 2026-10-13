@@ -6,10 +6,10 @@ import './App.less';
 
 import InstallBanner from '@components/InstallBanner';
 import NavigationBar from '@components/NavigationBar';
-import { AlertsProvider } from './providers/AlertsProvider';
-import { PlaceProvider } from './providers/PlaceProvider';
-import { PreferencesProvider } from './providers/PreferencesProvider';
-import { WeatherProvider } from './providers/WeatherProvider';
+import { AlertsProvider } from '@/providers/AlertsProvider';
+import { PlaceProvider } from '@/providers/PlaceProvider';
+import { PreferencesProvider } from '@/providers/PreferencesProvider';
+import { WeatherProvider } from '@/providers/WeatherProvider';
 import Licenses from './views/Licenses';
 import Weather from './views/Weather/Weather';
 

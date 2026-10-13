@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { geocode, reverseGeocode, type NominatimResponse } from '../utilities/nominatim';
+import { geocodeRequest, reverseRequest } from '@/api/nominatim';
+import { useFetch } from '@/hooks/useFetch';
+import { useStorage } from '@/hooks/useStorage';
+import type { Coords, NominatimResponse, PlaceStatus } from '@/models/place';
+import { matchCoords, placeName, placeStore } from '@/utilities/place';
 
 const DEFAULT_ZIP = '64106';
 const PENDING_NAME = 'Locating…';
-
-export type Coords = { lat: number; lon: number };
-
-export type PlaceStatus = 'resolving' | 'choosing' | 'resolved' | 'failed';
 
 export type PlaceContextValue = {
   zip: string;
@@ -24,74 +24,58 @@ export type PlaceContextValue = {
 
 const PlaceContext = React.createContext<PlaceContextValue | null>(null);
 
-const savedCoords = (): Coords | null => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('coords') ?? 'null');
-    return Number.isFinite(saved?.lat) && Number.isFinite(saved?.lon) ? { lat: saved.lat, lon: saved.lon } : null;
-  } catch {
-    return null;
-  }
-};
-
-const nameFor = ({ address }: NominatimResponse) =>
-  address.village || address.town || address.city || address.county || address.postcode;
+const logError = (error: Error) => console.error(error);
 
 export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
   const geoAvailable = typeof navigator !== 'undefined' && Boolean(navigator.geolocation);
-  const [zip, setZip] = React.useState(() => localStorage.getItem('zip') || DEFAULT_ZIP);
-  const [locationName, setLocationName] = React.useState(() => localStorage.getItem('locationName') || PENDING_NAME);
-  const [useGeo, setUseGeo] = React.useState(() => geoAvailable && localStorage.getItem('useGeo') === 'true');
-  const [initialCoords] = React.useState(() => (useGeo ? null : savedCoords()));
+  const [saved, setSaved] = useStorage(placeStore);
+  const useGeo = geoAvailable && saved.useGeo;
+  const [zip, setZip] = React.useState(saved.zip || DEFAULT_ZIP);
+  const [initialCoords] = React.useState(() => (useGeo ? null : saved.coords));
   const [coords, setCoords] = React.useState<Coords | null>(initialCoords);
   const [options, setOptions] = React.useState<NominatimResponse[]>([]);
   const [status, setStatus] = React.useState<PlaceStatus>(initialCoords ? 'resolved' : 'resolving');
+  const [, geocode] = useFetch<NominatimResponse[]>(null, { manual: true, onError: logError });
+  const [, reverseGeocode] = useFetch<NominatimResponse>(null, { manual: true, onError: logError });
+  // Geolocation isn't a fetch, so overlapping lookups are told apart by id rather than by aborting.
   const requestId = React.useRef(0);
 
-  const persistGeo = React.useCallback((value: boolean) => {
-    setUseGeo(value);
-    localStorage.setItem('useGeo', String(value));
-  }, []);
+  const persistGeo = React.useCallback(
+    (value: boolean) => setSaved((place) => ({ ...place, useGeo: value })),
+    [setSaved]
+  );
 
-  const applyMatch = React.useCallback((match: NominatimResponse) => {
-    requestId.current++;
-    const name = nameFor(match) || match.address.postcode || '';
-    const postcode = match.address.postcode;
-    const matchCoords = { lat: Number(match.lat), lon: Number(match.lon) };
-    localStorage.setItem('locationName', name);
-    localStorage.setItem('coords', JSON.stringify(matchCoords));
-    if (postcode) {
-      localStorage.setItem('zip', postcode);
-      setZip(postcode);
-    }
-    setLocationName(name);
-    setOptions([]);
-    setCoords(matchCoords);
-    setStatus('resolved');
-  }, []);
+  const applyMatch = React.useCallback(
+    (match: NominatimResponse) => {
+      requestId.current++;
+      const name = placeName(match);
+      const postcode = match.address.postcode;
+      const nextCoords = matchCoords(match);
+      setSaved((place) => ({ ...place, locationName: name, coords: nextCoords, zip: postcode || place.zip }));
+      if (postcode) setZip(postcode);
+      setOptions([]);
+      setCoords(nextCoords);
+      setStatus('resolved');
+    },
+    [setSaved]
+  );
 
   const lookupZip = React.useCallback(
-    (query: string) => {
+    async (query: string) => {
       const id = ++requestId.current;
-      const isCurrent = () => id === requestId.current;
       setStatus('resolving');
-      geocode({ addressdetails: true, postalcode: query })
-        .then((results) => {
-          if (!isCurrent()) return;
-          if (!results.length) {
-            setStatus('failed');
-          } else if (results.length > 1) {
-            setOptions(results);
-            setStatus('choosing');
-          } else {
-            applyMatch(results[0]);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          if (isCurrent()) setStatus('failed');
-        });
+      const results = await geocode(geocodeRequest(query));
+      if (id !== requestId.current) return;
+      if (!results?.length) {
+        setStatus('failed');
+      } else if (results.length > 1) {
+        setOptions(results);
+        setStatus('choosing');
+      } else {
+        applyMatch(results[0]);
+      }
     },
-    [applyMatch]
+    [applyMatch, geocode]
   );
 
   const locate = React.useCallback(
@@ -100,15 +84,11 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
       const isCurrent = () => id === requestId.current;
       setStatus('resolving');
       navigator.geolocation.getCurrentPosition(
-        ({ coords: position }) => {
-          reverseGeocode({ lat: position.latitude, lon: position.longitude, addressdetails: true })
-            .then((match) => {
-              if (isCurrent()) applyMatch(match);
-            })
-            .catch((error) => {
-              console.error(error);
-              if (isCurrent()) setStatus('failed');
-            });
+        async ({ coords: position }) => {
+          const match = await reverseGeocode(reverseRequest(position.latitude, position.longitude));
+          if (!isCurrent()) return;
+          if (match) applyMatch(match);
+          else setStatus('failed');
         },
         () => {
           if (!isCurrent()) return;
@@ -117,7 +97,7 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
         }
       );
     },
-    [applyMatch, lookupZip, persistGeo]
+    [applyMatch, lookupZip, persistGeo, reverseGeocode]
   );
 
   React.useEffect(() => {
@@ -148,6 +128,8 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
       locate(zip);
     }
   }, [useGeo, zip, persistGeo, lookupZip, locate]);
+
+  const locationName = saved.locationName || PENDING_NAME;
 
   const value = React.useMemo<PlaceContextValue>(
     () => ({

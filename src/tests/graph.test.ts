@@ -1,4 +1,4 @@
-import { extent, hourIndexAt, hourPosition, num, polyline, scaleY, VIEW_HOURS } from '@components/HourlyGraph/graphUtils';
+import { barGeometry, extent, hourPosition, num, polyline, scaleY } from '@/utilities/graph';
 
 test('num reads value and magnitude objects', () => {
   expect(num(12)).toBe(12);
@@ -38,8 +38,7 @@ test('hourPosition places a timestamp within the hours shown', () => {
   expect(hourPosition([], 0)).toBeNull();
 });
 
-test('hourIndexAt maps 8-hour viewport to column', () => {
-  const rect = { left: 0, width: 80 };
-  expect(hourIndexAt(10, rect, 24, VIEW_HOURS, 0)).toBe(3);
-  expect(hourIndexAt(10, rect, 24, VIEW_HOURS, 80)).toBe(11);
+test('barGeometry rises from the bottom of the track', () => {
+  expect(barGeometry(100, 0, 100, 52)).toEqual({ top: 4, height: 44 });
+  expect(barGeometry(0, 0, 100, 52).height).toBe(1);
 });

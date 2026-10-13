@@ -1,4 +1,4 @@
-import { convertVolume, convertWind } from '../utilities/convertUnits';
+import { convertVolume, convertWind } from '@/utilities/convertUnits';
 import {
   DEFAULT_PREFERENCES,
   STORAGE_KEY,
@@ -8,8 +8,8 @@ import {
   resolveWindUnit,
   sanitizePreferences,
   savePreferences,
-} from '../utilities/preferences';
-import { UnitSystem, VolumeUnit, WindUnit } from '../utilities/weatherTypes';
+} from '@/utilities/preferences';
+import { UnitSystem, VolumeUnit, WindUnit } from '@/models/weather';
 
 describe('preferences storage', () => {
   beforeEach(() => localStorage.clear());
@@ -63,26 +63,14 @@ describe('unit resolution', () => {
 });
 
 describe('compact layout', () => {
-  const stubPhone = (phone: boolean) => {
-    window.matchMedia = ((query: string) => ({ matches: phone && query === '(max-width: 767px)' })) as never;
-  };
-  const originalMatchMedia = window.matchMedia;
-  afterEach(() => {
-    window.matchMedia = originalMatchMedia;
-  });
-
   test('auto is compact on phones only', () => {
-    stubPhone(true);
-    expect(resolveCompact('auto')).toBe(true);
-    stubPhone(false);
-    expect(resolveCompact('auto')).toBe(false);
+    expect(resolveCompact('auto', true)).toBe(true);
+    expect(resolveCompact('auto', false)).toBe(false);
   });
 
   test('explicit choices ignore the screen size', () => {
-    stubPhone(false);
-    expect(resolveCompact('compact')).toBe(true);
-    stubPhone(true);
-    expect(resolveCompact('comfortable')).toBe(false);
+    expect(resolveCompact('compact', false)).toBe(true);
+    expect(resolveCompact('comfortable', true)).toBe(false);
   });
 });
 

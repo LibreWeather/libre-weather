@@ -1,4 +1,4 @@
-import { strategyFor } from '../utilities/cacheStrategy';
+import { strategyFor } from '@/utilities/cacheStrategy';
 
 const ORIGIN = 'https://libreweather.com';
 const API = 'https://api.libreweather.com/weather';

@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { convertWeather } from '../utilities/convertUnits';
-import CurrentDayContext from '../utilities/CurrentDayContext';
-import type { LoadStatus, Weather } from '../utilities/weatherTypes';
+import { WEATHER_API_ROOT, weatherRequest } from '@/api/weather';
+import { useFetch } from '@/hooks/useFetch';
+import type { LoadStatus } from '@/models/status';
+import type { Weather } from '@/models/weather';
+import { convertWeather } from '@/utilities/convertUnits';
+import CurrentDayContext from './CurrentDayContext';
 import { usePlace } from './PlaceProvider';
 import { usePreferences } from './PreferencesProvider';
-
-const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 
 export type WeatherContextValue = {
   weather: Weather | null;
@@ -16,50 +17,29 @@ export type WeatherContextValue = {
 
 const WeatherContext = React.createContext<WeatherContextValue | null>(null);
 
+const logError = (error: Error) => console.error(error);
+
 export const WeatherProvider = ({ children }: { children: React.ReactNode }) => {
   const { coords } = usePlace();
   const {
     resolved: { unitSystem: units, windUnit, volumeUnit },
   } = usePreferences();
-  const [apiWeather, setWeather] = React.useState<Weather | null>(null);
+  const request = coords && WEATHER_API_ROOT ? weatherRequest(coords, units) : null;
+  // Kept while reloading so the page dims instead of dropping back to the skeleton.
+  const [{ data, loading, error }, refetch] = useFetch<Weather>(request, { keepPreviousData: true, onError: logError });
   const weather = React.useMemo(
-    () => (apiWeather ? convertWeather(apiWeather, { wind: windUnit, volume: volumeUnit }) : null),
-    [apiWeather, windUnit, volumeUnit]
+    () => (data ? convertWeather(data, { wind: windUnit, volume: volumeUnit }) : null),
+    [data, windUnit, volumeUnit]
   );
-  const [status, setStatus] = React.useState<LoadStatus>('loading');
-  const [attempt, setAttempt] = React.useState(0);
 
-  React.useEffect(() => {
-    if (!coords) return undefined;
-    if (!LIBRE_WEATHER_API_ROOT) {
-      setStatus('error');
-      return undefined;
-    }
+  let status: LoadStatus = 'idle';
+  if (error || (coords && !WEATHER_API_ROOT)) status = 'error';
+  else if (loading) status = 'loading';
+  else if (data) status = 'ready';
 
-    const controller = new AbortController();
-    setStatus('loading');
-    fetch(`${LIBRE_WEATHER_API_ROOT}/${coords.lat},${coords.lon}/unit/${units}`, {
-      headers: { 'x-tz': Intl.DateTimeFormat().resolvedOptions().timeZone },
-      signal: controller.signal,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Weather request failed: ${res.status}`);
-        return res.json();
-      })
-      .then((data: Weather) => {
-        setWeather(data);
-        setStatus('ready');
-      })
-      .catch((error) => {
-        if (controller.signal.aborted) return;
-        console.error(error);
-        setStatus('error');
-      });
-
-    return () => controller.abort();
-  }, [coords, units, attempt]);
-
-  const retry = React.useCallback(() => setAttempt((n) => n + 1), []);
+  const retry = React.useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   const value = React.useMemo<WeatherContextValue>(() => ({ weather, status, retry }), [weather, status, retry]);
 

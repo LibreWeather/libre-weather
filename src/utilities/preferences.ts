@@ -1,25 +1,15 @@
+import type {
+  LayoutPref,
+  MotionPref,
+  PrecipPref,
+  Preferences,
+  TemperaturePref,
+  TransparencyPref,
+  WindPref,
+} from '@/models/preferences';
+import type { StorageCodec } from '@/models/storage';
+import { UnitSystem, VolumeUnit, WindUnit } from '@/models/weather';
 import { browserUnits } from './localeUnits';
-import { UnitSystem, VolumeUnit, WindUnit } from './weatherTypes';
-
-export type TemperaturePref = 'auto' | 'F' | 'C';
-export type WindPref = 'auto' | 'mph' | 'kmh' | 'ms';
-export type PrecipPref = 'auto' | 'in' | 'mm';
-export type ClockPref = 'auto' | '12' | '24';
-export type MotionPref = 'auto' | 'reduce' | 'full';
-export type TransparencyPref = 'auto' | 'reduce' | 'full';
-export type LayoutPref = 'auto' | 'compact' | 'comfortable';
-
-export type Preferences = {
-  temperature: TemperaturePref;
-  wind: WindPref;
-  precip: PrecipPref;
-  clock: ClockPref;
-  alerts: boolean;
-  motion: MotionPref;
-  transparency: TransparencyPref;
-  layout: LayoutPref;
-  installBannerDismissed: boolean;
-};
 
 export const DEFAULT_PREFERENCES: Preferences = {
   temperature: 'auto',
@@ -87,6 +77,8 @@ export const savePreferences = (storage: Storage, preferences: Preferences) => {
   storage.removeItem(LEGACY_INSTALL_KEY);
 };
 
+export const preferencesStore: StorageCodec<Preferences> = { load: loadPreferences, save: savePreferences };
+
 /** Unit system the weather API is asked for; temperature decides it. */
 export const resolveUnitSystem = (temperature: TemperaturePref): UnitSystem => {
   if (temperature === 'F') return UnitSystem.IMPERIAL;
@@ -108,20 +100,14 @@ export const resolveVolumeUnit = (precip: PrecipPref, system: UnitSystem): Volum
   return system === UnitSystem.IMPERIAL ? VolumeUnit.IN : VolumeUnit.MM;
 };
 
-const mediaMatches = (query: string) =>
-  typeof window !== 'undefined' && Boolean(window.matchMedia?.(query).matches);
-
-export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
-export const REDUCED_TRANSPARENCY_QUERY = '(prefers-reduced-transparency: reduce)';
-export const COMPACT_QUERY = '(max-width: 767px)';
-
-export const resolveReduceMotion = (motion: MotionPref) =>
-  motion === 'reduce' || (motion === 'auto' && mediaMatches(REDUCED_MOTION_QUERY));
+/** `auto` follows the OS reduced-motion setting. */
+export const resolveReduceMotion = (motion: MotionPref, osReduces: boolean) =>
+  motion === 'reduce' || (motion === 'auto' && osReduces);
 
 /** `auto` follows the OS setting where the browser exposes it (Chromium and Firefox). */
-export const resolveReduceTransparency = (transparency: TransparencyPref) =>
-  transparency === 'reduce' || (transparency === 'auto' && mediaMatches(REDUCED_TRANSPARENCY_QUERY));
+export const resolveReduceTransparency = (transparency: TransparencyPref, osReduces: boolean) =>
+  transparency === 'reduce' || (transparency === 'auto' && osReduces);
 
 /** `auto` is compact on phone-width screens. */
-export const resolveCompact = (layout: LayoutPref) =>
-  layout === 'compact' || (layout === 'auto' && mediaMatches(COMPACT_QUERY));
+export const resolveCompact = (layout: LayoutPref, phone: boolean) =>
+  layout === 'compact' || (layout === 'auto' && phone);

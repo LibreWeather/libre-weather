@@ -1,3 +1,5 @@
+import type { StorageCodec } from '@/models/storage';
+
 export const OPEN_DAYS_KEY = 'openDays';
 
 /** Stands for whichever day is currently first, so "keep Today open" carries over to tomorrow. */
@@ -31,6 +33,11 @@ export const loadOpenDays = (storage: Storage, now = Date.now()): string[] => {
 
 export const saveOpenDays = (storage: Storage, days: string[], now = Date.now()) => {
   storage.setItem(OPEN_DAYS_KEY, JSON.stringify(prune(days, now)));
+};
+
+export const openDaysStore: StorageCodec<string[]> = {
+  load: (storage) => loadOpenDays(storage),
+  save: (storage, days) => saveOpenDays(storage, days),
 };
 
 export const isDayOpen = (days: string[], time: number, isToday: boolean) =>

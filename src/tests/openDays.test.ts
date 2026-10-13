@@ -1,4 +1,4 @@
-import { OPEN_DAYS_KEY, TODAY, dayKey, isDayOpen, loadOpenDays, saveOpenDays, toggleDay } from '../utilities/openDays';
+import { OPEN_DAYS_KEY, TODAY, dayKey, isDayOpen, loadOpenDays, saveOpenDays, toggleDay } from '@/utilities/openDays';
 
 const DAY = 24 * 60 * 60 * 1000;
 const now = new Date(2026, 9, 13, 15).getTime();

@@ -1,21 +1,20 @@
 import React from 'react';
 
-import { setClockPreference, uses12HourClock } from '../utilities/locale';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useStorage } from '@/hooks/useStorage';
+import type { Preferences } from '@/models/preferences';
+import type { UnitSystem, VolumeUnit, WindUnit } from '@/models/weather';
+import { setClockPreference, uses12HourClock } from '@/utilities/locale';
+import { PHONE_QUERY, REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY } from '@/utilities/media';
 import {
-  COMPACT_QUERY,
-  REDUCED_MOTION_QUERY,
-  REDUCED_TRANSPARENCY_QUERY,
-  loadPreferences,
+  preferencesStore,
   resolveCompact,
   resolveReduceMotion,
   resolveReduceTransparency,
   resolveUnitSystem,
   resolveVolumeUnit,
   resolveWindUnit,
-  savePreferences,
-  type Preferences,
-} from '../utilities/preferences';
-import type { UnitSystem, VolumeUnit, WindUnit } from '../utilities/weatherTypes';
+} from '@/utilities/preferences';
 
 export type ResolvedPreferences = {
   unitSystem: UnitSystem;
@@ -36,23 +35,11 @@ export type PreferencesContextValue = {
 
 const PreferencesContext = React.createContext<PreferencesContextValue | null>(null);
 
-/** Re-render when an OS-level media preference flips, so `auto` settings follow it live. */
-const useMediaVersion = (queries: string[]) => {
-  const [version, setVersion] = React.useState(0);
-  React.useEffect(() => {
-    if (!window.matchMedia) return undefined;
-    const lists = queries.map((query) => window.matchMedia(query));
-    const bump = () => setVersion((n) => n + 1);
-    lists.forEach((list) => list.addEventListener?.('change', bump));
-    return () => lists.forEach((list) => list.removeEventListener?.('change', bump));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return version;
-};
-
 export const PreferencesProvider = ({ children }: { children: React.ReactNode }) => {
-  const [preferences, setPreferences] = React.useState(() => loadPreferences(localStorage));
-  const mediaVersion = useMediaVersion([REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY, COMPACT_QUERY]);
+  const [preferences, setPreferences] = useStorage(preferencesStore);
+  const osReducesMotion = useMediaQuery(REDUCED_MOTION_QUERY);
+  const osReducesTransparency = useMediaQuery(REDUCED_TRANSPARENCY_QUERY);
+  const phone = useMediaQuery(PHONE_QUERY);
 
   // Formatters are plain functions, so the clock setting is applied before children render.
   setClockPreference(preferences.clock);
@@ -64,13 +51,11 @@ export const PreferencesProvider = ({ children }: { children: React.ReactNode })
       windUnit: resolveWindUnit(preferences.wind, unitSystem),
       volumeUnit: resolveVolumeUnit(preferences.precip, unitSystem),
       twelveHour: uses12HourClock(),
-      reduceMotion: resolveReduceMotion(preferences.motion),
-      reduceTransparency: resolveReduceTransparency(preferences.transparency),
-      compact: resolveCompact(preferences.layout),
+      reduceMotion: resolveReduceMotion(preferences.motion, osReducesMotion),
+      reduceTransparency: resolveReduceTransparency(preferences.transparency, osReducesTransparency),
+      compact: resolveCompact(preferences.layout, phone),
     };
-    // mediaVersion re-resolves `auto` after an OS change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preferences, mediaVersion]);
+  }, [preferences, osReducesMotion, osReducesTransparency, phone]);
 
   React.useEffect(() => {
     const root = document.documentElement;
@@ -79,13 +64,11 @@ export const PreferencesProvider = ({ children }: { children: React.ReactNode })
     root.classList.toggle('compact', resolved.compact);
   }, [resolved.reduceMotion, resolved.reduceTransparency, resolved.compact]);
 
-  const setPreference = React.useCallback(<K extends keyof Preferences>(key: K, value: Preferences[K]) => {
-    setPreferences((current) => {
-      const next = { ...current, [key]: value };
-      savePreferences(localStorage, next);
-      return next;
-    });
-  }, []);
+  const setPreference = React.useCallback(
+    <K extends keyof Preferences>(key: K, value: Preferences[K]) =>
+      setPreferences((current) => ({ ...current, [key]: value })),
+    [setPreferences]
+  );
 
   const value = React.useMemo(() => ({ preferences, resolved, setPreference }), [preferences, resolved, setPreference]);
 
