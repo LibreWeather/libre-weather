@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/LibreWeather/libre-weather/compare/v1.3.0...v1.4.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* remember the chosen location across reloads ([ebc4838](https://github.com/LibreWeather/libre-weather/commit/ebc483874259bc0fe5028ec848cf9d5c44417e01))
+* weather skeleton ([bbff845](https://github.com/LibreWeather/libre-weather/commit/bbff845a70c833603032869e38bade69a3f862c6))
+
+
+### Features
+
+* **pwa:** installable manifest, offline service worker, mobile/HD layout, loading skeleton ([a8563cb](https://github.com/LibreWeather/libre-weather/commit/a8563cb6339e8c3fb1e4f887875f7b136d909208)), closes [#7](https://github.com/LibreWeather/libre-weather/issues/7)
+* show active weather alerts from NWS and MET Norway ([2496410](https://github.com/LibreWeather/libre-weather/commit/24964105d9430e39d9714ee9518ad92927e6d852))
+
 # [1.3.0](https://github.com/LibreWeather/libre-weather/compare/v1.2.0...v1.3.0) (2026-10-13)
 
 
