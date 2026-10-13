@@ -16,8 +16,8 @@ export default makeid;
  * @param {Date|string|number} timestamp date-resolvable
  * @returns {string}
  */
-export const getHourFromTimestamp = (timestamp) => {
-  return new Date(timestamp).toLocaleTimeString({}, { hour12: true, hour: 'numeric' }).toLowerCase().replace(/ /g, '');
+export const getHourFromTimestamp = (timestamp: Date | string | number) => {
+  return new Date(timestamp).toLocaleTimeString(undefined, { hour12: true, hour: 'numeric' }).toLowerCase().replace(/ /g, '');
 };
 
 export * from './formatters';

@@ -13,30 +13,48 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { geocode, reverseGeocode } from '../utilities/nominatim';
+import type { NominatimAddress, NominatimResponse } from '../utilities/nominatim';
+import { UnitSystem } from '../utilities/weatherTypes';
 import Logo from './Logo';
 
 import './NavigationBar.less';
 
 const DEFAULT_ZIP = '64106';
 const DEFAULT_LOCATION_NAME = 'Kansas City';
-const UNITS = { IMPERIAL: 'IMPERIAL', METRIC: 'METRIC', FREEDOM_UNITS: 'IMPERIAL' };
 
 const logger = console;
 
-const locNameTree = (/** @type {import('../utilities/nominatim').NominatimAddress} */ address) => {
+const locNameTree = (address: NominatimAddress | undefined) => {
+  if (!address) {
+    return undefined;
+  }
   const { village, town, city, county, postcode, country } = address;
-  const wrap = (thing) => (thing ? `${thing}, ${country}` : undefined);
+  const wrap = (thing?: string) => (thing ? `${thing}, ${country}` : undefined);
 
   return wrap(village) || wrap(town) || wrap(city) || wrap(county) || postcode;
 };
 
-export default class NavigationBar extends React.Component {
-  constructor(props) {
+type NavigationBarProps = {
+  setLatLon: (lat: string | number, lon: string | number) => void;
+  setUnits: (units: UnitSystem) => void;
+};
+
+type NavigationBarState = {
+  zip: string;
+  locationName: string;
+  units: UnitSystem;
+  useGeo: boolean;
+  locOptions: NominatimResponse[];
+  enteredZip?: string;
+};
+
+export default class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
+  constructor(props: NavigationBarProps) {
     super(props);
     this.state = {
       zip: localStorage.getItem('zip') || DEFAULT_ZIP,
       locationName: localStorage.getItem('locationName') || DEFAULT_LOCATION_NAME,
-      units: localStorage.getItem('units') || UNITS.IMPERIAL,
+      units: (localStorage.getItem('units') as UnitSystem) || UnitSystem.IMPERIAL,
       useGeo: navigator.geolocation && (localStorage.getItem('useGeo') === 'true' || false),
       locOptions: [],
       enteredZip: undefined,
@@ -64,7 +82,7 @@ export default class NavigationBar extends React.Component {
    * Update location data from NominatimResponse
    * @param {import('../utilities/nominatim').NominatimResponse} result nominatim query response
    */
-  setNomData(result) {
+  setNomData(result: NominatimResponse) {
     const { setLatLon } = this.props;
 
     const { village, town, city, county, postcode } = result.address;
@@ -80,14 +98,14 @@ export default class NavigationBar extends React.Component {
     } else if (postcode) {
       locName = postcode;
     }
-    localStorage.setItem('locationName', locName);
-    localStorage.setItem('zip', postcode);
-    this.setState({ locationName: locName, zip: postcode, locOptions: [] });
+    localStorage.setItem('locationName', locName || DEFAULT_LOCATION_NAME);
+    localStorage.setItem('zip', postcode || DEFAULT_ZIP);
+    this.setState({ locationName: locName || DEFAULT_LOCATION_NAME, zip: postcode || DEFAULT_ZIP, locOptions: [] });
 
     setLatLon(result.lat, result.lon);
   }
 
-  handleZipChange(event) {
+  handleZipChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ zip: event.target.value, enteredZip: event.target.value });
   }
 
@@ -97,7 +115,7 @@ export default class NavigationBar extends React.Component {
       addressdetails: true,
       postalcode: zip,
     })
-      .then((results) => {
+      .then((results: NominatimResponse[]) => {
         if (results.length > 1) {
           this.setState({
             locOptions: results,
@@ -113,14 +131,14 @@ export default class NavigationBar extends React.Component {
       .catch(logger.error);
   }
 
-  handleZipSubmit(event) {
+  handleZipSubmit(event: React.FormEvent<HTMLFormElement>) {
     this.setState({ useGeo: false });
     localStorage.setItem('useGeo', 'false');
 
     this.updateLocationFromZip();
 
     event.preventDefault();
-    event.target.reset();
+    event.currentTarget.reset();
   }
 
   updateLocationFromGeo() {
@@ -154,8 +172,8 @@ export default class NavigationBar extends React.Component {
     }
   }
 
-  handleUnitsChange(event) {
-    const units = event.target.checked ? UNITS.METRIC : UNITS.IMPERIAL;
+  handleUnitsChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const units = event.target.checked ? UnitSystem.METRIC : UnitSystem.IMPERIAL;
     const { setUnits } = this.props;
     setUnits(units);
     this.setState({ units });
@@ -168,7 +186,7 @@ export default class NavigationBar extends React.Component {
       <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="app-navbar">
         <div className="app-brand">
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 py-0">
-            <Logo width="30" height="30" className="d-inline-block" alt="Libre Weather" />
+            <Logo width="30" height="30" className="d-inline-block" />
             <span>Libre Weather</span>
           </Navbar.Brand>
           <Nav className="app-brand-links flex-row">
@@ -204,11 +222,10 @@ export default class NavigationBar extends React.Component {
                     title=""
                     id="location-options"
                     show={!!enteredZip}>
-                    {locOptions.map((/** @type {import('../utilities/nominatim').NominatimResponse} */ option) => {
+                    {locOptions.map((option) => {
                       const locName = locNameTree(option.address);
                       return (
                         <Dropdown.Item
-                          variant="outline-secondary"
                           href="#"
                           key={`location-option--${locName}`}
                           onClick={() => {
@@ -242,7 +259,7 @@ export default class NavigationBar extends React.Component {
                 className="app-units-switch"
                 label=""
                 onChange={this.handleUnitsChange}
-                checked={units === 'METRIC'} />
+                checked={units === UnitSystem.METRIC} />
               <span>˚C</span>
             </div>
           </div>

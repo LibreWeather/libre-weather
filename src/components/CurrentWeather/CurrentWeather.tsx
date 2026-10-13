@@ -5,23 +5,34 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { WeatherIcon } from '../WeatherIcon';
+import {
+  TempUnit,
+  VisibilityUnit,
+  WindUnit,
+  type Pressure,
+  type Temperature,
+  type Visibility,
+  type Weather,
+  type WindSpeed,
+} from '../../utilities/weatherTypes';
 
 import './CurrentWeather.less';
 
-const pressureDisplay = (pressure) => `${Math.round(pressure.value)} mb`;
-const tempDisplay = (temp) => `${Math.round(temp.value)}${temp.unit === 'K' ? 'K' : '˚'}`;
-const visibilityDisplay = (visibility) => {
-  const rawVis = ['MI', '%'];
-  const visDistance = rawVis.includes(visibility.unit) ? visibility.value : visibility.value / 1000;
-  const rawDistance = ['%'];
+const pressureDisplay = (pressure: Pressure) => `${Math.round(Number(pressure.value))} mb`;
+const tempDisplay = (temp: Temperature) =>
+  `${Math.round(Number(temp.value))}${temp.unit === TempUnit.K ? 'K' : '˚'}`;
+const visibilityDisplay = (visibility: Visibility) => {
+  const rawVis = [VisibilityUnit.MI, VisibilityUnit.Percent];
+  const visDistance = rawVis.includes(visibility.unit) ? Number(visibility.value) : Number(visibility.value) / 1000;
+  const rawDistance = [VisibilityUnit.Percent];
   return !rawDistance.includes(visibility.unit) && visDistance >= 10 ?
     `10+ ${visibility.unit.toLowerCase()}` :
     `${Math.round(visDistance)} ${visibility.unit.toLowerCase()}`;
 };
-const windSpeedDisplay = (windSpeed) =>
-  `${Math.round(windSpeed.magnitude)} ${windSpeed.unit === 'MPH' ? 'mph' : 'm/s'}`;
+const windSpeedDisplay = (windSpeed: WindSpeed) =>
+  `${Math.round(Number(windSpeed.magnitude))} ${windSpeed.unit === WindUnit.MPH ? 'mph' : 'm/s'}`;
 
-const currentWeatherData = (data) => ({
+const currentWeatherData = (data: Weather) => ({
   conditionIcon: data.current.condition,
   description: data.current.description,
   dewPoint: tempDisplay(data.current.dewPoint),
@@ -32,13 +43,13 @@ const currentWeatherData = (data) => ({
   tempFeelsLike: tempDisplay(data.current.apparentTemp),
   tempMax: tempDisplay(data.daily[0].temp.max),
   tempMin: tempDisplay(data.daily[0].temp.min),
-  uvIndex: Math.round(data.current.uvIndex),
+  uvIndex: Math.round(Number(data.current.uvIndex)),
   visibility: visibilityDisplay(data.current.visibility),
   windDeg: data.current.windspeed.direction,
   windSpeed: windSpeedDisplay(data.current.windspeed),
 });
 
-export default class CurrentWeather extends React.Component {
+export default class CurrentWeather extends React.Component<{ weatherData: Weather }> {
   render() {
     const { weatherData } = this.props;
     const currentWeather = currentWeatherData(weatherData);
@@ -53,7 +64,7 @@ export default class CurrentWeather extends React.Component {
             <span className="wind">
               <b>Wind:</b> {currentWeather.windSpeed}{' '}
             </span>
-            <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: currentWeather.windDeg }} />
+            <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: Number(currentWeather.windDeg) }} />
           </Col>
           <Col xs="auto">
             <b>Humidity:</b> {currentWeather.humidity}%
