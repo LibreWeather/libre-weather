@@ -1,4 +1,4 @@
-import { extent, hourIndexAt, num, polyline, scaleY, VIEW_HOURS } from '@components/HourlyGraph/graphUtils';
+import { extent, hourIndexAt, hourPosition, num, polyline, scaleY, VIEW_HOURS } from '@components/HourlyGraph/graphUtils';
 
 test('num reads value and magnitude objects', () => {
   expect(num(12)).toBe(12);
@@ -21,7 +21,21 @@ test('scaleY maps max to the top margin', () => {
 });
 
 test('polyline skips nulls and centers each hour', () => {
-  expect(polyline([0, null, 10], 0, 10, 50)).toBe('0.5,46 2.5,4');
+  expect(polyline([0, null, 10], 0, 10, 50)).toBe('0,46 0.5,46 2.5,4 3,4');
+});
+
+test('polyline extends only to the edges of hours with data', () => {
+  expect(polyline([null, 0, 10, null], 0, 10, 50)).toBe('1,46 1.5,46 2.5,4 3,4');
+  expect(polyline([null, null], 0, 10, 50)).toBe('');
+});
+
+test('hourPosition places a timestamp within the hours shown', () => {
+  const hour = 60 * 60 * 1000;
+  const hours = [{ time: 0 }, { time: hour }, { time: 2 * hour }];
+  expect(hourPosition(hours, 1.5 * hour)).toBe(1.5);
+  expect(hourPosition(hours, -hour)).toBeNull();
+  expect(hourPosition(hours, 3 * hour)).toBeNull();
+  expect(hourPosition([], 0)).toBeNull();
 });
 
 test('hourIndexAt maps 8-hour viewport to column', () => {

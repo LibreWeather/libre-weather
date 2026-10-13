@@ -105,8 +105,14 @@ const groupByStride = (hourly: OverviewHour[], stride: number) => {
 const tempDisplay = (temp: Temperature) =>
   `${Math.round(Number(temp.value))}${temp.unit === TempUnit.K ? 'K' : '˚'}`;
 
+const upcoming = (data: Hourly[] | undefined, now = Date.now()) => {
+  const hours = (data ?? []).filter(Boolean);
+  const ahead = hours.filter((hour) => hour.time + 60 * 60 * 1000 > now);
+  return ahead.length ? ahead : hours;
+};
+
 const dailyWeather = (data: Hourly[] | undefined) => ({
-  hourly: (data ?? []).filter(Boolean).map(({ condition, temp, time }) => ({
+  hourly: upcoming(data).map(({ condition, temp, time }) => ({
     condition,
     temp: tempDisplay(temp),
     time,

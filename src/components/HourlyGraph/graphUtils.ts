@@ -66,13 +66,31 @@ export const scaleY = (value: number | null, min: number, max: number, height: n
  * @param {number} height
  * @returns {string}
  */
-export const polyline = (values: Array<number | null>, min: number, max: number, height: number) =>
-  values
-    .map((value, i) =>
-      value == null || !Number.isFinite(value) ? null : `${i + 0.5},${scaleY(value, min, max, height)}`
-    )
-    .filter(Boolean)
-    .join(' ');
+export const polyline = (values: Array<number | null>, min: number, max: number, height: number) => {
+  const points = values.flatMap((value, i) =>
+    value == null || !Number.isFinite(value) ? [] : [[i + 0.5, scaleY(value, min, max, height)]]
+  );
+  if (!points.length) {
+    return '';
+  }
+  const [firstX, firstY] = points[0];
+  const [lastX, lastY] = points[points.length - 1];
+  return [[firstX - 0.5, firstY], ...points, [lastX + 0.5, lastY]].map(([x, y]) => `${x},${y}`).join(' ');
+};
+
+/**
+ * Fractional column for a timestamp, or null when it falls outside the hours shown.
+ * @param {Array<{ time: number }>} hours
+ * @param {number} at
+ * @returns {number|null}
+ */
+export const hourPosition = (hours: Array<{ time: number }>, at: number) => {
+  if (!hours.length) {
+    return null;
+  }
+  const pos = (at - hours[0].time) / (60 * 60 * 1000);
+  return pos > 0 && pos < hours.length ? pos : null;
+};
 
 export const conditionClass = (condition: Condition) => {
   switch (condition) {

@@ -1,8 +1,8 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import { getHourFromTimestamp, tempDisplay, volumeDisplay } from '@/utilities';
-import { VIEW_HOURS, TRACK_H, num, extent, polyline, conditionClass } from './graphUtils';
+import { VIEW_HOURS, TRACK_H, num, extent, polyline, conditionClass, hourPosition } from './graphUtils';
 import {
   TempUnit,
   VisibilityUnit,
@@ -114,7 +114,17 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
   const hours = useMemo(() => (hourly || []).filter(Boolean), [hourly]);
   const scroller = useRef<HTMLDivElement | null>(null);
   const drag = useRef<{ id: number; x: number; scroll: number } | null>(null);
-  const [hover, setHover] = useState(0);
+  const nowPos = useMemo(() => hourPosition(hours, Date.now()), [hours]);
+  const nowIndex = nowPos == null ? 0 : Math.floor(nowPos);
+  const [hover, setHover] = useState(nowIndex);
+
+  useLayoutEffect(() => {
+    const el = scroller.current;
+    if (!el || nowPos == null || !hours.length) {
+      return;
+    }
+    el.scrollLeft = (el.scrollWidth * Math.max(0, nowIndex - 1)) / hours.length;
+  }, [hours.length, nowIndex, nowPos]);
 
   const chart = useMemo(() => {
     const temps = hours.map((h) => num(h.temp));
@@ -295,13 +305,16 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
               </div>
             ))}
           </div>
+          {nowPos == null ? null : (
+            <div className="hourlyGraph-now" style={{ left: `${(nowPos / chart.count) * 100}%` }} />
+          )}
           <div className="hourlyGraph-hits">
             {hours.map((hour, i) => (
               <button
                 aria-label={hour.description || hour.condition}
                 className={`hourlyGraph-hit${hover === i ? ' is-active' : ''}`}
                 key={`hit-${hour.time}`}
-                onBlur={() => setHover(0)}
+                onBlur={() => setHover(nowIndex)}
                 onFocus={() => setHover(i)}
                 onMouseEnter={() => setHover(i)}
                 type="button" />
