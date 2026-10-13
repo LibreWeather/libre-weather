@@ -171,4 +171,48 @@ describe('Weather alerts', () => {
     cy.get('.weatherSkeleton').should('be.visible');
     cy.contains('.weatherAlert', 'Flood Warning').should('be.visible');
   });
+
+  describe('compact layout', () => {
+    const three = reply([
+      alert({ id: 'tor', event: 'Tornado Warning', severity: 'EXTREME' }),
+      alert({ id: 'svr', event: 'Severe Thunderstorm Watch', severity: 'SEVERE' }),
+      alert({ id: 'wind', event: 'Wind Advisory' }),
+    ]);
+    const compact = (win) => win.localStorage.setItem('preferences', JSON.stringify({ layout: 'compact' }));
+
+    it('shrinks each alert to a chip and fits several on a row', () => {
+      visitStubbed({ alerts: three, onBeforeLoad: compact });
+      cy.get('.weatherAlerts').should('have.class', 'is-compact');
+      cy.get('.weatherAlert').should('not.exist');
+      cy.get('.weatherAlertChip').should('have.length', 3);
+      cy.get('.weatherAlertChip').first().should('have.class', 'severity-extreme').and('have.text', 'Tornado Warning');
+      cy.get('.weatherAlertChip').then(($chips) => {
+        const tops = [...$chips].map((chip) => Math.round(chip.getBoundingClientRect().top));
+        expect(new Set(tops).size).to.eq(1);
+      });
+    });
+
+    it('puts two chips on a row on phones', () => {
+      cy.viewport(390, 844);
+      visitStubbed({ alerts: three });
+      cy.get('.weatherAlertChip').should('have.length', 3);
+      cy.get('.weatherAlertChip').then(($chips) => {
+        const [first, second, third] = [...$chips].map((chip) => chip.getBoundingClientRect());
+        expect(Math.round(first.top)).to.eq(Math.round(second.top));
+        expect(third.top).to.be.greaterThan(first.top);
+      });
+    });
+
+    it('opens the full alert from a chip', () => {
+      visitStubbed({ alerts: three, onBeforeLoad: compact });
+      cy.get('.currentTemp').should('be.visible');
+      cy.contains('.weatherAlertChip', 'Wind Advisory')
+        .invoke('attr', 'aria-label')
+        .should('match', /^Wind Advisory, until .+\. View full alert$/);
+      cy.contains('.weatherAlertChip', 'Wind Advisory').click();
+      cy.location('search').should('eq', '?alert=wind');
+      cy.get('dialog.alertDialog').should('have.attr', 'open');
+      cy.get('dialog.alertDialog').should('contain.text', 'Wind Advisory');
+    });
+  });
 });
