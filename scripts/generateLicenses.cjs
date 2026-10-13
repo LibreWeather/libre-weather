@@ -1,4 +1,3 @@
-// @ts-nocheck
 const licenseList = require('license-list');
 const fs = require('fs');
 const path = require('path');
@@ -21,7 +20,7 @@ licenseList('.', { dev: true }).then((packages) => {
   stripped = stripped.filter(
     (object, index) => index === stripped.findIndex((obj) => JSON.stringify(obj) === JSON.stringify(object))
   );
-  fs.writeFile(path.join(__dirname, '../assets/packages.json'), JSON.stringify(stripped), (err) => {
+  fs.writeFile(path.join(__dirname, '../src/assets/packages.json'), JSON.stringify(stripped), (err) => {
     if (err) throw err;
     console.log('Data written to file');
 

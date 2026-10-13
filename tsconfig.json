@@ -18,8 +18,11 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["src/components/*"],
-      "@/utilities": ["src/utilities/index.ts"],
       "@/utilities/*": ["src/utilities/*"],
+      "@/models/*": ["src/models/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/api/*": ["src/api/*"],
+      "@/providers/*": ["src/providers/*"],
       "@/common/*": ["src/components/common/*"]
     }
   },

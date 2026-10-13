@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run build:licenses && parcel build ./src/index.html --no-cache",
     "build:docker": "docker build -t libreweather/frontend:latest .",
-    "build:licenses": "node src/utilities/generateLicenses.ts",
+    "build:licenses": "node scripts/generateLicenses.cjs",
     "coverage": "jest --config .config/jest.config.cjs --coverage",
     "lint": "eslint . --config .config/eslint.config.mjs",
     "lint:fix": "eslint . --config .config/eslint.config.mjs --fix",
@@ -97,6 +97,10 @@
     "@/common/*": "./src/components/common/$1",
     "@components/*": "./src/components/$1",
     "@/utilities/*": "./src/utilities/$1",
+    "@/models/*": "./src/models/$1",
+    "@/hooks/*": "./src/hooks/$1",
+    "@/api/*": "./src/api/$1",
+    "@/providers/*": "./src/providers/$1",
     "react-router/dom": "./node_modules/react-router/dist/development/dom-export.js"
   }
 }

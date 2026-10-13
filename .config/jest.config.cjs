@@ -5,8 +5,7 @@ module.exports = {
   testMatch: ['<rootDir>/src/tests/**/*.test.{js,jsx,ts,tsx}'],
   moduleNameMapper: {
     '^@components/(.*)$': '<rootDir>/src/components/$1',
-    '^@/utilities$': '<rootDir>/src/utilities',
-    '^@/utilities/(.*)$': '<rootDir>/src/utilities/$1',
+    '^@/(utilities|models|hooks|api|providers)/(.*)$': '<rootDir>/src/$1/$2',
     '^@/common/(.*)$': '<rootDir>/src/components/common/$1',
     '\\.(less|css)$': '<rootDir>/src/tests/styleMock.ts',
   },
