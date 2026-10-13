@@ -48,7 +48,7 @@ describe('Weather alerts', () => {
   it('expands an alert to show what to do and who issued it', () => {
     visitStubbed({ alerts: reply([alert()]) });
     cy.get('.weatherAlert-body').should('not.be.visible');
-    cy.contains('.weatherAlert-summary', 'Wind Advisory').click();
+    cy.contains('.weatherAlert-event', 'Wind Advisory').click();
     cy.get('.weatherAlert').should('have.attr', 'open');
     cy.get('.weatherAlert-body')
       .should('be.visible')
@@ -61,8 +61,8 @@ describe('Weather alerts', () => {
 
   it('opens the full alert in a dialog that closes back to the forecast', () => {
     visitStubbed({ alerts: reply([alert({ url: 'https://forecast.weather.gov/MapClick.php?lat=39.1&lon=-94.58' })]) });
-    cy.contains('.weatherAlert-summary', 'Wind Advisory').click();
-    cy.contains('button', 'View full alert').click();
+    cy.contains('.weatherAlert-event', 'Wind Advisory').click();
+    cy.get('.weatherAlert-body .weatherAlert-more').click();
 
     cy.location('search').should('eq', '?alert=urn%3Aoid%3A1');
     cy.get('dialog.alertDialog').should('have.attr', 'open');
@@ -87,8 +87,8 @@ describe('Weather alerts', () => {
 
   it('closes the dialog from the backdrop and the back button', () => {
     visitStubbed({ alerts: reply([alert()]) });
-    cy.contains('.weatherAlert-summary', 'Wind Advisory').click();
-    cy.contains('button', 'View full alert').click();
+    cy.contains('.weatherAlert-event', 'Wind Advisory').click();
+    cy.get('.weatherAlert-body .weatherAlert-more').click();
     cy.get('dialog.alertDialog').should('have.attr', 'open');
     // Backdrop clicks land on the <dialog> itself rather than its panel.
     cy.get('dialog.alertDialog').then(($dialog) => {
@@ -96,11 +96,26 @@ describe('Weather alerts', () => {
     });
     cy.get('dialog.alertDialog').should('not.exist');
 
-    cy.contains('button', 'View full alert').click();
+    cy.get('.weatherAlert-body .weatherAlert-more').click();
     cy.get('dialog.alertDialog').should('have.attr', 'open');
     cy.go('back');
     cy.get('dialog.alertDialog').should('not.exist');
     cy.location('search').should('eq', '');
+  });
+
+  it('offers the full alert from the collapsed bar without expanding it', () => {
+    visitStubbed({ alerts: reply([alert()]) });
+    cy.wait('@alerts');
+    cy.get('.currentTemp').should('be.visible');
+    cy.get('.weatherAlert-summary .weatherAlert-more').should('be.visible');
+    cy.get('.weatherAlert-summary .weatherAlert-more').click();
+    cy.get('dialog.alertDialog').should('have.attr', 'open');
+    cy.get('.weatherAlert').should('not.have.attr', 'open');
+    cy.get('.alertDialog-close').click();
+
+    cy.contains('.weatherAlert-event', 'Wind Advisory').click();
+    cy.get('.weatherAlert-summary .weatherAlert-more').should('not.be.visible');
+    cy.get('.weatherAlert-body .weatherAlert-more').should('be.visible');
   });
 
   it('opens a shared alert link directly', () => {
@@ -119,7 +134,7 @@ describe('Weather alerts', () => {
 
   it('notes when an alert has not started yet', () => {
     visitStubbed({ alerts: reply([alert({ onset: fixedNow() + 2 * HOUR })]) });
-    cy.contains('.weatherAlert-summary', 'Wind Advisory').click();
+    cy.contains('.weatherAlert-event', 'Wind Advisory').click();
     cy.get('.weatherAlert-body').should('contain.text', 'Starts');
   });
 

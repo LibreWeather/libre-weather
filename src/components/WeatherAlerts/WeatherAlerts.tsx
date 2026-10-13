@@ -26,6 +26,16 @@ const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
         <FontAwesomeIcon icon={faTriangleExclamation} className="weatherAlert-icon" />
         <span className="weatherAlert-event">{alert.event}</span>
         {until ? <span className="weatherAlert-until">{until}</span> : null}
+        <button
+          type="button"
+          className="weatherAlert-more is-compact"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onOpen(alert.id);
+          }}>
+          View full alert
+        </button>
       </summary>
       <div className="weatherAlert-body">
         <p className="weatherAlert-headline">{alert.headline}</p>

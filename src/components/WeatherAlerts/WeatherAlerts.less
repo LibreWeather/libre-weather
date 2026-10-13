@@ -79,6 +79,14 @@
     transform: rotate(-135deg);
   }
 
+  &:not([open]) .weatherAlert-summary:has(.weatherAlert-more)::after {
+    margin-left: 0.5rem;
+  }
+
+  &[open] .weatherAlert-summary .weatherAlert-more {
+    display: none;
+  }
+
   .weatherAlert-icon {
     align-self: center;
     color: var(--alert-color);
@@ -147,6 +155,13 @@
     &:focus-visible {
       outline: 2px solid var(--alert-color);
       outline-offset: 2px;
+    }
+
+    &.is-compact {
+      align-self: center;
+      margin: 0 0 0 auto;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.78em;
     }
   }
 
