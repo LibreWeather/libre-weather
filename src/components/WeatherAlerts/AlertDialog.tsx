@@ -2,13 +2,9 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-import { SOURCE_NAMES, type WeatherAlert } from '@/utilities/alertTypes';
-import { formatDateTime as formatLocaleDateTime } from '@/utilities/locale';
-
-const formatDateTime = (ms: number) =>
-  formatLocaleDateTime(ms, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-
-const titleCase = (value: string) => value.charAt(0) + value.slice(1).toLowerCase();
+import { useModalDialog } from '@/hooks/useModalDialog';
+import type { WeatherAlert } from '@/models/alerts';
+import { alertFacts, sourceName } from '@/utilities/alerts';
 
 type AlertDialogProps = {
   /** `null` once the alert is no longer in the active list, e.g. a stale shared link. */
@@ -17,38 +13,17 @@ type AlertDialogProps = {
 };
 
 const AlertDialog = ({ alert, onClose }: AlertDialogProps) => {
-  const dialog = React.useRef<HTMLDialogElement>(null);
+  const { ref, close, onBackdropClick } = useModalDialog();
   const titleId = React.useId();
-
-  React.useEffect(() => {
-    const node = dialog.current;
-    if (node && !node.open) node.showModal();
-  }, []);
-
-  const close = () => dialog.current?.close();
-
-  const facts: [string, string][] = alert ?
-      [
-        ['Starts', alert.onset ? formatDateTime(alert.onset) : null],
-        ['Ends', (alert.ends ?? alert.expires) ? formatDateTime((alert.ends ?? alert.expires)!) : null],
-        ['Message expires', alert.ends && alert.expires && alert.expires !== alert.ends ? formatDateTime(alert.expires) : null],
-        ['Severity', titleCase(alert.severity)],
-        ['Urgency', alert.urgency],
-        ['Certainty', alert.certainty],
-        ['Issued by', alert.sender],
-        ['Source', SOURCE_NAMES[alert.source] ?? alert.source],
-      ].filter((fact): fact is [string, string] => Boolean(fact[1])) :
-      [];
+  const facts = alert ? alertFacts(alert) : [];
 
   return (
     <dialog
-      ref={dialog}
+      ref={ref}
       className={`alertDialog severity-${(alert?.severity ?? 'unknown').toLowerCase()}`}
       aria-labelledby={titleId}
       onClose={onClose}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) close();
-      }}>
+      onClick={onBackdropClick}>
       <div className="alertDialog-panel">
         <header className="alertDialog-header">
           <FontAwesomeIcon icon={faTriangleExclamation} className="alertDialog-icon" />
@@ -91,7 +66,7 @@ const AlertDialog = ({ alert, onClose }: AlertDialogProps) => {
             ) : null}
             {alert.url ? (
               <a className="alertDialog-source" href={alert.url} target="_blank" rel="noreferrer">
-                View on {SOURCE_NAMES[alert.source] ?? alert.source}
+                View on {sourceName(alert.source)}
               </a>
             ) : null}
           </div>

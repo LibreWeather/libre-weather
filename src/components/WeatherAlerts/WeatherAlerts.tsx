@@ -1,25 +1,18 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import useDialogParam from '../../hooks/useDialogParam';
-import { useAlerts } from '../../providers/AlertsProvider';
-import { usePreferences } from '../../providers/PreferencesProvider';
-import { SOURCE_NAMES, type WeatherAlert } from '@/utilities/alertTypes';
-import { formatDateTime } from '@/utilities/locale';
+import useDialogParam from '@/hooks/useDialogParam';
+import type { WeatherAlert } from '@/models/alerts';
+import { useAlerts } from '@/providers/AlertsProvider';
+import { usePreferences } from '@/providers/PreferencesProvider';
+import { alertTime, sourceName, startsLater, untilLabel } from '@/utilities/alerts';
 import AlertDialog from './AlertDialog';
 
 import './WeatherAlerts.less';
 
-const formatTime = (ms: number) => formatDateTime(ms, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
-
-const untilLabel = (alert: WeatherAlert) => {
-  const end = alert.ends ?? alert.expires;
-  return end ? `until ${formatTime(end)}` : null;
-};
-
 const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string) => void }) => {
   const until = untilLabel(alert);
-  const startsLater = alert.onset && alert.onset > Date.now();
+  const onset = startsLater(alert);
   return (
     <details className={`weatherAlert severity-${alert.severity.toLowerCase()}`}>
       <summary className="weatherAlert-summary">
@@ -39,7 +32,7 @@ const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
       </summary>
       <div className="weatherAlert-body">
         <p className="weatherAlert-headline">{alert.headline}</p>
-        {startsLater ? <p className="weatherAlert-meta">Starts {formatTime(alert.onset!)}</p> : null}
+        {onset ? <p className="weatherAlert-meta">Starts {alertTime(onset)}</p> : null}
         {alert.description ? <p className="weatherAlert-text">{alert.description}</p> : null}
         {alert.instruction ? (
           <>
@@ -49,7 +42,7 @@ const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
         ) : null}
         {alert.areas ? <p className="weatherAlert-meta">Areas: {alert.areas}</p> : null}
         <p className="weatherAlert-meta">
-          Issued by {alert.sender} · {SOURCE_NAMES[alert.source] ?? alert.source}
+          Issued by {alert.sender} · {sourceName(alert.source)}
         </p>
         <button type="button" className="weatherAlert-more" onClick={() => onOpen(alert.id)}>
           View full alert

@@ -4,11 +4,12 @@ import CurrentWeather from '@components/CurrentWeather';
 import DailyOverview from '@components/DailyOverview';
 import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts';
 import WeatherSkeleton from '@components/WeatherSkeleton';
-import { usePreferences } from '../../providers/PreferencesProvider';
 import WeeklyForecast from '@components/WeeklyForecast';
-import { placeLabel, type NominatimResponse } from '@/utilities/nominatim';
-import { usePlace } from '../../providers/PlaceProvider';
-import { useWeather } from '../../providers/WeatherProvider';
+import type { NominatimResponse } from '@/models/place';
+import { usePlace } from '@/providers/PlaceProvider';
+import { usePreferences } from '@/providers/PreferencesProvider';
+import { useWeather } from '@/providers/WeatherProvider';
+import { placeLabel } from '@/utilities/place';
 
 import './Weather.less';
 

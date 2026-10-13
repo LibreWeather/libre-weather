@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
-import { usePreferences } from '../../providers/PreferencesProvider';
-import CurrentDayContext from '../../utilities/CurrentDayContext';
-import { Condition } from '../../utilities/weatherTypes';
+import CurrentDayContext from '@/providers/CurrentDayContext';
+import { usePreferences } from '@/providers/PreferencesProvider';
+import { Condition } from '@/models/weather';
 
 type AnimatedWeather = typeof ReactAnimatedWeather & { defaultProps?: unknown };
 delete (ReactAnimatedWeather as AnimatedWeather).defaultProps;
@@ -10,31 +10,20 @@ delete (ReactAnimatedWeather as AnimatedWeather).defaultProps;
 type WeatherIconProps = {
   condition: Condition;
   sizePx: number;
-  time: number | null;
+  /** When null, today's current time decides between day and night. */
+  time?: number | null;
+  /** Always show the day variant, e.g. for whole-day forecasts. */
+  daytime?: boolean;
   animate?: boolean;
 };
 
-export const WeatherIcon = ({ condition, sizePx, time, animate: animateProp = false }: WeatherIconProps) => {
+export const WeatherIcon = ({ condition, sizePx, time = null, daytime = false, animate = false }: WeatherIconProps) => {
   const { resolved } = usePreferences();
-  const animate = animateProp && !resolved.reduceMotion;
-  return (
-    <CurrentDayContext.Consumer>
-      {(context) => {
-        let iconTime = time;
-        let icon = condition as string;
-        if (!iconTime) {
-          iconTime = context.time;
-        }
-        const isDay = iconTime >= context.sunrise && iconTime < context.sunset;
-        switch (condition) {
-          case Condition.PARTLY_CLOUDY:
-            icon = isDay ? 'PARTLY_CLOUDY_DAY' : 'PARTLY_CLOUDY_NIGHT';
-            break;
-          case Condition.CLEAR:
-            icon = isDay ? 'CLEAR_DAY' : 'CLEAR_NIGHT';
-        }
-        return <ReactAnimatedWeather icon={icon} color="white" size={sizePx} animate={animate} />;
-      }}
-    </CurrentDayContext.Consumer>
-  );
+  const day = React.useContext(CurrentDayContext);
+  const at = time || day.time;
+  const isDay = daytime || (at >= day.sunrise && at < day.sunset);
+  let icon: string = condition;
+  if (condition === Condition.PARTLY_CLOUDY) icon = isDay ? 'PARTLY_CLOUDY_DAY' : 'PARTLY_CLOUDY_NIGHT';
+  if (condition === Condition.CLEAR) icon = isDay ? 'CLEAR_DAY' : 'CLEAR_NIGHT';
+  return <ReactAnimatedWeather icon={icon} color="white" size={sizePx} animate={animate && !resolved.reduceMotion} />;
 };

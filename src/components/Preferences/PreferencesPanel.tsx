@@ -2,25 +2,20 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-import { usePreferences } from '../../providers/PreferencesProvider';
-import { browserUses12HourClock } from '../../utilities/locale';
-import {
-  COMPACT_QUERY,
-  REDUCED_MOTION_QUERY,
-  REDUCED_TRANSPARENCY_QUERY,
-  resolveUnitSystem,
-  type Preferences,
-} from '../../utilities/preferences';
-import { UnitSystem } from '../../utilities/weatherTypes';
-import { isStandalone } from '@components/InstallBanner';
+import { useModalDialog } from '@/hooks/useModalDialog';
+import type { PreferenceChoiceKey, Preferences } from '@/models/preferences';
+import { UnitSystem } from '@/models/weather';
+import { usePreferences } from '@/providers/PreferencesProvider';
+import { browserUses12HourClock } from '@/utilities/locale';
+import { PHONE_QUERY, REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY, mediaMatches } from '@/utilities/media';
+import { isStandalone } from '@/utilities/platform';
+import { resolveUnitSystem } from '@/utilities/preferences';
 
 import './PreferencesPanel.less';
 
 type Option<V extends string> = { value: V; label: string };
 
-type ChoiceKey = { [K in keyof Preferences]: Preferences[K] extends string ? K : never }[keyof Preferences];
-
-const Segmented = <K extends ChoiceKey>({
+const Segmented = <K extends PreferenceChoiceKey>({
   name,
   label,
   options,
@@ -50,7 +45,7 @@ const Segmented = <K extends ChoiceKey>({
   );
 };
 
-const mediaLabel = (query: string) => (window.matchMedia?.(query).matches ? 'on' : 'off');
+const mediaLabel = (query: string) => (mediaMatches(query) ? 'on' : 'off');
 
 type PreferencesPanelProps = {
   /** Gear button bounds; the panel drops down from it on wider screens. */
@@ -59,16 +54,9 @@ type PreferencesPanelProps = {
 };
 
 const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
-  const dialog = React.useRef<HTMLDialogElement>(null);
+  const { ref, close, onBackdropClick } = useModalDialog();
   const titleId = React.useId();
   const { preferences, setPreference } = usePreferences();
-
-  React.useEffect(() => {
-    const node = dialog.current;
-    if (node && !node.open) node.showModal();
-  }, []);
-
-  const close = () => dialog.current?.close();
 
   const autoImperial = resolveUnitSystem('auto') === UnitSystem.IMPERIAL;
   const system = resolveUnitSystem(preferences.temperature);
@@ -82,14 +70,12 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
 
   return (
     <dialog
-      ref={dialog}
+      ref={ref}
       className={`prefsPanel${anchor ? ' is-anchored' : ''}`}
       style={anchorStyle}
       aria-labelledby={titleId}
       onClose={onClose}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) close();
-      }}>
+      onClick={onBackdropClick}>
       <div className="prefsPanel-inner">
         <header className="prefsPanel-header">
           <h2 id={titleId}>Preferences</h2>
@@ -142,7 +128,7 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
               name="layout"
               label="Compact layout"
               options={[
-                { value: 'auto', label: `Auto (${mediaLabel(COMPACT_QUERY)})` },
+                { value: 'auto', label: `Auto (${mediaLabel(PHONE_QUERY)})` },
                 { value: 'compact', label: 'On' },
                 { value: 'comfortable', label: 'Off' },
               ]} />

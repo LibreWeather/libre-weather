@@ -15,13 +15,12 @@ import { Link } from 'react-router-dom';
 import Logo from '@components/Logo';
 import NavSummary from '@components/NavSummary';
 import PreferencesPanel from '@components/Preferences';
-import useDialogParam from '../../hooks/useDialogParam';
-import { usePlace } from '../../providers/PlaceProvider';
-import { placeLabel } from '../../utilities/nominatim';
+import useDialogParam from '@/hooks/useDialogParam';
+import { usePlace } from '@/providers/PlaceProvider';
+import { PHONE_QUERY, mediaMatches } from '@/utilities/media';
+import { placeLabel } from '@/utilities/place';
 
 import './NavigationBar.less';
-
-const PHONE_QUERY = '(max-width: 767px)';
 
 const NavigationBar = () => {
   const { zip, locationName, useGeo, geoAvailable, options, searchZip, toggleGeo, chooseLocation } = usePlace();
@@ -33,8 +32,7 @@ const NavigationBar = () => {
 
   React.useLayoutEffect(() => {
     if (prefs.value === null) return;
-    const phone = window.matchMedia?.(PHONE_QUERY).matches;
-    setPrefsAnchor(phone ? null : gearButton.current?.getBoundingClientRect() ?? null);
+    setPrefsAnchor(mediaMatches(PHONE_QUERY) ? null : gearButton.current?.getBoundingClientRect() ?? null);
   }, [prefs.value]);
 
   const handleZipSubmit = (event: React.FormEvent<HTMLFormElement>) => {

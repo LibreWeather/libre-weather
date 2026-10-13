@@ -1,26 +1,20 @@
 import React from 'react';
-import { tempDisplay } from '../../../utilities/formatters';
-import type { DailyRowWeather } from './DailyRow';
-
-const toPct = (val: number, totalMin: number, totalMax: number) => {
-  if (totalMax === totalMin) {
-    return 50;
-  }
-  return ((val - totalMin) / (totalMax - totalMin)) * 100;
-};
+import type { ForecastDay } from '@/models/forecast';
+import { rangePercent } from '@/utilities/forecast';
+import { tempDisplay } from '@/utilities/formatters';
 
 export const TempRangeCol = ({
   dailyWeather,
   overallMinTemp,
   overallMaxTemp,
 }: {
-  dailyWeather: DailyRowWeather;
+  dailyWeather: ForecastDay;
   overallMinTemp: number;
   overallMaxTemp: number;
 }) => {
   const { minTemp, maxTemp } = dailyWeather;
-  const start = toPct(Number(minTemp.value), overallMinTemp, overallMaxTemp);
-  const end = toPct(Number(maxTemp.value), overallMinTemp, overallMaxTemp);
+  const start = rangePercent(Number(minTemp.value), overallMinTemp, overallMaxTemp);
+  const end = rangePercent(Number(maxTemp.value), overallMinTemp, overallMaxTemp);
   const width = Math.max(end - start, 6);
 
   return (

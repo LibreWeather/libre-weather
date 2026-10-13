@@ -1,1 +1,1 @@
-export { default, isStandalone } from './InstallBanner';
+export { default } from './InstallBanner';

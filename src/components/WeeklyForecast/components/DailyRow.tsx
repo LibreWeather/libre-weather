@@ -12,24 +12,14 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { tempDisplay, getDayOfTheWeek } from '@/utilities';
 import HourlyGraph from '@components/HourlyGraph';
-import { Condition, type Hourly, type Temperature } from '@/utilities/weatherTypes';
+import type { ForecastDay } from '@/models/forecast';
+import type { Hourly } from '@/models/weather';
+import { getDayOfTheWeek, tempDisplay } from '@/utilities/formatters';
 import { TempRangeCol } from './TempRangeCol';
 
-export type DailyRowWeather = {
-  condition: Condition;
-  description: string;
-  minTemp: Temperature;
-  maxTemp: Temperature;
-  precipitation: { type: string; value: string };
-  sunrise: string;
-  sunset: string;
-  time: number;
-};
-
 type DailyRowProps = {
-  dailyWeather: DailyRowWeather;
+  dailyWeather: ForecastDay;
   hourly: Hourly[];
   index: number;
   overallMinTemp: number;
@@ -43,10 +33,6 @@ export class DailyRow extends React.Component<DailyRowProps> {
     const { dailyWeather, hourly, index, overallMinTemp, overallMaxTemp, open, onToggle } = this.props;
     const drawerDisplay = open ? 'block' : 'none';
     const drawerIcon = open ? faMinusCircle : faPlusCircle;
-
-    const conditionDate = new Date();
-    conditionDate.setHours(12);
-    const conditionTime = conditionDate.getTime();
     const { precipitation } = dailyWeather;
 
     // TODO the temperature range details need to be updated to include the times (calculated by looking at the hourly data)
@@ -56,7 +42,7 @@ export class DailyRow extends React.Component<DailyRowProps> {
         <Container>
           <Row className="buttonRow align-items-center g-2 flex-nowrap" onClick={onToggle}>
             <Col xs="auto" className="iconCol">
-              <WeatherIcon condition={dailyWeather.condition} sizePx={20} time={conditionTime} />
+              <WeatherIcon condition={dailyWeather.condition} sizePx={20} daytime />
             </Col>
             <Col xs="auto" className="forecastDayCol">
               {index === 0 ? 'Today' : getDayOfTheWeek(dailyWeather.time)}

@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { usePreferences } from '../../providers/PreferencesProvider';
-import { useWeather } from '../../providers/WeatherProvider';
-import { tempDisplay } from '../../utilities/formatters';
 import { WeatherIcon } from '@components/WeatherIcon';
+import { useHeroOffscreen } from '@/hooks/useHero';
+import { usePreferences } from '@/providers/PreferencesProvider';
+import { useWeather } from '@/providers/WeatherProvider';
+import { tempDisplay } from '@/utilities/formatters';
 
 import './NavSummary.less';
 
@@ -11,16 +12,7 @@ import './NavSummary.less';
 const NavSummary = () => {
   const { weather } = useWeather();
   const { resolved } = usePreferences();
-  const [visible, setVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    const root = document.documentElement;
-    const sync = () => setVisible(root.classList.contains('hero-offscreen'));
-    sync();
-    const observer = new MutationObserver(sync);
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-  }, []);
+  const visible = useHeroOffscreen();
 
   if (!weather) return null;
   const { current } = weather;
@@ -35,7 +27,7 @@ const NavSummary = () => {
       tabIndex={visible ? 0 : -1}
       aria-label={`${label}, back to top`}
       onClick={() => window.scrollTo({ top: 0, behavior: resolved.reduceMotion ? 'auto' : 'smooth' })}>
-      <WeatherIcon condition={current.condition} sizePx={22} time={null} />
+      <WeatherIcon condition={current.condition} sizePx={22} />
       <span className="navSummary-temp">{tempDisplay(current.temp)}</span>
       {text ? <span className="navSummary-text">{text}</span> : null}
     </button>
