@@ -1,11 +1,11 @@
 import React from 'react';
 
 import CurrentDayContext from '../utilities/CurrentDayContext';
+import { browserUnits } from '../utilities/localeUnits';
 import { UnitSystem, type LoadStatus, type Weather } from '../utilities/weatherTypes';
 import { usePlace } from './PlaceProvider';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
-const DEFAULT_UNITS = UnitSystem.IMPERIAL;
 
 export type WeatherContextValue = {
   weather: Weather | null;
@@ -20,7 +20,7 @@ const WeatherContext = React.createContext<WeatherContextValue | null>(null);
 export const WeatherProvider = ({ children }: { children: React.ReactNode }) => {
   const { coords } = usePlace();
   const [units, setUnitsState] = React.useState<UnitSystem>(
-    () => (localStorage.getItem('units') as UnitSystem) || DEFAULT_UNITS
+    () => (localStorage.getItem('units') as UnitSystem) || browserUnits()
   );
   const [weather, setWeather] = React.useState<Weather | null>(null);
   const [status, setStatus] = React.useState<LoadStatus>('loading');

@@ -86,7 +86,8 @@ const buildWeather = (now, unit = 'IMPERIAL') => {
  * `weather` overrides the API reply; pass a StaticResponse such as `{ statusCode: 500 }` to fail it.
  * `weatherDelay` holds back the default reply so loading states can be observed.
  * `alerts` overrides the alerts reply (an AlertsResponse body or a StaticResponse).
- * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object, weatherDelay?: number, alerts?: object }} [opts]
+ * `languages` pins `navigator.languages` so locale-derived defaults don't depend on the test machine.
+ * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object, weatherDelay?: number, alerts?: object, languages?: string[] }} [opts]
  */
 const visitStubbed = ({
   path = '/',
@@ -95,6 +96,7 @@ const visitStubbed = ({
   weather,
   weatherDelay = 0,
   alerts = { coverage: true, sources: ['NWS'], alerts: [] },
+  languages = ['en-US'],
 } = {}) => {
   cy.intercept('GET', '**/alerts/**', alerts).as('alerts');
   cy.intercept('GET', '**/weather/**', (req) => {
@@ -106,7 +108,13 @@ const visitStubbed = ({
   }).as('geocode');
   cy.intercept('GET', 'https://nominatim.openstreetmap.org/reverse*', REVERSE).as('reverse');
   cy.clock(now, ['Date']);
-  cy.visit(path, { onBeforeLoad });
+  cy.visit(path, {
+    onBeforeLoad(win) {
+      Object.defineProperty(win.navigator, 'languages', { value: languages, configurable: true });
+      Object.defineProperty(win.navigator, 'language', { value: languages[0], configurable: true });
+      onBeforeLoad?.(win);
+    },
+  });
   return now;
 };
 

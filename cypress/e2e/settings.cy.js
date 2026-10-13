@@ -17,6 +17,30 @@ describe('Settings bar', () => {
   });
 
   describe('units', () => {
+    it('defaults to Celsius for browsers outside Fahrenheit regions', () => {
+      visitStubbed({ languages: ['en-GB', 'en'] });
+      weatherFor(/\/unit\/METRIC$/);
+      cy.get('#custom-switch').should('be.checked');
+      cy.get('.currentTemp').should('contain.text', '21');
+    });
+
+    it('defaults to Fahrenheit for US browsers', () => {
+      visitStubbed({ languages: ['es-US', 'es'] });
+      weatherFor(/\/unit\/IMPERIAL$/);
+      cy.get('#custom-switch').should('not.be.checked');
+    });
+
+    it('keeps a saved choice over the browser locale', () => {
+      visitStubbed({
+        languages: ['de-DE'],
+        onBeforeLoad(win) {
+          win.localStorage.setItem('units', 'IMPERIAL');
+        },
+      });
+      weatherFor(/\/unit\/IMPERIAL$/);
+      cy.get('#custom-switch').should('not.be.checked');
+    });
+
     it('switches to metric and refetches', () => {
       visitStubbed();
       cy.get('.currentTemp').should('contain.text', '69');
