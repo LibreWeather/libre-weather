@@ -2,6 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 
 import { timeDisplay, volumeDisplay } from '@/utilities';
+import { isDayOpen, loadOpenDays, saveOpenDays, toggleDay } from '@/utilities/openDays';
 import type { Hourly, Temperature, Volume, Weather } from '@/utilities/weatherTypes';
 import { DailyRow, type DailyRowWeather } from './components/DailyRow';
 import './WeeklyForecast.less';
@@ -55,17 +56,33 @@ const getOverallMinTemp = (weeklyWeather: DailyRowWeather[]) =>
 const getOverallMaxTemp = (weeklyWeather: DailyRowWeather[]) =>
   Math.max(...weeklyWeather.map((dailyWeather) => Number(dailyWeather.maxTemp.value)));
 
+/** Which days are expanded, kept in localStorage so they survive refreshes and reloads. */
+const useOpenDays = () => {
+  const [openDays, setOpenDays] = React.useState(() => loadOpenDays(localStorage));
+  const toggle = React.useCallback((time: number, isToday: boolean) => {
+    setOpenDays((current) => {
+      const next = toggleDay(current, time, isToday);
+      saveOpenDays(localStorage, next);
+      return next;
+    });
+  }, []);
+  return [openDays, toggle] as const;
+};
+
 const DailyRows = ({ weeklyWeather, hourly }: { weeklyWeather: DailyRowWeather[]; hourly: Hourly[] }) => {
+  const [openDays, toggle] = useOpenDays();
   const overallMin = getOverallMinTemp(weeklyWeather);
   const overallMax = getOverallMaxTemp(weeklyWeather);
 
   return weeklyWeather.map((dailyWeather, index) => {
+    const isToday = index === 0;
     return (
       <DailyRow
         dailyWeather={dailyWeather}
         hourly={hoursOnDay(hourly, dailyWeather.time)}
         index={index}
-        defaultOpen={index === 0}
+        open={isDayOpen(openDays, dailyWeather.time, isToday)}
+        onToggle={() => toggle(dailyWeather.time, isToday)}
         key={`ww-${dailyWeather.time}-${index}`}
         overallMinTemp={overallMin}
         overallMaxTemp={overallMax} />
@@ -73,14 +90,10 @@ const DailyRows = ({ weeklyWeather, hourly }: { weeklyWeather: DailyRowWeather[]
   });
 };
 
-export default class WeeklyForecast extends React.Component<{ weatherData: Weather }> {
-  render() {
-    const { weatherData } = this.props;
-    const weeklyWeather = weeklyWeatherData(weatherData);
-    return (
-      <Container className="weeklyForecast forecast-col" fluid>
-        <DailyRows hourly={weatherData.hourly} weeklyWeather={weeklyWeather} />
-      </Container>
-    );
-  }
-}
+const WeeklyForecast = ({ weatherData }: { weatherData: Weather }) => (
+  <Container className="weeklyForecast forecast-col" fluid>
+    <DailyRows hourly={weatherData.hourly} weeklyWeather={weeklyWeatherData(weatherData)} />
+  </Container>
+);
+
+export default WeeklyForecast;

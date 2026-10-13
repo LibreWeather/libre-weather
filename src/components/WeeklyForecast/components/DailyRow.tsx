@@ -34,49 +34,15 @@ type DailyRowProps = {
   index: number;
   overallMinTemp: number;
   overallMaxTemp: number;
-  defaultOpen?: boolean;
-};
-
-type DailyRowState = {
-  drawerDisplay: 'none' | 'block';
-  drawerIcon: typeof faPlusCircle;
   open: boolean;
+  onToggle: () => void;
 };
 
-export class DailyRow extends React.Component<DailyRowProps, DailyRowState> {
-  constructor(props: DailyRowProps) {
-    super(props);
-
-    const open = Boolean(props.defaultOpen);
-    this.state = {
-      drawerDisplay: open ? 'block' : 'none',
-      drawerIcon: open ? faMinusCircle : faPlusCircle,
-      open,
-    };
-
-    this.handleRowClick = this.handleRowClick.bind(this);
-  }
-
-  handleRowClick() {
-    const { drawerDisplay } = this.state;
-    if (drawerDisplay === 'none') {
-      this.setState({
-        drawerDisplay: 'block',
-        drawerIcon: faMinusCircle,
-        open: true,
-      });
-    } else {
-      this.setState({
-        drawerDisplay: 'none',
-        drawerIcon: faPlusCircle,
-        open: false,
-      });
-    }
-  }
-
+export class DailyRow extends React.Component<DailyRowProps> {
   render() {
-    const { dailyWeather, hourly, index, overallMinTemp, overallMaxTemp } = this.props;
-    const { drawerDisplay, drawerIcon, open } = this.state;
+    const { dailyWeather, hourly, index, overallMinTemp, overallMaxTemp, open, onToggle } = this.props;
+    const drawerDisplay = open ? 'block' : 'none';
+    const drawerIcon = open ? faMinusCircle : faPlusCircle;
 
     const conditionDate = new Date();
     conditionDate.setHours(12);
@@ -88,7 +54,7 @@ export class DailyRow extends React.Component<DailyRowProps, DailyRowState> {
       <Row
         className={`justify-content-center weeklyForecastRow ${open ? 'open' : ''} ${index > 0 ? 'open-margin' : ''}`}>
         <Container>
-          <Row className="buttonRow align-items-center g-2 flex-nowrap" onClick={this.handleRowClick}>
+          <Row className="buttonRow align-items-center g-2 flex-nowrap" onClick={onToggle}>
             <Col xs="auto" className="iconCol">
               <WeatherIcon condition={dailyWeather.condition} sizePx={20} time={conditionTime} />
             </Col>

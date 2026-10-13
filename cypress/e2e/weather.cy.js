@@ -158,6 +158,40 @@ describe('Weather view', () => {
       cy.get('@today').find('.displayDrawer').should('be.visible');
     });
 
+    it('keeps several days open across reloads', () => {
+      cy.get('.weeklyForecastRow').eq(2).find('.buttonRow').click();
+      cy.get('.weeklyForecastRow').eq(4).find('.buttonRow').click();
+      cy.get('.weeklyForecastRow.open').should('have.length', 3);
+
+      cy.reload();
+      cy.get('.weeklyForecastRow').should('have.length', 7);
+      cy.get('.weeklyForecastRow').eq(0).should('have.class', 'open');
+      cy.get('.weeklyForecastRow').eq(2).should('have.class', 'open');
+      cy.get('.weeklyForecastRow').eq(4).should('have.class', 'open');
+      cy.get('.weeklyForecastRow.open').should('have.length', 3);
+    });
+
+    it('remembers that Today was closed', () => {
+      cy.get('.weeklyForecastRow').first().find('.buttonRow').click();
+      cy.get('.weeklyForecastRow.open').should('have.length', 0);
+      cy.window().its('localStorage').invoke('getItem', 'openDays').should('eq', '[]');
+
+      cy.reload();
+      cy.get('.weeklyForecastRow').should('have.length', 7);
+      cy.get('.weeklyForecastRow.open').should('have.length', 0);
+    });
+
+    it('keeps open days when the forecast refreshes', () => {
+      cy.get('.weeklyForecastRow').eq(3).find('.buttonRow').click();
+      cy.get('button[aria-label="Preferences"]').click();
+      cy.contains('.prefs-field', 'Temperature').contains('label', '°C').click();
+      cy.get('.prefsPanel-close').click();
+      cy.get('.currentTemp').should('contain.text', '21');
+      cy.get('.weeklyForecastRow').eq(0).should('have.class', 'open');
+      cy.get('.weeklyForecastRow').eq(3).should('have.class', 'open');
+      cy.get('.weeklyForecastRow.open').should('have.length', 2);
+    });
+
     it('pads the open drawer away from its edges', () => {
       cy.get('.weeklyForecastRow').first().find('.displayDrawer').should(($drawer) => {
         const style = getComputedStyle($drawer[0]);
