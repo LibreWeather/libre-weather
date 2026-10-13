@@ -1,0 +1,23 @@
+export default {
+  branches: 'main',
+  plugins: [
+    '@semantic-release/commit-analyzer',
+    '@semantic-release/release-notes-generator',
+    '@semantic-release/changelog',
+    ['@semantic-release/npm', { npmPublish: false }],
+    '@semantic-release/github',
+    [
+      '@codedependant/semantic-release-docker',
+      {
+        dockerImage: 'libre-weather',
+        dockerRegistry: 'ghcr.io',
+        dockerProject: 'libreweather',
+        dockerPlatform: ['linux/amd64', 'linux/arm64'],
+      },
+    ],
+    [
+      '@semantic-release/git',
+      { assets: ['package.json', 'package-lock.json', 'CHANGELOG.md'] },
+    ],
+  ],
+};
