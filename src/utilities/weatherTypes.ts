@@ -140,3 +140,5 @@ export type Weather = {
   daily: Daily[];
   hourly: Hourly[];
 };
+
+export type LoadStatus = 'loading' | 'ready' | 'error';

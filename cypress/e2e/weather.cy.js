@@ -1,6 +1,6 @@
 'use strict';
 
-const { expectRequest, visitStubbed } = require('../support/stubs');
+const { buildWeather, expectRequest, fixedNow, visitStubbed } = require('../support/stubs');
 
 describe('Weather view', () => {
   it('loads current conditions from the weather API', () => {
@@ -41,11 +41,77 @@ describe('Weather view', () => {
     });
   });
 
-  it('survives a failed weather request', () => {
+  it('shows a skeleton until the forecast arrives', () => {
+    visitStubbed({ weatherDelay: 800 });
+    cy.get('.weatherSkeleton').should('be.visible').and('have.class', 'is-animated');
+    cy.get('.weatherSkeleton-day').should('have.length', 7);
+    cy.get('.currentTemp').should('not.exist');
+    cy.get('.currentTemp', { timeout: 10000 }).should('contain.text', '69');
+    cy.get('.weatherSkeleton').should('not.exist');
+  });
+
+  it('dims the forecast while a new location loads', () => {
+    visitStubbed({ weatherDelay: 400 });
+    cy.get('.currentTemp').should('be.visible');
+    cy.get('.header').should('not.have.class', 'is-refreshing');
+    cy.get('#custom-switch').check({ force: true });
+    cy.get('.header').should('have.class', 'is-refreshing').and('have.attr', 'aria-busy', 'true');
+    cy.get('.header').should('not.have.class', 'is-refreshing');
+    cy.get('.currentTemp').should('contain.text', '21');
+  });
+
+  it('does not fetch weather for a made-up location before the real one resolves', () => {
+    visitStubbed();
+    cy.get('.currentTemp').should('be.visible');
+    cy.get('@weather.all').then((calls) => {
+      expect(calls.map(({ request }) => request.url)).to.have.length(1);
+      expect(calls[0].request.url).to.match(/\/39\.1031,-94\.5822\//);
+    });
+  });
+
+  it('asks which place was meant when the saved code matches several', () => {
+    visitStubbed({
+      onBeforeLoad(win) {
+        win.localStorage.setItem('zip', '12345');
+      },
+    });
+    cy.contains('.locationPicker-title', 'Which 12345 did you mean?').should('be.visible');
+    cy.get('.locationPicker-option').should('have.length', 2);
+    cy.get('.weatherSkeleton').should('be.visible').and('not.have.class', 'is-animated');
+    cy.get('@weather.all').should('have.length', 0);
+
+    cy.contains('.locationPicker-option', 'Rotterdam').click();
+    expectRequest('weather', ({ url }) => /\/42\.8,-73\.9\/unit\/IMPERIAL$/.test(url));
+    cy.get('.locationPicker').should('not.exist');
+    cy.get('#locationName').should('have.text', 'Rotterdam');
+    cy.get('.currentTemp').should('be.visible');
+  });
+
+  it('explains when the saved code matches nothing', () => {
+    visitStubbed({
+      onBeforeLoad(win) {
+        win.localStorage.setItem('zip', '00000');
+      },
+    });
+    cy.get('.weatherError').should('contain.text', 'find that location');
+    cy.get('.weatherError button').should('not.exist');
+    cy.get('.weatherSkeleton').should('not.have.class', 'is-animated');
+    cy.get('@weather.all').should('have.length', 0);
+  });
+
+  it('shows an error with a retry when the weather request fails', () => {
     visitStubbed({ weather: { statusCode: 500, body: 'boom' } });
-    cy.wait('@weather');
-    cy.get('.weeklyForecastRow').should('have.length.gte', 1);
+    cy.get('.weatherError').should('be.visible').and('contain.text', 'load the forecast');
+    cy.get('.weatherSkeleton').should('be.visible').and('not.have.class', 'is-animated');
     cy.get('.app-navbar').should('be.visible');
+
+    cy.intercept('GET', '**/weather/**', (req) => {
+      req.reply(buildWeather(fixedNow(), 'IMPERIAL'));
+    }).as('weatherRetry');
+    cy.contains('.weatherError button', 'Try again').click();
+    cy.wait('@weatherRetry');
+    cy.get('.weatherError').should('not.exist');
+    cy.get('.currentTemp').should('contain.text', '69');
   });
 
   describe('daily accordion', () => {

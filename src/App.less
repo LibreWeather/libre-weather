@@ -1,6 +1,23 @@
 @import 'components/common/variables.less';
 @import 'components/common/helpers.less';
 
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (min-width: 1600px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: 2200px) {
+    font-size: 20px;
+  }
+
+  @media (min-width: 3000px) {
+    font-size: 24px;
+  }
+}
+
 body {
   margin: 0;
   font-family: @font-sans;

@@ -84,12 +84,13 @@ const buildWeather = (now, unit = 'IMPERIAL') => {
 /**
  * Stub the weather API and Nominatim, freeze Date at a fixed time, then visit.
  * `weather` overrides the API reply; pass a StaticResponse such as `{ statusCode: 500 }` to fail it.
- * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object }} [opts]
+ * `weatherDelay` holds back the default reply so loading states can be observed.
+ * @param {{ path?: string, now?: number, onBeforeLoad?: (win: Window) => void, weather?: object, weatherDelay?: number }} [opts]
  */
-const visitStubbed = ({ path = '/', now = fixedNow(), onBeforeLoad, weather } = {}) => {
+const visitStubbed = ({ path = '/', now = fixedNow(), onBeforeLoad, weather, weatherDelay = 0 } = {}) => {
   cy.intercept('GET', '**/weather/**', (req) => {
     const unit = /\/unit\/METRIC/i.test(req.url) ? 'METRIC' : 'IMPERIAL';
-    req.reply(weather ?? buildWeather(now, unit));
+    req.reply(weather ?? { body: buildWeather(now, unit), delay: weatherDelay });
   }).as('weather');
   cy.intercept('GET', 'https://nominatim.openstreetmap.org/search*', (req) => {
     req.reply(PLACES[req.query.postalcode] ?? []);

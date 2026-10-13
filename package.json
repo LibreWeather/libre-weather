@@ -49,6 +49,7 @@
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@parcel/babel-preset-env": "^2.16.0",
     "@parcel/packager-raw-url": "^2.16.0",
+    "@parcel/service-worker": "^2.16.4",
     "@parcel/transformer-less": "^2.16.0",
     "@parcel/transformer-webmanifest": "^2.16.0",
     "@stylistic/eslint-plugin": "^5.4.0",

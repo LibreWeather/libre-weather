@@ -12,259 +12,113 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import { DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { geocode, reverseGeocode } from '../utilities/nominatim';
-import type { NominatimAddress, NominatimResponse } from '../utilities/nominatim';
+import { usePlace } from '../providers/PlaceProvider';
+import { useWeather } from '../providers/WeatherProvider';
+import { placeLabel } from '../utilities/nominatim';
 import { UnitSystem } from '../utilities/weatherTypes';
 import Logo from './Logo';
 
 import './NavigationBar.less';
 
-const DEFAULT_ZIP = '64106';
-const DEFAULT_LOCATION_NAME = 'Kansas City';
+const NavigationBar = () => {
+  const { zip, locationName, useGeo, geoAvailable, options, searchZip, toggleGeo, chooseLocation } = usePlace();
+  const { units, setUnits } = useWeather();
+  const zipInput = React.useRef<HTMLInputElement>(null);
+  const [showOptions, setShowOptions] = React.useState(false);
 
-const logger = console;
-
-const locNameTree = (address: NominatimAddress | undefined) => {
-  if (!address) {
-    return undefined;
-  }
-  const { village, town, city, county, postcode, country } = address;
-  const wrap = (thing?: string) => (thing ? `${thing}, ${country}` : undefined);
-
-  return wrap(village) || wrap(town) || wrap(city) || wrap(county) || postcode;
-};
-
-type NavigationBarProps = {
-  setLatLon: (lat: string | number, lon: string | number) => void;
-  setUnits: (units: UnitSystem) => void;
-};
-
-type NavigationBarState = {
-  zip: string;
-  locationName: string;
-  units: UnitSystem;
-  useGeo: boolean;
-  locOptions: NominatimResponse[];
-  enteredZip?: string;
-};
-
-export default class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
-  constructor(props: NavigationBarProps) {
-    super(props);
-    this.state = {
-      zip: localStorage.getItem('zip') || DEFAULT_ZIP,
-      locationName: localStorage.getItem('locationName') || DEFAULT_LOCATION_NAME,
-      units: (localStorage.getItem('units') as UnitSystem) || UnitSystem.IMPERIAL,
-      useGeo: navigator.geolocation && (localStorage.getItem('useGeo') === 'true' || false),
-      locOptions: [],
-      enteredZip: undefined,
-    };
-
-    this.setNomData = this.setNomData.bind(this);
-    this.handleZipChange = this.handleZipChange.bind(this);
-    this.updateLocationFromZip = this.updateLocationFromZip.bind(this);
-    this.handleZipSubmit = this.handleZipSubmit.bind(this);
-    this.updateLocationFromGeo = this.updateLocationFromGeo.bind(this);
-    this.handleGeoSubmit = this.handleGeoSubmit.bind(this);
-    this.handleUnitsChange = this.handleUnitsChange.bind(this);
-  }
-
-  componentDidMount() {
-    const { useGeo } = this.state;
-    if (useGeo) {
-      this.updateLocationFromGeo();
-    } else {
-      this.updateLocationFromZip();
-    }
-  }
-
-  /**
-   * Update location data from NominatimResponse
-   * @param {import('../utilities/nominatim').NominatimResponse} result nominatim query response
-   */
-  setNomData(result: NominatimResponse) {
-    const { setLatLon } = this.props;
-
-    const { village, town, city, county, postcode } = result.address;
-    let locName;
-    if (village) {
-      locName = village;
-    } else if (town) {
-      locName = town;
-    } else if (city) {
-      locName = city;
-    } else if (county) {
-      locName = county;
-    } else if (postcode) {
-      locName = postcode;
-    }
-    localStorage.setItem('locationName', locName || DEFAULT_LOCATION_NAME);
-    localStorage.setItem('zip', postcode || DEFAULT_ZIP);
-    this.setState({ locationName: locName || DEFAULT_LOCATION_NAME, zip: postcode || DEFAULT_ZIP, locOptions: [] });
-
-    setLatLon(result.lat, result.lon);
-  }
-
-  handleZipChange(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ zip: event.target.value, enteredZip: event.target.value });
-  }
-
-  updateLocationFromZip() {
-    const { zip } = this.state;
-    geocode({
-      addressdetails: true,
-      postalcode: zip,
-    })
-      .then((results: NominatimResponse[]) => {
-        if (results.length > 1) {
-          this.setState({
-            locOptions: results,
-          });
-        } else {
-          this.setNomData(results[0]);
-          this.setState({
-            enteredZip: undefined,
-            locOptions: [],
-          });
-        }
-      })
-      .catch(logger.error);
-  }
-
-  handleZipSubmit(event: React.FormEvent<HTMLFormElement>) {
-    this.setState({ useGeo: false });
-    localStorage.setItem('useGeo', 'false');
-
-    this.updateLocationFromZip();
-
+  const handleZipSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const query = zipInput.current?.value.trim();
+    if (query) {
+      setShowOptions(true);
+      searchZip(query);
+    }
     event.currentTarget.reset();
-  }
+  };
 
-  updateLocationFromGeo() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        // Called if success
-        ({ coords }) => {
-          reverseGeocode({
-            lat: coords.latitude,
-            lon: coords.longitude,
-            addressdetails: true,
-          })
-            .then(this.setNomData)
-            .catch(logger.error);
-        }
-      );
-    }
-  }
+  return (
+    <Navbar data-bs-theme="dark" expand="lg" className="app-navbar">
+      <div className="app-brand">
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 py-0">
+          <Logo width="30" height="30" className="d-inline-block" />
+          <span>Libre Weather</span>
+        </Navbar.Brand>
+        <Nav className="app-brand-links flex-row">
+          <Nav.Link as={Link} to="/licenses" aria-label="Licenses">
+            <FontAwesomeIcon icon={faOsi} />
+          </Nav.Link>
+          <Nav.Link
+            aria-label="GitHub"
+            href="https://github.com/LibreWeather/libre-weather"
+            rel="noreferrer"
+            target="_blank">
+            <FontAwesomeIcon icon={faGithub} />
+          </Nav.Link>
+        </Nav>
+      </div>
 
-  handleGeoSubmit() {
-    const { useGeo } = this.state;
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-    if (useGeo) {
-      this.setState({ useGeo: false });
-      localStorage.setItem('useGeo', 'false');
-      this.updateLocationFromZip();
-    } else {
-      this.setState({ useGeo: true });
-      localStorage.setItem('useGeo', 'true');
-      this.updateLocationFromGeo();
-    }
-  }
-
-  handleUnitsChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const units = event.target.checked ? UnitSystem.METRIC : UnitSystem.IMPERIAL;
-    const { setUnits } = this.props;
-    setUnits(units);
-    this.setState({ units });
-  }
-
-  render() {
-    const { locationName, zip, units, useGeo, locOptions, enteredZip } = this.state;
-
-    return (
-      <Navbar data-bs-theme="dark" expand="lg" className="app-navbar">
-        <div className="app-brand">
-          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 py-0">
-            <Logo width="30" height="30" className="d-inline-block" />
-            <span>Libre Weather</span>
-          </Navbar.Brand>
-          <Nav className="app-brand-links flex-row">
-            <Nav.Link as={Link} to="/licenses" aria-label="Licenses">
-              <FontAwesomeIcon icon={faOsi} />
-            </Nav.Link>
-            <Nav.Link
-              aria-label="GitHub"
-              href="https://github.com/LibreWeather/libre-weather"
-              rel="noreferrer"
-              target="_blank">
-              <FontAwesomeIcon icon={faGithub} />
-            </Nav.Link>
-          </Nav>
-        </div>
-
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-
-        <Navbar.Collapse id="basic-navbar-nav">
-          <div className="app-settings">
-            <Form className="app-settings-location" onSubmit={this.handleZipSubmit}>
-              <InputGroup>
-                <Button
+      <Navbar.Collapse id="basic-navbar-nav">
+        <div className="app-settings">
+          <Form className="app-settings-location" onSubmit={handleZipSubmit}>
+            <InputGroup>
+              <Button
+                variant="outline-secondary"
+                aria-label="Use my location"
+                disabled={!geoAvailable}
+                onClick={toggleGeo}
+                active={useGeo}>
+                <FontAwesomeIcon icon={faLocationArrow} />
+              </Button>
+              {options.length ? (
+                <DropdownButton
                   variant="outline-secondary"
-                  disabled={!navigator.geolocation}
-                  onClick={this.handleGeoSubmit}
-                  active={useGeo}>
-                  <FontAwesomeIcon icon={faLocationArrow} />
-                </Button>
-                {locOptions.length ? (
-                  <DropdownButton
-                    variant="outline-secondary"
-                    title=""
-                    id="location-options"
-                    show={!!enteredZip}>
-                    {locOptions.map((option) => {
-                      const locName = locNameTree(option.address);
-                      return (
-                        <Dropdown.Item
-                          href="#"
-                          key={`location-option--${locName}`}
-                          onClick={() => {
-                            this.setNomData(option);
-                            this.setState({ enteredZip: undefined });
-                          }}>
-                          {locName}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </DropdownButton>
-                ) : null}
-                <InputGroup.Text id="locationName" className="app-settings-place">
-                  {locationName}
-                </InputGroup.Text>
-                <Form.Control
-                  placeholder={zip === DEFAULT_ZIP ? 'ZIP Code' : zip}
-                  aria-label="ZIP Code"
-                  aria-describedby="locationName"
-                  type="number"
-                  onChange={this.handleZipChange} />
-                <Button variant="outline-secondary" type="submit">
-                  <FontAwesomeIcon icon={faSearch} />
-                </Button>
-              </InputGroup>
-            </Form>
-            <div className="app-settings-units">
-              <span>˚F</span>
-              <Form.Switch
-                id="custom-switch"
-                className="app-units-switch"
-                label=""
-                onChange={this.handleUnitsChange}
-                checked={units === UnitSystem.METRIC} />
-              <span>˚C</span>
-            </div>
+                  title=""
+                  id="location-options"
+                  show={showOptions}
+                  onToggle={setShowOptions}>
+                  {options.map((option) => (
+                    <Dropdown.Item
+                      href="#"
+                      key={option.place_id ?? `${option.lat},${option.lon}`}
+                      onClick={() => {
+                        chooseLocation(option);
+                        setShowOptions(false);
+                      }}>
+                      {placeLabel(option.address)}
+                    </Dropdown.Item>
+                  ))}
+                </DropdownButton>
+              ) : null}
+              <InputGroup.Text id="locationName" className="app-settings-place">
+                {locationName}
+              </InputGroup.Text>
+              <Form.Control
+                placeholder={zip || 'ZIP Code'}
+                aria-label="ZIP Code"
+                aria-describedby="locationName"
+                ref={zipInput}
+                autoComplete="postal-code" />
+              <Button variant="outline-secondary" type="submit" aria-label="Search">
+                <FontAwesomeIcon icon={faSearch} />
+              </Button>
+            </InputGroup>
+          </Form>
+          <div className="app-settings-units">
+            <span>˚F</span>
+            <Form.Switch
+              id="custom-switch"
+              className="app-units-switch"
+              label=""
+              onChange={(event) => setUnits(event.target.checked ? UnitSystem.METRIC : UnitSystem.IMPERIAL)}
+              checked={units === UnitSystem.METRIC} />
+            <span>˚C</span>
           </div>
-        </Navbar.Collapse>
-      </Navbar>
-    );
-  }
-}
+        </div>
+      </Navbar.Collapse>
+    </Navbar>
+  );
+};
+
+export default NavigationBar;
