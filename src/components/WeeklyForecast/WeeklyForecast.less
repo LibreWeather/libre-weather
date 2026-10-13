@@ -3,34 +3,42 @@
 .weeklyForecast {
   font-size: initial;
   margin-top: 2em;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.625rem;
+  background-color: fade(@clear-bg, 45%);
 
   .weeklyForecastRow {
-    margin-top: 1.25em;
+    --bs-gutter-x: 0;
+    margin: 0;
+
+    & + .weeklyForecastRow {
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    > .container {
+      max-width: none;
+      padding: 0;
+    }
 
     &.open {
       background-color: @clear-bg;
-      border-radius: 4px;
-      padding-bottom: 0.5em;
-
-      &.open-margin {
-        margin-top: 1em !important;
-      }
     }
 
     .buttonRow {
-      padding-top: 0.5em;
-      padding-bottom: 0.3em;
-      border-radius: 0.3em;
+      margin: 0;
+      padding: 0.75rem 0.875rem;
       cursor: pointer;
     }
 
     .buttonRow:hover {
-      background-color: @clear-bg;
+      background-color: rgba(255, 255, 255, 0.04);
     }
 
     .iconCol {
       padding: 0;
-      margin: 0;
+      margin: 0 0.35rem 0 0;
       flex: 0 0 auto;
     }
 
@@ -88,7 +96,8 @@
     }
 
     .displayDrawer {
-      margin-top: 1em;
+      margin: 0;
+      padding: 0.25rem 0.875rem 1rem;
 
       .daily-low {
         margin-right: 5px;
@@ -107,11 +116,12 @@
     margin-top: 1em;
 
     .weeklyForecastRow {
-      margin-top: 0.4em;
-
       .buttonRow {
-        padding-top: 0.35em;
-        padding-bottom: 0.2em;
+        padding: 0.625rem 0.75rem;
+      }
+
+      .displayDrawer {
+        padding: 0.25rem 0.75rem 0.875rem;
       }
 
       .tempRange {

@@ -1,7 +1,18 @@
 @import './common/variables.less';
 
-.app-navbar {
-  padding: 0.45rem @page-gutter;
+.navbar.app-navbar {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 1030;
+  width: calc(100% - 2 * @page-gutter);
+  max-width: 64rem;
+  margin: 0.75rem auto 0;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background-color: fade(@clear-bg, 82%);
+  backdrop-filter: saturate(140%) blur(12px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 
   .navbar-brand {
     font-family: @font-serif;
@@ -89,6 +100,16 @@
     .form-check-label {
       display: none;
     }
+  }
+}
+
+@media (max-width: @phone-max) {
+  .navbar.app-navbar {
+    top: 0.5rem;
+    width: calc(100% - 1rem);
+    margin-top: 0.5rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 0.75rem;
   }
 }
 

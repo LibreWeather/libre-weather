@@ -183,7 +183,7 @@ export default class NavigationBar extends React.Component<NavigationBarProps, N
     const { locationName, zip, units, useGeo, locOptions, enteredZip } = this.state;
 
     return (
-      <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="app-navbar">
+      <Navbar data-bs-theme="dark" expand="lg" className="app-navbar">
         <div className="app-brand">
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 py-0">
             <Logo width="30" height="30" className="d-inline-block" />

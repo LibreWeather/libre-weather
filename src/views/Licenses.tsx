@@ -33,7 +33,7 @@ export default class Licenses extends React.Component {
             <FontAwesomeIcon icon={faCode} />
           </h2>
           <br />
-          <Container fluid="sm" className="constrained hide-scroll">
+          <Container fluid="sm">
             {packs}
           </Container>
         </div>

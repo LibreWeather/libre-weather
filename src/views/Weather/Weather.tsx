@@ -14,7 +14,7 @@ export default class WeatherView extends React.Component<WeatherViewProps> {
   render() {
     const { weather } = this.props;
     return (
-      <div className="header constrained hide-scroll">
+      <div className="header">
         <CurrentWeather weatherData={weather} />
         <DailyOverview hourlyWeatherData={weather.hourly} />
         <WeeklyForecast weatherData={weather} />

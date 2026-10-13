@@ -83,7 +83,7 @@ class App extends React.Component<Record<string, never>, AppState> {
     return (
       <CurrentDayContext.Provider value={currentDayData}>
         <BrowserRouter>
-          <div className="App hide-scroll">
+          <div className="App">
             <NavigationBar setLatLon={this.setLatLon} setUnits={this.setUnits} />
             <Routes>
               <Route path="/" element={<Weather weather={weather} />} />
