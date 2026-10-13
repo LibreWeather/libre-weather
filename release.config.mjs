@@ -13,6 +13,8 @@ export default {
         dockerRegistry: 'ghcr.io',
         dockerProject: 'libreweather',
         dockerPlatform: ['linux/amd64', 'linux/arm64'],
+        dockerBuildQuiet: false,
+        dockerBuildFlags: { progress: 'plain' },
       },
     ],
     [
