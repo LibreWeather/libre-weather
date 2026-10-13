@@ -1,3 +1,28 @@
+# [1.1.0](https://github.com/LibreWeather/libre-weather/compare/v1.0.5...v1.1.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* Bootstrap 5 layout, brand cluster, and type ([#68](https://github.com/LibreWeather/libre-weather/issues/68)) ([7cc9506](https://github.com/LibreWeather/libre-weather/commit/7cc95069e7ae0ab10f92ec5e6d25de41dc037e63))
+* **ci:** load semantic-release config from mjs ([2ae3201](https://github.com/LibreWeather/libre-weather/commit/2ae320185a1e39488b0e550e0d902cde14779244))
+* **ci:** move semantic-release config to root ([566405a](https://github.com/LibreWeather/libre-weather/commit/566405a261625ce2dbed7dae5a5e456ab5980cef))
+* **ci:** resolve semantic-release plugins from action ([d8e5c9f](https://github.com/LibreWeather/libre-weather/commit/d8e5c9fa895cb70835e62df8f7075112d1910e4d))
+* **ci:** skip husky hooks in release ([b8a5830](https://github.com/LibreWeather/libre-weather/commit/b8a5830b67d8b53caafa7daefc8caa4f5a5fd6c2))
+* **deps:** bump brace-expansion from 1.1.13 to 1.1.18 ([#62](https://github.com/LibreWeather/libre-weather/issues/62)) ([e4b1099](https://github.com/LibreWeather/libre-weather/commit/e4b10993c43610ffe606093f7656608b47db4cb2))
+* **deps:** bump decode-uri-component and @testing-library/jest-dom ([#63](https://github.com/LibreWeather/libre-weather/issues/63)) ([d0bf4c6](https://github.com/LibreWeather/libre-weather/commit/d0bf4c6f71253d6dbe0ea6efa7a0e01340bd7bed))
+* **deps:** bump fast-uri from 3.1.4 to 3.1.5 ([#61](https://github.com/LibreWeather/libre-weather/issues/61)) ([f15ebff](https://github.com/LibreWeather/libre-weather/commit/f15ebff745492d8459d91fa141639d37b06a3944))
+* **deps:** bump fast-uri from 3.1.5 to 3.1.7 ([#64](https://github.com/LibreWeather/libre-weather/issues/64)) ([40b7f63](https://github.com/LibreWeather/libre-weather/commit/40b7f6338548d0713fc886ecd971cd7c54993acf))
+* **deps:** bump js-yaml ([#66](https://github.com/LibreWeather/libre-weather/issues/66)) ([48a22fe](https://github.com/LibreWeather/libre-weather/commit/48a22fe0dcb7db9920e3362b7684f22c834b0229))
+* **deps:** bump react-router and react-router-dom ([#65](https://github.com/LibreWeather/libre-weather/issues/65)) ([35bc12d](https://github.com/LibreWeather/libre-weather/commit/35bc12dd72c7f21a78b33bfde92147824120f7bf))
+* **sec:** bump @parcel/reporter-dev-server and parcel ([#60](https://github.com/LibreWeather/libre-weather/issues/60)) ([523a513](https://github.com/LibreWeather/libre-weather/commit/523a513064f2db97d2cceea67365a6172bcfd281))
+
+
+### Features
+
+* collapse hour strip and add 8h daily graphs ([#69](https://github.com/LibreWeather/libre-weather/issues/69)) ([2936421](https://github.com/LibreWeather/libre-weather/commit/2936421e61d4eab0aa1bd034906c36cd8c976d51))
+* expand default weather fixture with hourly extras ([#70](https://github.com/LibreWeather/libre-weather/issues/70)) ([a67e87b](https://github.com/LibreWeather/libre-weather/commit/a67e87b25dec6f4d5ca986473bb82bac0090a67d))
+* rewrite ui to typescript ([#72](https://github.com/LibreWeather/libre-weather/issues/72)) ([f05cc06](https://github.com/LibreWeather/libre-weather/commit/f05cc0642b21e9c05a65d1e5f55bf43f6a77c6fa))
+
 ## [1.0.5](https://github.com/LibreWeather/libre-weather/compare/v1.0.4...v1.0.5) (2026-04-10)
 
 
