@@ -1,14 +1,10 @@
+import { formatClock } from './locale';
 import { TempUnit, type Temperature, type Volume, VolumeUnit } from './weatherTypes';
 
 export const tempDisplay = (temp: Temperature) =>
   `${Math.round(Number(temp.value))}${temp.unit === TempUnit.K ? 'K' : '˚'}`;
 
-export const timeDisplay = (time: number) => {
-  const date = new Date(time);
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  return `${hours % 12}:${minutes < 10 ? '0' : ''}${minutes}${hours < 12 ? 'am' : 'pm'}`;
-};
+export const timeDisplay = (time: number) => formatClock(time);
 
 export const volumeDisplay = (volume: Volume) => `${volume.value} ${volume.unit === VolumeUnit.IN ? 'in' : 'mm'}`;
 

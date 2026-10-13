@@ -5,12 +5,12 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAlerts } from '../../providers/AlertsProvider';
 import { SOURCE_NAMES, type WeatherAlert } from '@/utilities/alertTypes';
+import { formatDateTime } from '@/utilities/locale';
 import AlertDialog from './AlertDialog';
 
 import './WeatherAlerts.less';
 
-const formatTime = (ms: number) =>
-  new Date(ms).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
+const formatTime = (ms: number) => formatDateTime(ms, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
 
 const untilLabel = (alert: WeatherAlert) => {
   const end = alert.ends ?? alert.expires;

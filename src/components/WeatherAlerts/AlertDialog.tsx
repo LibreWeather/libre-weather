@@ -3,15 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { SOURCE_NAMES, type WeatherAlert } from '@/utilities/alertTypes';
+import { formatDateTime as formatLocaleDateTime } from '@/utilities/locale';
 
 const formatDateTime = (ms: number) =>
-  new Date(ms).toLocaleString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
+  formatLocaleDateTime(ms, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
 const titleCase = (value: string) => value.charAt(0) + value.slice(1).toLowerCase();
 

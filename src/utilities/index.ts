@@ -1,3 +1,5 @@
+import { formatHour } from './locale';
+
 export const makeid = () => {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -12,12 +14,10 @@ export const makeid = () => {
 export default makeid;
 
 /**
- * Get the numeric hours from a timestamp
+ * Short hour label in the browser's clock format, e.g. `3pm` or `15:00`
  * @param {Date|string|number} timestamp date-resolvable
  * @returns {string}
  */
-export const getHourFromTimestamp = (timestamp: Date | string | number) => {
-  return new Date(timestamp).toLocaleTimeString(undefined, { hour12: true, hour: 'numeric' }).toLowerCase().replace(/ /g, '');
-};
+export const getHourFromTimestamp = (timestamp: Date | string | number) => formatHour(timestamp);
 
 export * from './formatters';

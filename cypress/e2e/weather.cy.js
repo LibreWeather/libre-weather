@@ -199,6 +199,13 @@ describe('Weather view', () => {
       });
     });
 
+    it('labels hours on a 24-hour clock for 24-hour locales', () => {
+      visitStubbed({ languages: ['en-GB'] });
+      cy.get('.hourlyGraph-time').first().should('have.text', '00:00');
+      cy.get('.hourlyGraph-tip-title').should('contain.text', '14:00');
+      cy.get('.hourTics, .hourDetails').should('not.contain.text', 'pm');
+    });
+
     it('opens a later day at midnight without a now marker', () => {
       cy.get('.weeklyForecastRow').eq(2).find('.buttonRow').click();
       cy.get('.weeklyForecastRow').eq(2).within(() => {
