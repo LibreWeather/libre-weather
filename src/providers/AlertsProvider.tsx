@@ -2,6 +2,7 @@ import React from 'react';
 
 import { alertsRoot, type AlertsResponse, type WeatherAlert } from '../utilities/alertTypes';
 import { usePlace } from './PlaceProvider';
+import { usePreferences } from './PreferencesProvider';
 
 const ALERTS_API_ROOT = alertsRoot(process.env.LIBRE_WEATHER_API, process.env.LIBRE_WEATHER_ALERTS_API);
 const REFRESH_MS = 5 * 60 * 1000;
@@ -19,12 +20,15 @@ const AlertsContext = React.createContext<AlertsContextValue | null>(null);
 
 export const AlertsProvider = ({ children }: { children: React.ReactNode }) => {
   const { coords } = usePlace();
+  const {
+    preferences: { alerts: enabled },
+  } = usePreferences();
   const [data, setData] = React.useState<AlertsResponse | null>(null);
   const [status, setStatus] = React.useState<AlertsStatus>('idle');
 
   React.useEffect(() => {
     setData(null);
-    if (!coords || !ALERTS_API_ROOT) {
+    if (!enabled || !coords || !ALERTS_API_ROOT) {
       setStatus('idle');
       return undefined;
     }
@@ -57,7 +61,7 @@ export const AlertsProvider = ({ children }: { children: React.ReactNode }) => {
       window.clearInterval(timer);
       controller?.abort();
     };
-  }, [coords]);
+  }, [coords, enabled]);
 
   const value = React.useMemo<AlertsContextValue>(() => {
     const now = Date.now();

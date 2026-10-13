@@ -1,6 +1,6 @@
 'use strict';
 
-const { visitStubbed } = require('../support/stubs');
+const { savedPreferences, visitStubbed } = require('../support/stubs');
 
 const IPHONE_UA =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1';
@@ -29,7 +29,7 @@ describe('Install banner', () => {
     cy.contains('.installBanner button', 'Install').click();
     cy.get('@prompt').should('have.been.calledOnce');
     cy.get('.installBanner').should('not.exist');
-    cy.window().its('localStorage').invoke('getItem', 'installBannerDismissed').should('eq', 'true');
+    savedPreferences().its('installBannerDismissed').should('eq', true);
   });
 
   it('remembers a dismissal in localStorage without setting cookies', () => {
@@ -38,7 +38,7 @@ describe('Install banner', () => {
     offerInstall();
     cy.get('.installBanner-dismiss').click();
     cy.get('.installBanner').should('not.exist');
-    cy.window().its('localStorage').invoke('getItem', 'installBannerDismissed').should('eq', 'true');
+    savedPreferences().its('installBannerDismissed').should('eq', true);
     cy.document().its('cookie').should('eq', '');
 
     cy.reload();

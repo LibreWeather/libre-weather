@@ -1,13 +1,11 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
-import { getHourFromTimestamp, tempDisplay, volumeDisplay } from '@/utilities';
+import { getHourFromTimestamp, tempDisplay, volumeDisplay, volumeLabel, windLabel } from '@/utilities';
 import { VIEW_HOURS, TRACK_H, num, extent, polyline, conditionClass, hourPosition } from './graphUtils';
 import {
   TempUnit,
   VisibilityUnit,
-  VolumeUnit,
-  WindUnit,
   type Hourly,
   type Temperature,
   type Volume,
@@ -30,7 +28,7 @@ const windOf = (wind?: WindSpeed | null) => {
   if (!wind || wind.magnitude == null || wind.magnitude === '') {
     return '—';
   }
-  return `${Math.round(num(wind) ?? 0)} ${wind.unit === WindUnit.MPH ? 'mph' : 'm/s'}`;
+  return `${Math.round(num(wind) ?? 0)} ${windLabel(wind.unit)}`;
 };
 
 const Line = ({
@@ -194,7 +192,7 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
   const active = hours[hover] || hours[0];
   const unit = hours.find((h) => h.temp?.unit)?.temp.unit;
   const tempUnit = unit === TempUnit.K ? 'K' : '˚';
-  const precipUnit = active?.precipVolume?.unit === VolumeUnit.IN ? 'in' : 'mm';
+  const precipUnit = volumeLabel(active?.precipVolume?.unit);
   const visUnit = active?.visibility?.unit === VisibilityUnit.MI ?
     'mi' :
     active?.visibility?.unit === VisibilityUnit.Percent ?
@@ -263,7 +261,7 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
               <Line color="#9fd3ff" points={chart.precipLine} />
             </Plot>
           </Track>
-          <Track label="Wind" range={`${round(chart.windExt[1])} ${active?.windspeed?.unit === WindUnit.MPH ? 'mph' : 'm/s'}`}>
+          <Track label="Wind" range={`${round(chart.windExt[1])} ${windLabel(active?.windspeed?.unit)}`}>
             <Plot count={chart.count}>
               <Line color="#d7c4a8" dashed points={chart.gustLine} />
               <Line color="#c5d0de" points={chart.windLine} />

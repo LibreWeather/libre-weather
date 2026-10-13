@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
+import { usePreferences } from '../providers/PreferencesProvider';
 import CurrentDayContext from '../utilities/CurrentDayContext';
 import { Condition } from '../utilities/weatherTypes';
 
@@ -13,7 +14,9 @@ type WeatherIconProps = {
   animate?: boolean;
 };
 
-export const WeatherIcon = ({ condition, sizePx, time, animate = false }: WeatherIconProps) => {
+export const WeatherIcon = ({ condition, sizePx, time, animate: animateProp = false }: WeatherIconProps) => {
+  const { resolved } = usePreferences();
+  const animate = animateProp && !resolved.reduceMotion;
   return (
     <CurrentDayContext.Consumer>
       {(context) => {

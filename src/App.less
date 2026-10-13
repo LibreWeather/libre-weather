@@ -37,3 +37,27 @@ body {
 .App {
   overflow-x: clip;
 }
+
+// Set on <html> by PreferencesProvider.
+html.reduce-transparency {
+  *,
+  *::backdrop {
+    backdrop-filter: none !important;
+  }
+
+  .navbar.app-navbar,
+  .installBanner {
+    background-color: @clear-bg;
+  }
+}
+
+html.reduce-motion {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

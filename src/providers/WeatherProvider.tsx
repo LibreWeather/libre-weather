@@ -1,17 +1,16 @@
 import React from 'react';
 
+import { convertWeather } from '../utilities/convertUnits';
 import CurrentDayContext from '../utilities/CurrentDayContext';
-import { browserUnits } from '../utilities/localeUnits';
-import { UnitSystem, type LoadStatus, type Weather } from '../utilities/weatherTypes';
+import type { LoadStatus, Weather } from '../utilities/weatherTypes';
 import { usePlace } from './PlaceProvider';
+import { usePreferences } from './PreferencesProvider';
 
 const LIBRE_WEATHER_API_ROOT = process.env.LIBRE_WEATHER_API;
 
 export type WeatherContextValue = {
   weather: Weather | null;
   status: LoadStatus;
-  units: UnitSystem;
-  setUnits: (units: UnitSystem) => void;
   retry: () => void;
 };
 
@@ -19,10 +18,14 @@ const WeatherContext = React.createContext<WeatherContextValue | null>(null);
 
 export const WeatherProvider = ({ children }: { children: React.ReactNode }) => {
   const { coords } = usePlace();
-  const [units, setUnitsState] = React.useState<UnitSystem>(
-    () => (localStorage.getItem('units') as UnitSystem) || browserUnits()
+  const {
+    resolved: { unitSystem: units, windUnit, volumeUnit },
+  } = usePreferences();
+  const [apiWeather, setWeather] = React.useState<Weather | null>(null);
+  const weather = React.useMemo(
+    () => (apiWeather ? convertWeather(apiWeather, { wind: windUnit, volume: volumeUnit }) : null),
+    [apiWeather, windUnit, volumeUnit]
   );
-  const [weather, setWeather] = React.useState<Weather | null>(null);
   const [status, setStatus] = React.useState<LoadStatus>('loading');
   const [attempt, setAttempt] = React.useState(0);
 
@@ -56,17 +59,9 @@ export const WeatherProvider = ({ children }: { children: React.ReactNode }) => 
     return () => controller.abort();
   }, [coords, units, attempt]);
 
-  const setUnits = React.useCallback((next: UnitSystem) => {
-    localStorage.setItem('units', next);
-    setUnitsState(next);
-  }, []);
-
   const retry = React.useCallback(() => setAttempt((n) => n + 1), []);
 
-  const value = React.useMemo<WeatherContextValue>(
-    () => ({ weather, status, units, setUnits, retry }),
-    [weather, status, units, setUnits, retry]
-  );
+  const value = React.useMemo<WeatherContextValue>(() => ({ weather, status, retry }), [weather, status, retry]);
 
   const currentDay = React.useMemo(
     () => ({

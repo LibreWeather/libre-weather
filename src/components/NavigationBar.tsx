@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faOsi } from '@fortawesome/free-brands-svg-icons';
 
 import Button from 'react-bootstrap/Button';
@@ -12,19 +12,29 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import { DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import useDialogParam from '../hooks/useDialogParam';
 import { usePlace } from '../providers/PlaceProvider';
-import { useWeather } from '../providers/WeatherProvider';
 import { placeLabel } from '../utilities/nominatim';
-import { UnitSystem } from '../utilities/weatherTypes';
 import Logo from './Logo';
+import PreferencesPanel from './Preferences/PreferencesPanel';
 
 import './NavigationBar.less';
 
+const PHONE_QUERY = '(max-width: 767px)';
+
 const NavigationBar = () => {
   const { zip, locationName, useGeo, geoAvailable, options, searchZip, toggleGeo, chooseLocation } = usePlace();
-  const { units, setUnits } = useWeather();
   const zipInput = React.useRef<HTMLInputElement>(null);
   const [showOptions, setShowOptions] = React.useState(false);
+  const prefs = useDialogParam('prefs');
+  const gearButton = React.useRef<HTMLButtonElement>(null);
+  const [prefsAnchor, setPrefsAnchor] = React.useState<DOMRect | null>(null);
+
+  React.useLayoutEffect(() => {
+    if (prefs.value === null) return;
+    const phone = window.matchMedia?.(PHONE_QUERY).matches;
+    setPrefsAnchor(phone ? null : gearButton.current?.getBoundingClientRect() ?? null);
+  }, [prefs.value]);
 
   const handleZipSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,6 +66,17 @@ const NavigationBar = () => {
           </Nav.Link>
         </Nav>
       </div>
+
+      <button
+        type="button"
+        ref={gearButton}
+        className="app-prefs-button"
+        aria-label="Preferences"
+        aria-haspopup="dialog"
+        aria-expanded={prefs.value !== null}
+        onClick={() => prefs.open()}>
+        <FontAwesomeIcon icon={faGear} />
+      </button>
 
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -105,18 +126,10 @@ const NavigationBar = () => {
               </Button>
             </InputGroup>
           </Form>
-          <div className="app-settings-units">
-            <span>˚F</span>
-            <Form.Switch
-              id="custom-switch"
-              className="app-units-switch"
-              label=""
-              onChange={(event) => setUnits(event.target.checked ? UnitSystem.METRIC : UnitSystem.IMPERIAL)}
-              checked={units === UnitSystem.METRIC} />
-            <span>˚C</span>
-          </div>
         </div>
       </Navbar.Collapse>
+
+      {prefs.value !== null ? <PreferencesPanel anchor={prefsAnchor} onClose={prefs.close} /> : null}
     </Navbar>
   );
 };

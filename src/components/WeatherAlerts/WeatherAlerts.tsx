@@ -1,8 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-
+import useDialogParam from '../../hooks/useDialogParam';
 import { useAlerts } from '../../providers/AlertsProvider';
 import { SOURCE_NAMES, type WeatherAlert } from '@/utilities/alertTypes';
 import { formatDateTime } from '@/utilities/locale';
@@ -59,32 +58,11 @@ const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
   );
 };
 
-const ALERT_PARAM = 'alert';
-
 const WeatherAlerts = () => {
   const { alerts, status } = useAlerts();
-  const [params, setParams] = useSearchParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const openId = params.get(ALERT_PARAM);
+  const { value: openId, open, close } = useDialogParam('alert');
   const settled = status === 'ready' || status === 'error';
   const openAlert = openId ? alerts.find((alert) => alert.id === openId) ?? null : null;
-
-  const open = (id: string) => {
-    const next = new URLSearchParams(params);
-    next.set(ALERT_PARAM, id);
-    setParams(next, { state: { alertOpenedInApp: true } });
-  };
-
-  const close = () => {
-    if ((location.state as { alertOpenedInApp?: boolean } | null)?.alertOpenedInApp) {
-      navigate(-1);
-      return;
-    }
-    const next = new URLSearchParams(params);
-    next.delete(ALERT_PARAM);
-    setParams(next, { replace: true });
-  };
 
   const dialog =
     openId && (openAlert || settled) ? <AlertDialog alert={openAlert} onClose={close} key={openId} /> : null;

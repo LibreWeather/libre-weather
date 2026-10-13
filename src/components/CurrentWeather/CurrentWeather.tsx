@@ -5,10 +5,10 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { WeatherIcon } from '../WeatherIcon';
+import { windLabel } from '../../utilities/formatters';
 import {
   TempUnit,
   VisibilityUnit,
-  WindUnit,
   type Pressure,
   type Temperature,
   type Visibility,
@@ -30,7 +30,7 @@ const visibilityDisplay = (visibility: Visibility) => {
     `${Math.round(visDistance)} ${visibility.unit.toLowerCase()}`;
 };
 const windSpeedDisplay = (windSpeed: WindSpeed) =>
-  `${Math.round(Number(windSpeed.magnitude))} ${windSpeed.unit === WindUnit.MPH ? 'mph' : 'm/s'}`;
+  `${Math.round(Number(windSpeed.magnitude))} ${windLabel(windSpeed.unit)}`;
 
 const currentWeatherData = (data: Weather) => ({
   conditionIcon: data.current.condition,

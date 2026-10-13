@@ -7,58 +7,11 @@ const geocodeFor = (zip) =>
   expectRequest('geocode', ({ query }) => query.postalcode === zip, `geocode request for ${zip}`);
 
 describe('Settings bar', () => {
-  it('exposes location and unit controls', () => {
+  it('exposes location controls and a preferences button', () => {
     visitStubbed();
     cy.get('#locationName').should('have.text', 'Kansas City');
     cy.get('input[aria-label="ZIP Code"]').should('exist');
-    cy.get('#custom-switch').should('not.be.checked');
-    cy.contains('.app-settings-units', '˚F').should('be.visible');
-    cy.contains('.app-settings-units', '˚C').should('be.visible');
-  });
-
-  describe('units', () => {
-    it('defaults to Celsius for browsers outside Fahrenheit regions', () => {
-      visitStubbed({ languages: ['en-GB', 'en'] });
-      weatherFor(/\/unit\/METRIC$/);
-      cy.get('#custom-switch').should('be.checked');
-      cy.get('.currentTemp').should('contain.text', '21');
-    });
-
-    it('defaults to Fahrenheit for US browsers', () => {
-      visitStubbed({ languages: ['es-US', 'es'] });
-      weatherFor(/\/unit\/IMPERIAL$/);
-      cy.get('#custom-switch').should('not.be.checked');
-    });
-
-    it('keeps a saved choice over the browser locale', () => {
-      visitStubbed({
-        languages: ['de-DE'],
-        onBeforeLoad(win) {
-          win.localStorage.setItem('units', 'IMPERIAL');
-        },
-      });
-      weatherFor(/\/unit\/IMPERIAL$/);
-      cy.get('#custom-switch').should('not.be.checked');
-    });
-
-    it('switches to metric and refetches', () => {
-      visitStubbed();
-      cy.get('.currentTemp').should('contain.text', '69');
-      cy.get('#custom-switch').check({ force: true });
-      weatherFor(/\/unit\/METRIC$/);
-      cy.get('.currentTemp').should('contain.text', '21');
-      cy.window().its('localStorage').invoke('getItem', 'units').should('eq', 'METRIC');
-    });
-
-    it('remembers metric across reloads', () => {
-      visitStubbed();
-      cy.get('#custom-switch').check({ force: true });
-      weatherFor(/\/unit\/METRIC$/);
-      cy.reload();
-      cy.get('#custom-switch').should('be.checked');
-      weatherFor(/\/unit\/METRIC$/);
-      cy.get('.currentTemp').should('contain.text', '21');
-    });
+    cy.get('button[aria-label="Preferences"]').should('be.visible');
   });
 
   describe('location', () => {

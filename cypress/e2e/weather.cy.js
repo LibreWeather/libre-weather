@@ -50,11 +50,12 @@ describe('Weather view', () => {
     cy.get('.weatherSkeleton').should('not.exist');
   });
 
-  it('dims the forecast while a new location loads', () => {
+  it('dims the forecast while new weather loads', () => {
     visitStubbed({ weatherDelay: 400 });
     cy.get('.currentTemp').should('be.visible');
     cy.get('.header').should('not.have.class', 'is-refreshing');
-    cy.get('#custom-switch').check({ force: true });
+    cy.get('button[aria-label="Preferences"]').click();
+    cy.contains('.prefs-field', 'Temperature').contains('label', '°C').click();
     cy.get('.header').should('have.class', 'is-refreshing').and('have.attr', 'aria-busy', 'true');
     cy.get('.header').should('not.have.class', 'is-refreshing');
     cy.get('.currentTemp').should('contain.text', '21');
@@ -199,8 +200,12 @@ describe('Weather view', () => {
       });
     });
 
-    it('labels hours on a 24-hour clock for 24-hour locales', () => {
-      visitStubbed({ languages: ['en-GB'] });
+    it('labels hours on a 24-hour clock when preferred', () => {
+      visitStubbed({
+        onBeforeLoad(win) {
+          win.localStorage.setItem('preferences', JSON.stringify({ clock: '24' }));
+        },
+      });
       cy.get('.hourlyGraph-time').first().should('have.text', '00:00');
       cy.get('.hourlyGraph-tip-title').should('contain.text', '14:00');
       cy.get('.hourTics, .hourDetails').should('not.contain.text', 'pm');

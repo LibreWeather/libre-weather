@@ -1,12 +1,20 @@
 import { formatClock } from './locale';
-import { TempUnit, type Temperature, type Volume, VolumeUnit } from './weatherTypes';
+import { TempUnit, type Temperature, type Volume, VolumeUnit, WindUnit } from './weatherTypes';
 
 export const tempDisplay = (temp: Temperature) =>
   `${Math.round(Number(temp.value))}${temp.unit === TempUnit.K ? 'K' : '˚'}`;
 
 export const timeDisplay = (time: number) => formatClock(time);
 
-export const volumeDisplay = (volume: Volume) => `${volume.value} ${volume.unit === VolumeUnit.IN ? 'in' : 'mm'}`;
+export const volumeLabel = (unit?: VolumeUnit) => (unit === VolumeUnit.IN ? 'in' : 'mm');
+
+export const volumeDisplay = (volume: Volume) => `${volume.value} ${volumeLabel(volume.unit)}`;
+
+export const windLabel = (unit?: WindUnit) => {
+  if (unit === WindUnit.MPH) return 'mph';
+  if (unit === WindUnit.KMH) return 'km/h';
+  return 'm/s';
+};
 
 export const getDayOfTheWeek = (time: number) => {
   switch (new Date(time).getDay()) {

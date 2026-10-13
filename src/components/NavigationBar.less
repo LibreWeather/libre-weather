@@ -81,25 +81,28 @@
   color: inherit;
 }
 
-.app-settings-units {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  align-self: center;
+.app-prefs-button {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: auto;
+  margin-right: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
 
-  .app-units-switch {
-    display: flex;
-    align-items: center;
-    width: auto;
-    min-height: 0;
-    margin: 0;
-    padding-left: 2.5em;
+  &:hover,
+  &[aria-expanded='true'] {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
 
-    .form-check-label {
-      display: none;
-    }
+  &:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
   }
 }
 
@@ -135,5 +138,11 @@
 
   .app-settings-place {
     max-width: 10rem;
+  }
+
+  .app-prefs-button {
+    order: 3;
+    margin-left: 0.75rem;
+    margin-right: 0;
   }
 }

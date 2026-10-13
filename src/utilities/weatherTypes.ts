@@ -39,7 +39,8 @@ export enum VisibilityUnit {
 
 export enum WindUnit {
   MS = 'MS',
-  MPH = 'MPH'
+  MPH = 'MPH',
+  KMH = 'KMH'
 }
 
 export type Temperature = {

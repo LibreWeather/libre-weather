@@ -2,9 +2,9 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpFromBracket, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-import './InstallBanner.less';
+import { usePreferences } from '../../providers/PreferencesProvider';
 
-export const DISMISSED_KEY = 'installBannerDismissed';
+import './InstallBanner.less';
 
 /** Chromium's `beforeinstallprompt` event; not in the DOM typings. */
 type InstallPromptEvent = Event & {
@@ -12,7 +12,7 @@ type InstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 };
 
-const isStandalone = () =>
+export const isStandalone = () =>
   Boolean(window.matchMedia?.('(display-mode: standalone)').matches) ||
   (navigator as Navigator & { standalone?: boolean }).standalone === true;
 
@@ -22,9 +22,9 @@ const isIos = () =>
   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 const InstallBanner = () => {
-  const [dismissed, setDismissed] = React.useState(
-    () => localStorage.getItem(DISMISSED_KEY) === 'true' || isStandalone()
-  );
+  const { preferences, setPreference } = usePreferences();
+  const [standalone] = React.useState(isStandalone);
+  const dismissed = preferences.installBannerDismissed || standalone;
   const [promptEvent, setPromptEvent] = React.useState<InstallPromptEvent | null>(null);
   const [ios] = React.useState(isIos);
   const [icon] = React.useState(
@@ -36,24 +36,18 @@ const InstallBanner = () => {
       event.preventDefault();
       setPromptEvent(event as InstallPromptEvent);
     };
-    const onInstalled = () => {
-      localStorage.setItem(DISMISSED_KEY, 'true');
-      setDismissed(true);
-    };
+    const onInstalled = () => setPreference('installBannerDismissed', true);
     window.addEventListener('beforeinstallprompt', onPrompt);
     window.addEventListener('appinstalled', onInstalled);
     return () => {
       window.removeEventListener('beforeinstallprompt', onPrompt);
       window.removeEventListener('appinstalled', onInstalled);
     };
-  }, []);
+  }, [setPreference]);
 
   if (dismissed || (!promptEvent && !ios)) return null;
 
-  const dismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, 'true');
-    setDismissed(true);
-  };
+  const dismiss = () => setPreference('installBannerDismissed', true);
 
   const install = async () => {
     if (!promptEvent) return;

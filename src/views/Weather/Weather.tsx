@@ -4,6 +4,7 @@ import CurrentWeather from '@components/CurrentWeather/CurrentWeather';
 import DailyOverview from '@components/DailyOverview/DailyOverview';
 import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts/WeatherAlerts';
 import WeatherSkeleton from '@components/WeatherSkeleton/WeatherSkeleton';
+import { usePreferences } from '../../providers/PreferencesProvider';
 import WeeklyForecast from '@components/WeeklyForecast/WeeklyForecast';
 import { placeLabel, type NominatimResponse } from '@/utilities/nominatim';
 import { usePlace } from '../../providers/PlaceProvider';
@@ -54,6 +55,8 @@ const LocationPicker = ({
 const WeatherView = () => {
   const place = usePlace();
   const { weather, status, retry } = useWeather();
+  // Time labels come from plain formatters; subscribing re-renders them when the clock preference changes.
+  usePreferences();
 
   const choosing = place.status === 'choosing';
   const loading = place.status === 'resolving' || (place.status === 'resolved' && status === 'loading');

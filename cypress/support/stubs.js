@@ -124,4 +124,18 @@ const expectRequest = (alias, test, label = `a matching ${alias} request`) =>
     expect(calls.some(({ request }) => test(request)), label).to.be.true;
   });
 
-module.exports = { DAY, HOUR, PLACES, REVERSE, buildWeather, expectRequest, fixedNow, visitStubbed };
+/** Yields the parsed `preferences` object from localStorage. */
+const savedPreferences = () =>
+  cy.window().then((win) => JSON.parse(win.localStorage.getItem('preferences') || '{}'));
+
+module.exports = {
+  DAY,
+  HOUR,
+  PLACES,
+  REVERSE,
+  buildWeather,
+  expectRequest,
+  fixedNow,
+  savedPreferences,
+  visitStubbed,
+};
