@@ -35,6 +35,7 @@ jobs:
       - name: Release
         uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
         env:
+          HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           DOCKER_REGISTRY_USER: ${{ github.repository_owner }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.GH_PACKAGES_TOKEN }}
