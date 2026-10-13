@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/LibreWeather/libre-weather/compare/v1.5.0...v1.6.0) (2026-10-13)
+
+
+### Features
+
+* dismissible install banner ([c5fb67e](https://github.com/LibreWeather/libre-weather/commit/c5fb67ee4cabdcc717dae2049e69ddf747ff91ba))
+
 # [1.5.0](https://github.com/LibreWeather/libre-weather/compare/v1.4.0...v1.5.0) (2026-10-13)
 
 
