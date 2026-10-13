@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { navigate, useLocation } from './useLocation';
 
 type DialogState = { dialogOpenedInApp?: string } | null;
 
@@ -9,25 +9,29 @@ type DialogState = { dialogOpenedInApp?: string } | null;
  * @returns {{ value: string | null, open: (value?: string) => void, close: () => void }}
  */
 const useDialogParam = (param: string) => {
-  const [params, setParams] = useSearchParams();
   const location = useLocation();
-  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
   const value = params.get(param);
+
+  const urlWith = (updated: URLSearchParams) => {
+    const query = updated.toString();
+    return `${location.pathname}${query ? `?${query}` : ''}`;
+  };
 
   const open = (next = '') => {
     const updated = new URLSearchParams(params);
     updated.set(param, next);
-    setParams(updated, { state: { dialogOpenedInApp: param } });
+    navigate(urlWith(updated), { state: { dialogOpenedInApp: param } });
   };
 
   const close = () => {
     if ((location.state as DialogState)?.dialogOpenedInApp === param) {
-      navigate(-1);
+      window.history.back();
       return;
     }
     const updated = new URLSearchParams(params);
     updated.delete(param);
-    setParams(updated, { replace: true });
+    navigate(urlWith(updated), { replace: true });
   };
 
   return { value, open, close };

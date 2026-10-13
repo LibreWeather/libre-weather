@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 import useDialogParam from '@/hooks/useDialogParam';
 import type { WeatherAlert } from '@/models/alerts';
 import { useAlerts } from '@/providers/AlertsProvider';
@@ -16,7 +16,7 @@ const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
   return (
     <details className={`weatherAlert severity-${alert.severity.toLowerCase()}`}>
       <summary className="weatherAlert-summary">
-        <FontAwesomeIcon icon={faTriangleExclamation} className="weatherAlert-icon" />
+        <Icon icon={faTriangleExclamation} className="weatherAlert-icon" />
         <span className="weatherAlert-event">{alert.event}</span>
         {until ? <span className="weatherAlert-until">{until}</span> : null}
         <button
@@ -61,7 +61,7 @@ const AlertChip = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
       title={until ? `${alert.event} ${until}` : alert.event}
       aria-label={`${alert.event}${until ? `, ${until}` : ''}. View full alert`}
       onClick={() => onOpen(alert.id)}>
-      <FontAwesomeIcon icon={faTriangleExclamation} className="weatherAlert-icon" />
+      <Icon icon={faTriangleExclamation} className="weatherAlert-icon" />
       <span className="weatherAlertChip-event">{alert.event}</span>
     </button>
   );

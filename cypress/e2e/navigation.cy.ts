@@ -31,7 +31,7 @@ describe('Navigation bar', () => {
     cy.get('a[aria-label="Licenses"]').click();
     cy.location('pathname').should('eq', '/licenses');
     cy.contains(/Built with/i).should('be.visible');
-    cy.contains('h6', /^react\s*:\s*MIT$/).should('exist');
+    cy.contains('h6', /^preact\s*:\s*MIT$/).should('exist');
     cy.contains('a.navbar-brand', 'Libre Weather').click();
     cy.location('pathname').should('eq', '/');
   });

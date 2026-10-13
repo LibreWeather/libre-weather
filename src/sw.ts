@@ -1,6 +1,6 @@
 import { manifest, version } from '@parcel/service-worker';
 
-import { strategyFor } from './utilities/cacheStrategy';
+import { precacheList, strategyFor } from './utilities/cacheStrategy';
 
 interface SwExtendableEvent extends Event {
   waitUntil(promise: Promise<unknown>): void;
@@ -29,7 +29,7 @@ sw.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(SHELL_CACHE)
-      .then((cache) => cache.addAll([SHELL_URL, ...manifest]))
+      .then((cache) => cache.addAll([SHELL_URL, ...precacheList(manifest)]))
       .then(() => sw.skipWaiting())
   );
 });

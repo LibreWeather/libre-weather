@@ -1,6 +1,7 @@
 module.exports = {
   rootDir: '..',
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: { customExportConditions: ['require', 'default'] },
   setupFilesAfterEnv: ['<rootDir>/src/tests/setupTests.ts'],
   testMatch: ['<rootDir>/src/tests/**/*.test.{js,jsx,ts,tsx}'],
   moduleNameMapper: {
@@ -8,6 +9,10 @@ module.exports = {
     '^@/(utilities|models|hooks|api|providers)/(.*)$': '<rootDir>/src/$1/$2',
     '^@/common/(.*)$': '<rootDir>/src/components/common/$1',
     '\\.(less|css)$': '<rootDir>/src/tests/styleMock.ts',
+    '^react/jsx(-dev)?-runtime$': 'preact/jsx-runtime',
+    '^react-dom/test-utils$': 'preact/test-utils',
+    '^react-dom/client$': 'preact/compat/client',
+    '^react(-dom)?$': 'preact/compat',
   },
   transform: {
     '^.+\\.[jt]sx?$': [

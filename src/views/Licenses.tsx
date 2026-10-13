@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Container, Row } from 'react-bootstrap';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMugHot, faCode } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 import type { PackageLicense } from '@/models/licenses';
 import packages from '../assets/packages.json';
 
@@ -29,9 +29,9 @@ export default class Licenses extends React.Component {
         <div>
           <h2>
             Built with &nbsp;
-            <FontAwesomeIcon icon={faMugHot} />
+            <Icon icon={faMugHot} />
             &nbsp;&&nbsp;
-            <FontAwesomeIcon icon={faCode} />
+            <Icon icon={faCode} />
           </h2>
           <br />
           <Container fluid="sm">

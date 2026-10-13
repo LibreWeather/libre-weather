@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpFromBracket, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { usePreferences } from '@/providers/PreferencesProvider';
@@ -31,7 +31,7 @@ const InstallBanner = () => {
           <span>Open it from your home screen or dock, even offline.</span>
         ) : (
           <span>
-            Tap <FontAwesomeIcon icon={faArrowUpFromBracket} aria-label="Share" /> then <b>Add to Home Screen</b>.
+            Tap <Icon icon={faArrowUpFromBracket} aria-label="Share" /> then <b>Add to Home Screen</b>.
           </span>
         )}
       </div>
@@ -41,7 +41,7 @@ const InstallBanner = () => {
         </button>
       ) : null}
       <button type="button" className="installBanner-dismiss" aria-label="Dismiss" onClick={dismiss}>
-        <FontAwesomeIcon icon={faXmark} />
+        <Icon icon={faXmark} />
       </button>
     </aside>
   );

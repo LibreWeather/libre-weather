@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 
 import { useModalDialog } from '@/hooks/useModalDialog';
 import type { PreferenceChoiceKey, Preferences } from '@/models/preferences';
@@ -80,7 +80,7 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
         <header className="prefsPanel-header">
           <h2 id={titleId}>Preferences</h2>
           <button type="button" className="prefsPanel-close" aria-label="Close" onClick={close}>
-            <FontAwesomeIcon icon={faXmark} />
+            <Icon icon={faXmark} />
           </button>
         </header>
 

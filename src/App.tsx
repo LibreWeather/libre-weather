@@ -1,33 +1,41 @@
 import React from 'react';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
 import './App.less';
 
 import InstallBanner from '@components/InstallBanner';
 import NavigationBar from '@components/NavigationBar';
+import { useLocation } from '@/hooks/useLocation';
 import { AlertsProvider } from '@/providers/AlertsProvider';
 import { PlaceProvider } from '@/providers/PlaceProvider';
 import { PreferencesProvider } from '@/providers/PreferencesProvider';
 import { WeatherProvider } from '@/providers/WeatherProvider';
-import Licenses from './views/Licenses';
 import Weather from './views/Weather/Weather';
+
+/** Split out: the license list is large and rarely visited. */
+const Licenses = React.lazy(() => import('./views/Licenses'));
+
+const Page = () => {
+  const { pathname } = useLocation();
+  if (pathname === '/licenses') {
+    return (
+      <React.Suspense fallback={null}>
+        <Licenses />
+      </React.Suspense>
+    );
+  }
+  return <Weather />;
+};
 
 const App = () => (
   <PreferencesProvider>
     <PlaceProvider>
       <WeatherProvider>
         <AlertsProvider>
-          <BrowserRouter>
-            <div className="App">
-              <NavigationBar />
-              <Routes>
-                <Route path="/" element={<Weather />} />
-                <Route path="/licenses" element={<Licenses />} />
-              </Routes>
-              <InstallBanner />
-            </div>
-          </BrowserRouter>
+          <div className="App">
+            <NavigationBar />
+            <Page />
+            <InstallBanner />
+          </div>
         </AlertsProvider>
       </WeatherProvider>
     </PlaceProvider>

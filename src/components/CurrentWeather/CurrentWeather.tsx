@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -27,7 +27,7 @@ const CurrentWeather = ({ weatherData }: { weatherData: Weather }) => {
           <span className="wind">
             <b>Wind:</b> {currentWeather.windSpeed}{' '}
           </span>
-          <FontAwesomeIcon icon={faLongArrowAltDown} transform={{ rotate: currentWeather.windDeg }} />
+          <Icon icon={faLongArrowAltDown} rotate={currentWeather.windDeg} />
         </Col>
         <Col xs="auto">
           <b>Humidity:</b> {currentWeather.humidity}%

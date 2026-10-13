@@ -1,4 +1,4 @@
-import { strategyFor } from '@/utilities/cacheStrategy';
+import { precacheList, strategyFor } from '@/utilities/cacheStrategy';
 
 const ORIGIN = 'https://libreweather.com';
 const API = 'https://api.libreweather.com/weather';
@@ -36,5 +36,19 @@ describe('strategyFor', () => {
 
   test('does not treat the API specially when it is not configured', () => {
     expect(strategyFor(req(`${API}/1,2/unit/METRIC`), ORIGIN)).toBe('passthrough');
+  });
+});
+
+describe('precacheList', () => {
+  test('keeps app assets and Latin fonts, skips other scripts', () => {
+    expect(
+      precacheList([
+        '/frontend.js',
+        '/inter-latin-wght-normal.1.woff2',
+        '/inter-latin-ext-wght-normal.2.woff2',
+        '/inter-cyrillic-wght-normal.3.woff2',
+        '/inter-greek-ext-wght-normal.4.woff2',
+      ])
+    ).toEqual(['/frontend.js', '/inter-latin-wght-normal.1.woff2', '/inter-latin-ext-wght-normal.2.woff2']);
   });
 });

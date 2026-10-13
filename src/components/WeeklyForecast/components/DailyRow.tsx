@@ -7,11 +7,11 @@ import {
   faPlusCircle,
   faSun,
 } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import { WeatherIcon } from '@components/WeatherIcon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HourlyGraph from '@components/HourlyGraph';
 import type { ForecastDay } from '@/models/forecast';
 import type { Hourly } from '@/models/weather';
@@ -54,7 +54,7 @@ export class DailyRow extends React.Component<DailyRowProps> {
                 overallMaxTemp={overallMaxTemp} />
             </Col>
             <Col xs="auto" className="toggleCol">
-              <FontAwesomeIcon icon={drawerIcon} />
+              <Icon icon={drawerIcon} />
             </Col>
           </Row>
           <Row
@@ -66,14 +66,14 @@ export class DailyRow extends React.Component<DailyRowProps> {
               <Row className="g-2">
                 <Col xs={12} md={4}>
                   <span className="daily-low">{tempDisplay(dailyWeather.minTemp)}</span>{' '}
-                  <FontAwesomeIcon icon={faLongArrowAltRight} />{' '}
+                  <Icon icon={faLongArrowAltRight} />{' '}
                   <span className="daily-high">{tempDisplay(dailyWeather.maxTemp)}</span>
                 </Col>
                 <Col xs={12} md={4}>
-                  <FontAwesomeIcon icon={faSun} /> <span className="daily-sunrise">{dailyWeather.sunrise}</span>
-                  <FontAwesomeIcon icon={faLongArrowAltUp} /> -{' '}
+                  <Icon icon={faSun} /> <span className="daily-sunrise">{dailyWeather.sunrise}</span>
+                  <Icon icon={faLongArrowAltUp} /> -{' '}
                   <span className="daily-sunset">{dailyWeather.sunset}</span>
-                  <FontAwesomeIcon icon={faLongArrowAltDown} />
+                  <Icon icon={faLongArrowAltDown} />
                 </Col>
                 <Col xs={12} md={4} className="type-data">
                   <span className="fw-bold">{precipitation.type}</span> {precipitation.value}

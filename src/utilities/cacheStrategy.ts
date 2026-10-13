@@ -1,3 +1,12 @@
+/**
+ * Build assets to download at install. Only Latin font subsets are included; the browser asks for other
+ * scripts' subsets just when a page uses those characters, and they're cached then.
+ * @param {string[]} manifest every asset in the build
+ * @returns {string[]}
+ */
+export const precacheList = (manifest: string[]) =>
+  manifest.filter((url) => !url.endsWith('.woff2') || url.includes('-latin-'));
+
 export type CacheStrategy = 'app-shell' | 'cache-first' | 'network-first' | 'passthrough';
 
 const NOMINATIM_ORIGIN = 'https://nominatim.openstreetmap.org';

@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 
 import { useModalDialog } from '@/hooks/useModalDialog';
 import type { WeatherAlert } from '@/models/alerts';
@@ -26,12 +26,12 @@ const AlertDialog = ({ alert, onClose }: AlertDialogProps) => {
       onClick={onBackdropClick}>
       <div className="alertDialog-panel">
         <header className="alertDialog-header">
-          <FontAwesomeIcon icon={faTriangleExclamation} className="alertDialog-icon" />
+          <Icon icon={faTriangleExclamation} className="alertDialog-icon" />
           <h2 className="alertDialog-title" id={titleId}>
             {alert ? alert.event : 'Alert no longer active'}
           </h2>
           <button type="button" className="alertDialog-close" aria-label="Close" onClick={close}>
-            <FontAwesomeIcon icon={faXmark} />
+            <Icon icon={faXmark} />
           </button>
         </header>
 

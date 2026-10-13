@@ -1,7 +1,7 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGear, faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faOsi } from '@fortawesome/free-brands-svg-icons';
+import Icon from '@components/Icon';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -11,7 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import { DropdownButton } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import Link from '@components/Link';
 import Logo from '@components/Logo';
 import NavSummary from '@components/NavSummary';
 import PreferencesPanel from '@components/Preferences';
@@ -54,14 +54,14 @@ const NavigationBar = () => {
         </Navbar.Brand>
         <Nav className="app-brand-links flex-row">
           <Nav.Link as={Link} to="/licenses" aria-label="Licenses">
-            <FontAwesomeIcon icon={faOsi} />
+            <Icon icon={faOsi} />
           </Nav.Link>
           <Nav.Link
             aria-label="GitHub"
             href="https://github.com/LibreWeather/libre-weather"
             rel="noreferrer"
             target="_blank">
-            <FontAwesomeIcon icon={faGithub} />
+            <Icon icon={faGithub} />
           </Nav.Link>
         </Nav>
       </div>
@@ -76,7 +76,7 @@ const NavigationBar = () => {
         aria-haspopup="dialog"
         aria-expanded={prefs.value !== null}
         onClick={() => prefs.open()}>
-        <FontAwesomeIcon icon={faGear} />
+        <Icon icon={faGear} />
       </button>
 
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -91,7 +91,7 @@ const NavigationBar = () => {
                 disabled={!geoAvailable}
                 onClick={toggleGeo}
                 active={useGeo}>
-                <FontAwesomeIcon icon={faLocationArrow} />
+                <Icon icon={faLocationArrow} />
               </Button>
               {options.length ? (
                 <DropdownButton
@@ -123,7 +123,7 @@ const NavigationBar = () => {
                 ref={zipInput}
                 autoComplete="postal-code" />
               <Button variant="outline-secondary" type="submit" aria-label="Search">
-                <FontAwesomeIcon icon={faSearch} />
+                <Icon icon={faSearch} />
               </Button>
             </InputGroup>
           </Form>

@@ -8,6 +8,7 @@ COPY .browserslistrc .
 COPY .config/ .config/
 
 # source code
+COPY scripts/ scripts/
 COPY src/ src/
 
 RUN npm ci

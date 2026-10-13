@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@components/Icon';
 import { buildChart, hourPosition, barGeometry, num, TRACK_H, VIEW_HOURS } from '@/utilities/graph';
 import { conditionClass } from '@/utilities/conditions';
 import {
@@ -188,9 +188,9 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
             <div className="hourlyGraph-windDirs">
               {hours.map((hour) => (
                 <span className="hourlyGraph-windDir" key={`wdir-${hour.time}`}>
-                  <FontAwesomeIcon
+                  <Icon
                     icon={faLongArrowAltDown}
-                    transform={{ rotate: Number(hour.windspeed?.direction) || 0 }} />
+                    rotate={Number(hour.windspeed?.direction) || 0} />
                 </span>
               ))}
             </div>
