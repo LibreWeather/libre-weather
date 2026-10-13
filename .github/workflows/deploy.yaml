@@ -29,6 +29,8 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: 0
       - run: npm run lint
       - name: Validate current commit (last commit) with commitlint
         run: npx commitlint --config .config/commitlint.config.mjs --last --verbose
