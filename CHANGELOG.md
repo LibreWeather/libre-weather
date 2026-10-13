@@ -1,3 +1,11 @@
+# [1.5.0](https://github.com/LibreWeather/libre-weather/compare/v1.4.0...v1.5.0) (2026-10-13)
+
+
+### Features
+
+* expand today by default ([b127eb5](https://github.com/LibreWeather/libre-weather/commit/b127eb57500e6a90f2a8e2aaf8ef5ebf81ae3bf3))
+* full alert details in a shareable dialog ([fb19b04](https://github.com/LibreWeather/libre-weather/commit/fb19b04269859dfef5a6674354e1914fe29b2a35))
+
 # [1.4.0](https://github.com/LibreWeather/libre-weather/compare/v1.3.0...v1.4.0) (2026-10-13)
 
 
