@@ -24,7 +24,7 @@ export type PlaceContextValue = {
 
 const PlaceContext = React.createContext<PlaceContextValue | null>(null);
 
-const logError = (error: Error) => console.error(error);
+const logWarning = (error: Error) => console.warn(error);
 
 export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
   const geoAvailable = typeof navigator !== 'undefined' && Boolean(navigator.geolocation);
@@ -35,8 +35,8 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
   const [coords, setCoords] = React.useState<Coords | null>(initialCoords);
   const [options, setOptions] = React.useState<NominatimResponse[]>([]);
   const [status, setStatus] = React.useState<PlaceStatus>(initialCoords ? 'resolved' : 'resolving');
-  const [, geocode] = useFetch<NominatimResponse[]>(null, { manual: true, onError: logError });
-  const [, reverseGeocode] = useFetch<NominatimResponse>(null, { manual: true, onError: logError });
+  const [, geocode] = useFetch<NominatimResponse[]>(null, { manual: true, onError: logWarning });
+  const [, reverseGeocode] = useFetch<NominatimResponse>(null, { manual: true, onError: logWarning });
   // Geolocation isn't a fetch, so overlapping lookups are told apart by id rather than by aborting.
   const requestId = React.useRef(0);
 

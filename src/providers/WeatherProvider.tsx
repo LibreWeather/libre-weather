@@ -17,7 +17,7 @@ export type WeatherContextValue = {
 
 const WeatherContext = React.createContext<WeatherContextValue | null>(null);
 
-const logError = (error: Error) => console.error(error);
+const logWarning = (error: Error) => console.warn(error);
 
 export const WeatherProvider = ({ children }: { children: React.ReactNode }) => {
   const { coords } = usePlace();
@@ -26,7 +26,10 @@ export const WeatherProvider = ({ children }: { children: React.ReactNode }) => 
   } = usePreferences();
   const request = coords && WEATHER_API_ROOT ? weatherRequest(coords, units) : null;
   // Kept while reloading so the page dims instead of dropping back to the skeleton.
-  const [{ data, loading, error }, refetch] = useFetch<Weather>(request, { keepPreviousData: true, onError: logError });
+  const [{ data, loading, error }, refetch] = useFetch<Weather>(request, {
+    keepPreviousData: true,
+    onError: logWarning,
+  });
   const weather = React.useMemo(
     () => (data ? convertWeather(data, { wind: windUnit, volume: volumeUnit }) : null),
     [data, windUnit, volumeUnit]
