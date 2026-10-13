@@ -1,6 +1,6 @@
 import type { Interception, StaticResponse } from 'cypress/types/net-stubbing';
-import type { Preferences } from '../../src/utilities/preferences';
-import type { Weather } from '../../src/utilities/weatherTypes';
+import type { Preferences } from '../../src/models/preferences';
+import type { Weather } from '../../src/models/weather';
 
 export const HOUR = 60 * 60 * 1000;
 export const DAY = 24 * HOUR;

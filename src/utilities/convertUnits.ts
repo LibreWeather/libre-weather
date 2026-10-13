@@ -1,4 +1,4 @@
-import { VolumeUnit, WindUnit, type Volume, type Weather, type WindSpeed } from './weatherTypes';
+import { VolumeUnit, WindUnit, type Volume, type Weather, type WindSpeed } from '@/models/weather';
 
 const METERS_PER_SECOND: Record<WindUnit, number> = {
   [WindUnit.MS]: 1,

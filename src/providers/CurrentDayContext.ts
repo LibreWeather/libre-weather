@@ -1,10 +1,6 @@
 import React from 'react';
 
-export type CurrentDay = {
-  sunrise: number;
-  sunset: number;
-  time: number;
-};
+import type { CurrentDay } from '@/models/weather';
 
 const CurrentDayContext = React.createContext<CurrentDay>({
   sunrise: 0,

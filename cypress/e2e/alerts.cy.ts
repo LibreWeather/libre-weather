@@ -1,4 +1,4 @@
-import type { AlertsResponse, WeatherAlert } from '../../src/utilities/alertTypes';
+import type { AlertsResponse, WeatherAlert } from '../../src/models/alerts';
 import { HOUR, fixedNow, visitStubbed, withPreferences } from '../support/stubs';
 
 const alert = (overrides: Partial<WeatherAlert> = {}): WeatherAlert => {

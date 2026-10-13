@@ -142,4 +142,9 @@ export type Weather = {
   hourly: Hourly[];
 };
 
-export type LoadStatus = 'loading' | 'ready' | 'error';
+/** Today's sun times and "now", used to pick day or night icons. */
+export type CurrentDay = {
+  sunrise: number;
+  sunset: number;
+  time: number;
+};

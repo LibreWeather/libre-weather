@@ -1,5 +1,5 @@
-import { unitsForLocales } from '../utilities/localeUnits';
-import { UnitSystem } from '../utilities/weatherTypes';
+import { unitsForLocales } from '@/utilities/localeUnits';
+import { UnitSystem } from '@/models/weather';
 
 describe('unitsForLocales', () => {
   test.each([

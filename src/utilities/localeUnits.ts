@@ -1,5 +1,5 @@
 import { browserLocales } from './locale';
-import { UnitSystem } from './weatherTypes';
+import { UnitSystem } from '@/models/weather';
 
 /** Regions that report temperature in Fahrenheit: the US and its territories, plus a few others. */
 const FAHRENHEIT_REGIONS = new Set(['US', 'PR', 'GU', 'VI', 'AS', 'MP', 'UM', 'LR', 'MM', 'BS', 'KY', 'PW', 'FM', 'MH']);
