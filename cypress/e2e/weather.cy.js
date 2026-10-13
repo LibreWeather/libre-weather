@@ -87,6 +87,22 @@ describe('Weather view', () => {
     cy.get('.currentTemp').should('be.visible');
   });
 
+  it('remembers the chosen place across reloads instead of asking again', () => {
+    visitStubbed({
+      onBeforeLoad(win) {
+        win.localStorage.setItem('zip', '12345');
+      },
+    });
+    cy.contains('.locationPicker-option', 'Rotterdam').click();
+    cy.get('.currentTemp').should('be.visible');
+
+    cy.reload();
+    expectRequest('weather', ({ url }) => /\/42\.8,-73\.9\/unit\/IMPERIAL$/.test(url));
+    cy.get('#locationName').should('have.text', 'Rotterdam');
+    cy.get('.currentTemp').should('be.visible');
+    cy.get('.locationPicker').should('not.exist');
+  });
+
   it('explains when the saved code matches nothing', () => {
     visitStubbed({
       onBeforeLoad(win) {

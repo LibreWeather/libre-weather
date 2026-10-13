@@ -24,6 +24,15 @@ export type PlaceContextValue = {
 
 const PlaceContext = React.createContext<PlaceContextValue | null>(null);
 
+const savedCoords = (): Coords | null => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('coords') ?? 'null');
+    return Number.isFinite(saved?.lat) && Number.isFinite(saved?.lon) ? { lat: saved.lat, lon: saved.lon } : null;
+  } catch {
+    return null;
+  }
+};
+
 const nameFor = ({ address }: NominatimResponse) =>
   address.village || address.town || address.city || address.county || address.postcode;
 
@@ -32,9 +41,10 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
   const [zip, setZip] = React.useState(() => localStorage.getItem('zip') || DEFAULT_ZIP);
   const [locationName, setLocationName] = React.useState(() => localStorage.getItem('locationName') || PENDING_NAME);
   const [useGeo, setUseGeo] = React.useState(() => geoAvailable && localStorage.getItem('useGeo') === 'true');
-  const [coords, setCoords] = React.useState<Coords | null>(null);
+  const [initialCoords] = React.useState(() => (useGeo ? null : savedCoords()));
+  const [coords, setCoords] = React.useState<Coords | null>(initialCoords);
   const [options, setOptions] = React.useState<NominatimResponse[]>([]);
-  const [status, setStatus] = React.useState<PlaceStatus>('resolving');
+  const [status, setStatus] = React.useState<PlaceStatus>(initialCoords ? 'resolved' : 'resolving');
   const requestId = React.useRef(0);
 
   const persistGeo = React.useCallback((value: boolean) => {
@@ -46,14 +56,16 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
     requestId.current++;
     const name = nameFor(match) || match.address.postcode || '';
     const postcode = match.address.postcode;
+    const matchCoords = { lat: Number(match.lat), lon: Number(match.lon) };
     localStorage.setItem('locationName', name);
+    localStorage.setItem('coords', JSON.stringify(matchCoords));
     if (postcode) {
       localStorage.setItem('zip', postcode);
       setZip(postcode);
     }
     setLocationName(name);
     setOptions([]);
-    setCoords({ lat: Number(match.lat), lon: Number(match.lon) });
+    setCoords(matchCoords);
     setStatus('resolved');
   }, []);
 
@@ -111,7 +123,7 @@ export const PlaceProvider = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     if (useGeo) {
       locate(zip);
-    } else {
+    } else if (!initialCoords) {
       lookupZip(zip);
     }
     // Resolve once on mount; later changes go through the actions below.
