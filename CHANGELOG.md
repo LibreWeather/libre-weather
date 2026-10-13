@@ -1,3 +1,15 @@
+# [1.7.0](https://github.com/LibreWeather/libre-weather/compare/v1.6.0...v1.7.0) (2026-10-13)
+
+
+### Features
+
+* 12/24-hour time from the browser locale ([56c6f9a](https://github.com/LibreWeather/libre-weather/commit/56c6f9a60c20367d05fbbcee3b8cabc368b14786))
+* condensed view with navbar summary on scroll and compact layout preference ([67f45f3](https://github.com/LibreWeather/libre-weather/commit/67f45f3f93fcca3f9726875cbc57e7183fabf091))
+* default temperature units from the browser locale ([6a2c938](https://github.com/LibreWeather/libre-weather/commit/6a2c9388db3c19a0ae91f012311d193eb051a91c))
+* preferences panel for units, clock, alerts, motion and transparency ([1d85cd6](https://github.com/LibreWeather/libre-weather/commit/1d85cd6db0c10cef6d632abb3e3479514ad590b5))
+* remember open forecast days across refreshes and reloads ([b566b33](https://github.com/LibreWeather/libre-weather/commit/b566b330ed4db1eaf2c8c8e47729c55631ba2d30))
+* view full alert from the collapsed alert bar ([d99110d](https://github.com/LibreWeather/libre-weather/commit/d99110d364a9f1a94d56dc73d0d87580bf7396af))
+
 # [1.6.0](https://github.com/LibreWeather/libre-weather/compare/v1.5.0...v1.6.0) (2026-10-13)
 
 
