@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './resources/serviceWorker';
 
 import './fonts';
-import './styles.css';
+import './tailwind.css';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -5,6 +5,7 @@ import Icon from '@components/Icon';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { usePreferences } from '@/providers/PreferencesProvider';
 import { appleTouchIconHref, isIos, isStandalone } from '@/utilities/platform';
+import './InstallBanner.scss';
 
 const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
 
@@ -26,10 +27,9 @@ const InstallBanner = () => {
     <aside
       className={
         'installBanner fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-[1030] flex ' +
-        'w-[min(30rem,calc(100vw_-_2rem))] -translate-x-1/2 animate-rise items-center gap-3 rounded-[0.875rem] ' +
+        'w-[min(30rem,calc(100vw_-_2rem))] -translate-x-1/2 items-center gap-3 rounded-[0.875rem] ' +
         'border border-white/10 bg-clear/94 py-[0.65rem] pr-[0.65rem] pl-3 text-left text-[0.9rem] text-white ' +
-        'shadow-[0_0.75rem_2.5rem_rgb(0_0_0/0.45)] backdrop-blur-[10px] reduce-transparency:bg-clear ' +
-        'motion-reduce:animate-none'
+        'shadow-[0_0.75rem_2.5rem_rgb(0_0_0/0.45)] backdrop-blur-[10px] reduce-transparency:bg-clear'
       }
       aria-label="Install Libre Weather">
       {icon ? <img className="size-10 flex-none rounded-[0.6rem]" src={icon} alt="" /> : null}

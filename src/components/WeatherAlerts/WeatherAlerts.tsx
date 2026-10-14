@@ -7,6 +7,7 @@ import { useAlerts } from '@/providers/AlertsProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
 import { alertTime, severityClass, sourceName, startsLater, untilLabel } from '@/utilities/alerts';
 import AlertDialog from './AlertDialog';
+import './WeatherAlerts.scss';
 
 const alertFocus = 'focus-visible:outline-2 focus-visible:outline-(--alert-color)';
 const moreButton =
@@ -23,7 +24,7 @@ const AlertItem = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
     <details
       className={
         `weatherAlert ${severityClass(alert.severity)} group overflow-hidden rounded-xl border ` +
-        'border-(--alert-color)/45 alert-tint-12'
+        'border-(--alert-color)/45'
       }>
       <summary
         className={
@@ -81,7 +82,7 @@ const AlertChip = ({ alert, onOpen }: { alert: WeatherAlert; onOpen: (id: string
       className={
         `weatherAlertChip ${severityClass(alert.severity)} flex max-w-full min-w-0 flex-[1_1_10rem] items-center ` +
         'gap-[0.45rem] rounded-lg border border-(--alert-color)/45 px-[0.65rem] py-[0.35rem] text-left ' +
-        `text-[0.8rem] font-semibold alert-tint-12 hover:alert-tint-22 focus-visible:outline-offset-2 ${alertFocus}`
+        `text-[0.8rem] font-semibold focus-visible:outline-offset-2 ${alertFocus}`
       }
       title={until ? `${alert.event} ${until}` : alert.event}
       aria-label={`${alert.event}${until ? `, ${until}` : ''}. View full alert`}

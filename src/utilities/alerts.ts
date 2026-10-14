@@ -14,7 +14,7 @@ const SEVERITY_CLASSES: Record<AlertSeverity, string> = {
   UNKNOWN: 'severity-unknown',
 };
 
-/** Tailwind utility setting `--alert-color` for a severity. */
+/** Class from WeatherAlerts.scss setting `--alert-color` for a severity. */
 export const severityClass = (severity: AlertSeverity | undefined) =>
   (severity && SEVERITY_CLASSES[severity]) || SEVERITY_CLASSES.UNKNOWN;
 

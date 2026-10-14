@@ -1,0 +1,14 @@
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: -50% 1rem;
+  }
+}
+
+.installBanner {
+  animation: rise 0.25s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}

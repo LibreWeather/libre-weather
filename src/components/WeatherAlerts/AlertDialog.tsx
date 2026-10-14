@@ -5,6 +5,7 @@ import Icon from '@components/Icon';
 import { useModalDialog } from '@/hooks/useModalDialog';
 import type { WeatherAlert } from '@/models/alerts';
 import { alertFacts, severityClass, sourceName } from '@/utilities/alerts';
+import './WeatherAlerts.scss';
 
 type AlertDialogProps = {
   /** `null` once the alert is no longer in the active list, e.g. a stale shared link. */

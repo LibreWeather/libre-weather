@@ -1,0 +1,28 @@
+$severity-colors: (
+  extreme: #e5484d,
+  severe: #f0803c,
+  moderate: #e5b93e,
+  minor: #6aa9d8,
+  unknown: #9aa3ab,
+);
+
+/* Sets --alert-color, which the Tailwind `*-(--alert-color)` classes read. */
+@each $severity, $color in $severity-colors {
+  .severity-#{$severity} {
+    --alert-color: #{$color};
+  }
+}
+
+/* Severity colour mixed into the clear-sky background. */
+@mixin tint($percent) {
+  background-color: color-mix(in srgb, var(--alert-color) #{$percent * 1%}, var(--color-clear));
+}
+
+.weatherAlert,
+.weatherAlertChip {
+  @include tint(12);
+}
+
+.weatherAlertChip:hover {
+  @include tint(22);
+}

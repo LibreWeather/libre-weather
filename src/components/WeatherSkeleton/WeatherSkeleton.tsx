@@ -1,4 +1,5 @@
 import React from 'react';
+import './WeatherSkeleton.scss';
 
 const DAYS = 7;
 const TICKS = 12;
@@ -6,10 +7,7 @@ const STATS = 6;
 
 const Bone = ({ className = '' }: { className?: string }) => (
   <span
-    className={
-      'block rounded-md bg-white/7 in-[.is-animated]:animate-shine in-[.is-animated]:bg-shine ' +
-      `motion-reduce:animate-none! motion-reduce:bg-none! ${className}`
-    } />
+    className={`weatherSkeleton-bone block rounded-md bg-white/7 ${className}`} />
 );
 
 type WeatherSkeletonProps = {
