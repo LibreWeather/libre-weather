@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/LibreWeather/libre-weather/compare/v1.7.0...v1.8.0) (2026-10-14)
+
+
+### Bug Fixes
+
+* log handled fetch errors as warnings (avoids Parcel dev overlay) ([c5519ca](https://github.com/LibreWeather/libre-weather/commit/c5519ca83f42e60881ddc4cc2a492fc588dbe514))
+
+
+### Features
+
+* useFetch (axios-hooks style, native fetch) and useStorage; providers use them ([c4fc822](https://github.com/LibreWeather/libre-weather/commit/c4fc8224981e6282b34a5299064da3e195dd920e))
+
 # [1.7.0](https://github.com/LibreWeather/libre-weather/compare/v1.6.0...v1.7.0) (2026-10-13)
 
 
