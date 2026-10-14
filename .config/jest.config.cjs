@@ -8,7 +8,7 @@ module.exports = {
     '^@components/(.*)$': '<rootDir>/src/components/$1',
     '^@/(utilities|models|hooks|api|providers)/(.*)$': '<rootDir>/src/$1/$2',
     '^@/common/(.*)$': '<rootDir>/src/components/common/$1',
-    '\\.(less|css)$': '<rootDir>/src/tests/styleMock.ts',
+    '\\.css$': '<rootDir>/src/tests/styleMock.ts',
     '^react/jsx(-dev)?-runtime$': 'preact/jsx-runtime',
     '^react-dom/test-utils$': 'preact/test-utils',
     '^react-dom/client$': 'preact/compat/client',

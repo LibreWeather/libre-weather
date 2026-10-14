@@ -1,7 +1,5 @@
 import React from 'react';
 
-import './App.less';
-
 import InstallBanner from '@components/InstallBanner';
 import NavigationBar from '@components/NavigationBar';
 import { useLocation } from '@/hooks/useLocation';
@@ -31,7 +29,7 @@ const App = () => (
     <PlaceProvider>
       <WeatherProvider>
         <AlertsProvider>
-          <div className="App">
+          <div className="overflow-x-clip">
             <NavigationBar />
             <Page />
             <InstallBanner />

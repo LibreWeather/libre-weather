@@ -16,7 +16,8 @@ import {
 import { formatHour } from '@/utilities/locale';
 import type { Hourly } from '@/models/weather';
 import type { ReactNode } from 'react';
-import './HourlyGraph.less';
+
+const hourCols = 'grid grid-cols-[repeat(var(--hours),minmax(0,1fr))]';
 
 const Line = ({
   points,
@@ -31,7 +32,10 @@ const Line = ({
 }) =>
   points ? (
     <polyline
-      className={`hourlyGraph-line${dashed ? ' is-dashed' : ''}${dotted ? ' is-dotted' : ''}`}
+      className={
+        'fill-none [stroke-width:1.6] [vector-effect:non-scaling-stroke]' +
+        `${dashed ? ' [stroke-dasharray:4_3]' : ''}${dotted ? ' [stroke-dasharray:1.5_3]' : ''}`
+      }
       points={points}
       stroke={color} />
   ) : null;
@@ -54,7 +58,7 @@ const Bars = ({
     const { top, height } = barGeometry(value, min, max);
     return (
       <rect
-        className="hourlyGraph-bar"
+        className="opacity-85"
         fill={color}
         height={height}
         key={`bar-${i}`}
@@ -75,10 +79,15 @@ const Track = ({
   children?: ReactNode;
   extra?: ReactNode;
 }) => (
-  <div className="hourlyGraph-track">
-    <div className="hourlyGraph-label">
+  <div className="hourlyGraph-track relative mt-[0.15rem] h-[52px]">
+    <div
+      className={
+        'type-label pointer-events-none sticky left-0 z-[2] flex h-full w-[4.4rem] flex-col justify-center ' +
+        'bg-linear-to-r from-page from-72% to-page/0 pr-[0.35rem] text-[0.68rem] leading-[1.15] tracking-[0.04em] ' +
+        'uppercase opacity-85 max-md:w-[3.4rem] max-md:text-[0.62rem]'
+      }>
       <span>{label}</span>
-      {range ? <span className="hourlyGraph-range">{range}</span> : null}
+      {range ? <span className="text-[0.62rem] tracking-normal normal-case opacity-55">{range}</span> : null}
     </div>
     {children}
     {extra}
@@ -86,7 +95,7 @@ const Track = ({
 );
 
 const Plot = ({ children, count }: { children?: ReactNode; count: number }) => (
-  <svg className="hourlyGraph-plot" preserveAspectRatio="none" viewBox={`0 0 ${count} ${TRACK_H}`}>
+  <svg className="hourlyGraph-plot absolute inset-0 block size-full" preserveAspectRatio="none" viewBox={`0 0 ${count} ${TRACK_H}`}>
     {children}
   </svg>
 );
@@ -144,25 +153,27 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
   return (
     <section
       aria-label={`Hourly forecast, ${VIEW_HOURS} hour window`}
-      className="hourlyGraph"
+      className="hourlyGraph type-data mt-[0.85rem] w-full min-w-0 text-xs text-white"
       style={{ ['--hours' as string]: chart.count, ['--view-hours' as string]: VIEW_HOURS } as React.CSSProperties}>
-      <div className="hourlyGraph-head">
+      <div className="type-label mb-[0.35rem] flex items-baseline justify-between gap-3 text-[0.8rem] tracking-[0.02em]">
         <span>{heading || `${VIEW_HOURS} hour window`}</span>
-        <span className="hourlyGraph-hint">scroll →</span>
+        <span className="opacity-55">scroll →</span>
       </div>
       <div
-        className="hourlyGraph-scroll"
+        className={
+          'hourlyGraph-scroll w-full min-w-0 cursor-grab snap-x snap-proximity overflow-x-auto overflow-y-hidden ' +
+          '[scrollbar-color:rgb(255_255_255/0.28)_transparent] [scrollbar-width:thin] active:cursor-grabbing ' +
+          '[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/28'
+        }
         onPointerCancel={endDrag}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         ref={scroller}>
-        <div className="hourlyGraph-pane">
-          <div className="hourlyGraph-ribbon">
+        <div className="relative w-[calc(100%_*_var(--hours)_/_var(--view-hours))] min-w-full">
+          <div className={`${hourCols} h-[0.55rem] overflow-hidden rounded-[2px]`}>
             {hours.map((hour) => (
-              <div
-                className={`hourlyGraph-ribbon-cell ${conditionClass(hour.condition)}`}
-                key={`ribbon-${hour.time}`} />
+              <div className={`min-w-0 snap-start ${conditionClass(hour.condition)}`} key={`ribbon-${hour.time}`} />
             ))}
           </div>
           <Track
@@ -185,9 +196,11 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
               <Line color="#d7c4a8" dashed points={chart.gustLine} />
               <Line color="#c5d0de" points={chart.windLine} />
             </Plot>
-            <div className="hourlyGraph-windDirs">
+            <div className={`${hourCols} pointer-events-none absolute inset-0`}>
               {hours.map((hour) => (
-                <span className="hourlyGraph-windDir" key={`wdir-${hour.time}`}>
+                <span
+                  className="flex items-start justify-center pt-[0.15rem] text-[0.7rem] opacity-70"
+                  key={`wdir-${hour.time}`}>
                   <Icon
                     icon={faLongArrowAltDown}
                     rotate={Number(hour.windspeed?.direction) || 0} />
@@ -215,21 +228,25 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
               <Line color="#b39ddb" points={chart.pressureLine} />
             </Plot>
           </Track>
-          <div className="hourlyGraph-times">
+          <div className={`${hourCols} mt-[0.2rem]`}>
             {hours.map((hour) => (
-              <div className="hourlyGraph-time" key={`t-${hour.time}`}>
+              <div
+                className="hourlyGraph-time min-w-0 snap-start overflow-hidden text-center text-[0.68rem] opacity-70"
+                key={`t-${hour.time}`}>
                 {formatHour(hour.time)}
               </div>
             ))}
           </div>
           {nowPos == null ? null : (
-            <div className="hourlyGraph-now" style={{ left: `${(nowPos / chart.count) * 100}%` }} />
+            <div
+              className="hourlyGraph-now pointer-events-none absolute inset-y-0 z-[1] w-px bg-white/55"
+              style={{ left: `${(nowPos / chart.count) * 100}%` }} />
           )}
-          <div className="hourlyGraph-hits">
+          <div className={`${hourCols} absolute inset-0 z-[3]`}>
             {hours.map((hour, i) => (
               <button
                 aria-label={hour.description || hour.condition}
-                className={`hourlyGraph-hit${hover === i ? ' is-active' : ''}`}
+                className={`hourlyGraph-hit min-w-0 cursor-[inherit] hover:bg-white/6 ${hover === i ? 'is-active bg-white/6' : ''}`}
                 key={`hit-${hour.time}`}
                 onBlur={() => setHover(nowIndex)}
                 onFocus={() => setHover(i)}
@@ -239,11 +256,11 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
           </div>
         </div>
       </div>
-      <div className="hourlyGraph-tip">
-        <div className="hourlyGraph-tip-title">
+      <div className="mt-[0.45rem] rounded bg-[#1b1e24]/85 px-[0.6rem] py-[0.45rem] leading-[1.35]">
+        <div className="hourlyGraph-tip-title type-label mb-[0.15rem] text-[0.8rem]">
           {formatHour(active.time)} · {active.description || active.condition}
         </div>
-        <div className="hourlyGraph-tip-grid">
+        <div className="grid grid-cols-2 gap-x-[0.85rem] gap-y-[0.1rem] max-md:grid-cols-1">
           <span>
             Temp {tempDisplay(active.temp)} · feels {tempDisplay(active.apparentTemp)} · dew{' '}
             {tempDisplay(active.dewPoint)}

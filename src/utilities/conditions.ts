@@ -31,20 +31,20 @@ export const conditionName = (condition: Condition) => {
   }
 };
 
-/** CSS class picking the background colour for a condition. */
+/** Tailwind class picking the background colour for a condition. */
 export const conditionClass = (condition: Condition) => {
   switch (condition) {
     case Condition.RAIN:
     case Condition.SNOW:
     case Condition.SLEET:
-      return 'rain';
+      return 'bg-rain';
     case Condition.PARTLY_CLOUDY:
-      return 'partlyCloudy';
+      return 'bg-partly-cloudy';
     case Condition.CLOUDY:
     case Condition.FOG:
-      return 'mostlyCloudy';
+      return 'bg-mostly-cloudy';
     default:
-      return 'clear';
+      return 'bg-clear';
   }
 };
 

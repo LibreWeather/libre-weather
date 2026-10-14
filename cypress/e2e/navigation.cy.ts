@@ -3,7 +3,7 @@ import { visitStubbed } from '../support/stubs';
 describe('Navigation bar', () => {
   it('shows the brand cluster with licenses and GitHub next to the wordmark', () => {
     visitStubbed();
-    cy.contains('a.navbar-brand', 'Libre Weather').should('be.visible');
+    cy.contains('a.app-home', 'Libre Weather').should('be.visible');
     cy.get('a[aria-label="Licenses"]').should('be.visible');
     cy.get('a[aria-label="GitHub"]')
       .should('be.visible')
@@ -32,14 +32,14 @@ describe('Navigation bar', () => {
     cy.location('pathname').should('eq', '/licenses');
     cy.contains(/Built with/i).should('be.visible');
     cy.contains('h6', /^preact\s*:\s*MIT$/).should('exist');
-    cy.contains('a.navbar-brand', 'Libre Weather').click();
+    cy.contains('a.app-home', 'Libre Weather').click();
     cy.location('pathname').should('eq', '/');
   });
 
   it('renders the licenses page directly', () => {
     visitStubbed({ path: '/licenses' });
     cy.contains(/Built with/i).should('be.visible');
-    cy.get('h6').its('length').should('be.greaterThan', 10);
+    cy.get('h6').its('length').should('be.greaterThan', 5);
   });
 
   describe('on a phone', () => {
@@ -50,10 +50,10 @@ describe('Navigation bar', () => {
     it('collapses settings behind the menu toggle', () => {
       visitStubbed();
       cy.get('.app-settings').should('not.be.visible');
-      cy.get('.navbar-toggler').should('be.visible').click();
+      cy.get('.app-menu-toggle').should('be.visible').click();
       cy.get('.app-settings').should('be.visible');
       cy.get('input[aria-label="ZIP Code"]').should('be.visible');
-      cy.get('.navbar-toggler').click();
+      cy.get('.app-menu-toggle').click();
       cy.get('.app-settings').should('not.be.visible');
     });
 

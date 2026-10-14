@@ -1,8 +1,6 @@
 import React from 'react';
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-import './Icon.less';
-
 type IconProps = {
   icon: IconDefinition;
   className?: string;
@@ -17,7 +15,7 @@ const Icon = ({ icon, className, rotate, 'aria-label': label }: IconProps) => {
   const [width, height, , , path] = icon.icon;
   return (
     <svg
-      className={className ? `icon ${className}` : 'icon'}
+      className={`inline-block h-[1em] overflow-visible align-[-0.125em] ${className ?? ''}`}
       viewBox={`0 0 ${width} ${height}`}
       style={rotate ? { transform: `rotate(${rotate}deg)` } : undefined}
       role={label ? 'img' : undefined}

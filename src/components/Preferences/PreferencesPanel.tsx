@@ -11,9 +11,14 @@ import { PHONE_QUERY, REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY, mediaMat
 import { isStandalone } from '@/utilities/platform';
 import { resolveUnitSystem } from '@/utilities/preferences';
 
-import './PreferencesPanel.less';
-
 type Option<V extends string> = { value: V; label: string };
+
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="border-white/7 not-first:mt-4 not-first:border-t not-first:pt-[0.9rem]">
+    <h3 className="mb-2 font-sans text-[0.72rem] font-[650] tracking-[0.06em] text-white/50 uppercase">{title}</h3>
+    {children}
+  </section>
+);
 
 const Segmented = <K extends PreferenceChoiceKey>({
   name,
@@ -26,18 +31,27 @@ const Segmented = <K extends PreferenceChoiceKey>({
 }) => {
   const { preferences, setPreference } = usePreferences();
   return (
-    <fieldset className="prefs-field">
-      <legend>{label}</legend>
-      <div className="prefs-segmented">
+    <fieldset className="prefs-field mb-[0.7rem]">
+      <legend className="mb-[0.3rem] text-[0.88rem] font-[550]">{label}</legend>
+      <div className="flex gap-0.5 rounded-[0.55rem] bg-white/6 p-0.5">
         {options.map((option) => (
-          <label key={option.value}>
+          <label key={option.value} className="relative min-w-0 flex-auto">
             <input
+              className="peer pointer-events-none absolute opacity-0"
               type="radio"
               name={name}
               value={option.value}
               checked={preferences[name] === option.value}
               onChange={() => setPreference(name, option.value)} />
-            <span>{option.label}</span>
+            <span
+              className={
+                'block cursor-pointer rounded-[0.45rem] px-2 py-[0.35rem] text-center text-[0.82rem] whitespace-nowrap ' +
+                'text-white/75 transition-colors hover:text-white peer-checked:bg-[#3a3f47] peer-checked:font-semibold ' +
+                'peer-checked:text-white peer-checked:shadow-[0_1px_2px_rgb(0_0_0/0.35)] ' +
+                'peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent'
+              }>
+              {option.label}
+            </span>
           </label>
         ))}
       </div>
@@ -71,22 +85,40 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
   return (
     <dialog
       ref={ref}
-      className={`prefsPanel${anchor ? ' is-anchored' : ''}`}
+      className={
+        'prefsPanel w-[min(24rem,calc(100vw_-_2rem))] rounded-[0.875rem] border border-white/10 bg-panel p-0 ' +
+        'text-left text-[0.95rem] text-white shadow-[0_1rem_3rem_rgb(0_0_0/0.5)] ' +
+        (anchor ?
+          'is-anchored fixed inset-[var(--prefs-top)_var(--prefs-right)_auto_auto] m-0 ' +
+          'max-h-[calc(100dvh_-_var(--prefs-top)_-_1rem)] backdrop:bg-transparent' :
+          'm-auto max-h-[calc(100dvh_-_4rem)] backdrop:bg-[rgb(10_12_15/0.35)] max-md:fixed max-md:inset-[auto_0_0] ' +
+          'max-md:m-0 max-md:max-h-[85dvh] max-md:w-screen max-md:max-w-[100vw] max-md:rounded-t-2xl ' +
+          'max-md:rounded-b-none max-md:border-x-0 max-md:border-b-0 max-md:backdrop:bg-[rgb(10_12_15/0.5)]')
+      }
       style={anchorStyle}
       aria-labelledby={titleId}
       onClose={onClose}
       onClick={onBackdropClick}>
-      <div className="prefsPanel-inner">
-        <header className="prefsPanel-header">
-          <h2 id={titleId}>Preferences</h2>
-          <button type="button" className="prefsPanel-close" aria-label="Close" onClick={close}>
+      <div className="flex max-h-[inherit] flex-col">
+        <header className="flex items-center justify-between pt-3 pr-3 pb-2 pl-[1.1rem]">
+          <h2 id={titleId} className="font-sans text-[1.05rem] font-bold tracking-normal">
+            Preferences
+          </h2>
+          <button
+            type="button"
+            className="prefsPanel-close grid size-8 place-items-center rounded-lg text-white/70 hover:bg-white/8 hover:text-white"
+            aria-label="Close"
+            onClick={close}>
             <Icon icon={faXmark} />
           </button>
         </header>
 
-        <div className="prefsPanel-body">
-          <section>
-            <h3>Units</h3>
+        <div
+          className={
+            'overflow-y-auto overscroll-contain px-[1.1rem] pb-[1.1rem] ' +
+            'max-md:pb-[max(1.1rem,env(safe-area-inset-bottom))]'
+          }>
+          <Section title="Units">
             <Segmented
               name="temperature"
               label="Temperature"
@@ -120,10 +152,9 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
                 { value: '12', label: '12h' },
                 { value: '24', label: '24h' },
               ]} />
-          </section>
+          </Section>
 
-          <section>
-            <h3>Display</h3>
+          <Section title="Display">
             <Segmented
               name="layout"
               label="Compact layout"
@@ -148,34 +179,46 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
                 { value: 'reduce', label: 'On' },
                 { value: 'full', label: 'Off' },
               ]} />
-            <p className="prefs-hint">Turns off blur effects, which can save battery on older devices.</p>
-          </section>
+            <p className="-mt-[0.3rem] text-[0.78rem] text-white/50">
+              Turns off blur effects, which can save battery on older devices.
+            </p>
+          </Section>
 
-          <section>
-            <h3>Alerts</h3>
-            <label className="prefs-toggle">
-              <span>
+          <Section title="Alerts">
+            <label className="prefs-toggle flex cursor-pointer items-center justify-between gap-4">
+              <span className="flex flex-col text-[0.88rem] font-[550]">
                 Show weather alerts
-                <small>Watches and warnings from the National Weather Service and MET Norway.</small>
+                <small className="mt-[0.15rem] text-[0.78rem] font-normal text-white/50">
+                  Watches and warnings from the National Weather Service and MET Norway.
+                </small>
               </span>
               <input
+                className={
+                  'relative h-[1.4rem] w-[2.4rem] flex-none cursor-pointer appearance-none rounded-2xl bg-white/18 ' +
+                  'transition-colors after:absolute after:top-[0.15rem] after:left-[0.15rem] after:size-[1.1rem] ' +
+                  'after:rounded-full after:bg-white after:transition-transform checked:bg-accent ' +
+                  'checked:after:translate-x-4 focus-visible:outline-2 focus-visible:outline-offset-2 ' +
+                  'focus-visible:outline-accent'
+                }
                 type="checkbox"
                 role="switch"
                 checked={preferences.alerts}
                 onChange={(event) => setPreference('alerts', event.target.checked)} />
             </label>
-          </section>
+          </Section>
 
           {preferences.installBannerDismissed && !isStandalone() ? (
-            <section>
-              <h3>App</h3>
+            <Section title="App">
               <button
                 type="button"
-                className="prefs-button"
+                className={
+                  'rounded-lg border border-white/15 bg-white/5 px-[0.8rem] py-[0.4rem] text-[0.85rem] text-white ' +
+                  'hover:bg-white/10'
+                }
                 onClick={() => setPreference('installBannerDismissed', false)}>
                 Show install banner again
               </button>
-            </section>
+            </Section>
           ) : null}
         </div>
       </div>

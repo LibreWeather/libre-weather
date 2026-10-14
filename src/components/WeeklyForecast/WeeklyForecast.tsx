@@ -1,5 +1,4 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
 
 import { useOpenDays } from '@/hooks/useOpenDays';
 import type { ForecastDay } from '@/models/forecast';
@@ -7,7 +6,6 @@ import type { Hourly, Weather } from '@/models/weather';
 import { forecastDays, hoursOnDay, tempBounds } from '@/utilities/forecast';
 import { isDayOpen } from '@/utilities/openDays';
 import { DailyRow } from './components/DailyRow';
-import './WeeklyForecast.less';
 
 const DailyRows = ({ weeklyWeather, hourly }: { weeklyWeather: ForecastDay[]; hourly: Hourly[] }) => {
   const [openDays, toggle] = useOpenDays();
@@ -30,9 +28,13 @@ const DailyRows = ({ weeklyWeather, hourly }: { weeklyWeather: ForecastDay[]; ho
 };
 
 const WeeklyForecast = ({ weatherData }: { weatherData: Weather }) => (
-  <Container className="weeklyForecast forecast-col" fluid>
+  <div
+    className={
+      'weeklyForecast forecast-col mt-[2em] rounded-xl border border-white/8 bg-clear/45 px-3 py-1.5 text-base ' +
+      'max-md:mt-[1em] max-md:py-1 compact:mt-[1em]'
+    }>
     <DailyRows hourly={weatherData.hourly} weeklyWeather={forecastDays(weatherData)} />
-  </Container>
+  </div>
 );
 
 export default WeeklyForecast;

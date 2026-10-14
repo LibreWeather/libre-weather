@@ -8,9 +8,6 @@ import {
   faSun,
 } from '@fortawesome/free-solid-svg-icons';
 import Icon from '@components/Icon';
-import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
 import { WeatherIcon } from '@components/WeatherIcon';
 import HourlyGraph from '@components/HourlyGraph';
 import type { ForecastDay } from '@/models/forecast';
@@ -28,62 +25,69 @@ type DailyRowProps = {
   onToggle: () => void;
 };
 
-export class DailyRow extends React.Component<DailyRowProps> {
-  render() {
-    const { dailyWeather, hourly, index, overallMinTemp, overallMaxTemp, open, onToggle } = this.props;
-    const drawerDisplay = open ? 'block' : 'none';
-    const drawerIcon = open ? faMinusCircle : faPlusCircle;
-    const { precipitation } = dailyWeather;
+export const DailyRow = ({
+  dailyWeather,
+  hourly,
+  index,
+  overallMinTemp,
+  overallMaxTemp,
+  open,
+  onToggle,
+}: DailyRowProps) => {
+  const { precipitation } = dailyWeather;
 
-    // TODO the temperature range details need to be updated to include the times (calculated by looking at the hourly data)
-    return (
-      <Row
-        className={`justify-content-center weeklyForecastRow ${open ? 'open' : ''} ${index > 0 ? 'open-margin' : ''}`}>
-        <Container>
-          <Row className="buttonRow align-items-center g-2 flex-nowrap" onClick={onToggle}>
-            <Col xs="auto" className="iconCol">
-              <WeatherIcon condition={dailyWeather.condition} sizePx={20} daytime />
-            </Col>
-            <Col xs="auto" className="forecastDayCol">
-              {index === 0 ? 'Today' : getDayOfTheWeek(dailyWeather.time)}
-            </Col>
-            <Col className="tempRangeCol min-w-0">
-              <TempRangeCol
-                dailyWeather={dailyWeather}
-                overallMinTemp={overallMinTemp}
-                overallMaxTemp={overallMaxTemp} />
-            </Col>
-            <Col xs="auto" className="toggleCol">
-              <Icon icon={drawerIcon} />
-            </Col>
-          </Row>
-          <Row
-            className="justify-content-center displayDrawer"
-            onClick={(event) => event.stopPropagation()}
-            style={{ display: drawerDisplay }}>
-            <Container>
-              <Row className="justify-content-center h3">{dailyWeather.description}</Row>
-              <Row className="g-2">
-                <Col xs={12} md={4}>
-                  <span className="daily-low">{tempDisplay(dailyWeather.minTemp)}</span>{' '}
-                  <Icon icon={faLongArrowAltRight} />{' '}
-                  <span className="daily-high">{tempDisplay(dailyWeather.maxTemp)}</span>
-                </Col>
-                <Col xs={12} md={4}>
-                  <Icon icon={faSun} /> <span className="daily-sunrise">{dailyWeather.sunrise}</span>
-                  <Icon icon={faLongArrowAltUp} /> -{' '}
-                  <span className="daily-sunset">{dailyWeather.sunset}</span>
-                  <Icon icon={faLongArrowAltDown} />
-                </Col>
-                <Col xs={12} md={4} className="type-data">
-                  <span className="fw-bold">{precipitation.type}</span> {precipitation.value}
-                </Col>
-              </Row>
-              {open ? <HourlyGraph heading="Hours" hourly={hourly} /> : null}
-            </Container>
-          </Row>
-        </Container>
-      </Row>
-    );
-  }
-}
+  // TODO the temperature range details need to be updated to include the times (calculated by looking at the hourly data)
+  return (
+    <div
+      className={
+        'weeklyForecastRow rounded-lg border-white/7 not-first:border-t [.open+&]:border-t-transparent ' +
+        (open ? 'open border-t-transparent bg-clear' : '')
+      }>
+      <div
+        className={
+          'buttonRow flex cursor-pointer flex-nowrap items-center gap-2 rounded-lg px-2.5 py-3.5 hover:bg-white/4 ' +
+          'max-md:px-2 max-md:py-[0.8rem] compact:px-2! compact:py-[0.65rem]!'
+        }
+        onClick={onToggle}>
+        <div className="mr-[0.1rem] flex-none">
+          <WeatherIcon condition={dailyWeather.condition} sizePx={20} daytime />
+        </div>
+        <div className="forecastDayCol flex-none text-base font-bold whitespace-nowrap compact:text-[0.9rem]">
+          {index === 0 ? 'Today' : getDayOfTheWeek(dailyWeather.time)}
+        </div>
+        <div className="min-w-0 flex-auto text-base compact:text-[0.9rem]">
+          <TempRangeCol dailyWeather={dailyWeather} overallMinTemp={overallMinTemp} overallMaxTemp={overallMaxTemp} />
+        </div>
+        <div className="flex-none">
+          <Icon icon={open ? faMinusCircle : faPlusCircle} />
+        </div>
+      </div>
+      <div
+        className={`displayDrawer px-[1.375rem] pt-1 pb-3.5 max-md:px-5 max-md:pb-3 ${open ? '' : 'hidden'}`}
+        onClick={(event) => event.stopPropagation()}>
+        <div
+          className={
+            'mb-2 flex justify-center font-serif text-[calc(1.3rem_+_0.6vw)] leading-tight font-semibold ' +
+            'tracking-[-0.02em] xl:text-[1.75rem]'
+          }>
+          {dailyWeather.description}
+        </div>
+        <div className="grid gap-2 md:grid-cols-3">
+          <div>
+            <span className="type-data mr-[5px]">{tempDisplay(dailyWeather.minTemp)}</span>{' '}
+            <Icon icon={faLongArrowAltRight} /> <span className="type-data ml-[5px]">{tempDisplay(dailyWeather.maxTemp)}</span>
+          </div>
+          <div>
+            <Icon icon={faSun} /> <span className="type-data mr-[3px]">{dailyWeather.sunrise}</span>
+            <Icon icon={faLongArrowAltUp} /> - <span className="type-data mr-[3px]">{dailyWeather.sunset}</span>
+            <Icon icon={faLongArrowAltDown} />
+          </div>
+          <div className="type-data">
+            <span className="font-bold">{precipitation.type}</span> {precipitation.value}
+          </div>
+        </div>
+        {open ? <HourlyGraph heading="Hours" hourly={hourly} /> : null}
+      </div>
+    </div>
+  );
+};

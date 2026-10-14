@@ -1,0 +1,170 @@
+@import 'tailwindcss' source('./');
+
+/* State classes PreferencesProvider and useHero set on <html>. */
+@custom-variant compact (&:where(.compact *));
+@custom-variant hero-off (&:where(.hero-offscreen *));
+@custom-variant reduce-transparency (&:where(.reduce-transparency *));
+
+@theme {
+  /* Matches PHONE_QUERY / TABLET_QUERY in utilities/media.ts: md = 768px, lg = 992px. */
+  --breakpoint-lg: 62rem;
+  --breakpoint-xl: 75rem;
+  --breakpoint-2xl: 87.5rem;
+
+  --font-sans: 'Inter Variable', sans-serif;
+  --font-serif: 'Source Serif 4 Variable', serif;
+  --font-mono: 'Source Code Pro Variable', ui-monospace, monospace;
+
+  --color-page: #282c34;
+  --color-clear: #202224;
+  --color-partly-cloudy: #2c3032;
+  --color-mostly-cloudy: #343d4a;
+  --color-rain: #2e5a94;
+  --color-panel: #23262b;
+  --color-accent: #3b82f6;
+  --color-muted: #6c757d;
+  --color-field: #212529;
+  --color-field-addon: #2b3035;
+  --color-field-border: #495057;
+  --color-field-text: #dee2e6;
+  --color-focus: #86b7fe;
+
+  --color-alert-extreme: #e5484d;
+  --color-alert-severe: #f0803c;
+  --color-alert-moderate: #e5b93e;
+  --color-alert-minor: #6aa9d8;
+  --color-alert-unknown: #9aa3ab;
+
+  --animate-rise: rise 0.25s ease-out;
+  --animate-shine: shine 1.6s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: -50% 1rem;
+    }
+  }
+
+  @keyframes shine {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0 0;
+    }
+  }
+}
+
+@utility forecast-col {
+  width: 100%;
+  max-width: 48em;
+  margin-inline: auto;
+}
+
+@utility bg-shine {
+  background-image: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0.07) 25%,
+    rgb(255 255 255 / 0.13) 50%,
+    rgb(255 255 255 / 0.07) 75%
+  );
+  background-size: 400% 100%;
+}
+
+@utility type-data {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+
+@utility type-label {
+  font-family: var(--font-sans);
+  font-feature-settings: 'tnum' 1, 'cv05' 1;
+}
+
+/* Severity colour mixed into the clear-sky background, e.g. alert-tint-12. */
+@utility alert-tint-* {
+  background-color: color-mix(in srgb, var(--alert-color) calc(--value(integer) * 1%), var(--color-clear));
+}
+
+@utility severity-extreme {
+  --alert-color: var(--color-alert-extreme);
+}
+@utility severity-severe {
+  --alert-color: var(--color-alert-severe);
+}
+@utility severity-moderate {
+  --alert-color: var(--color-alert-moderate);
+}
+@utility severity-minor {
+  --alert-color: var(--color-alert-minor);
+}
+@utility severity-unknown {
+  --alert-color: var(--color-alert-unknown);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+
+    @media (min-width: 1600px) {
+      font-size: 18px;
+    }
+    @media (min-width: 2200px) {
+      font-size: 20px;
+    }
+    @media (min-width: 3000px) {
+      font-size: 24px;
+    }
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: #fff;
+    font-optical-sizing: auto;
+    font-feature-settings: 'tnum' 1, 'cv05' 1;
+    font-weight: 430;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-feature-settings: 'tnum' 1, 'zero' 1;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+html.reduce-transparency *,
+html.reduce-transparency *::backdrop {
+  backdrop-filter: none !important;
+}
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

@@ -1,10 +1,22 @@
-import type { AlertSource, WeatherAlert } from '@/models/alerts';
+import type { AlertSeverity, AlertSource, WeatherAlert } from '@/models/alerts';
 import { formatDateTime } from './locale';
 
 export const SOURCE_NAMES: Record<AlertSource, string> = {
   NWS: 'National Weather Service',
   METNO: 'MET Norway',
 };
+
+const SEVERITY_CLASSES: Record<AlertSeverity, string> = {
+  EXTREME: 'severity-extreme',
+  SEVERE: 'severity-severe',
+  MODERATE: 'severity-moderate',
+  MINOR: 'severity-minor',
+  UNKNOWN: 'severity-unknown',
+};
+
+/** Tailwind utility setting `--alert-color` for a severity. */
+export const severityClass = (severity: AlertSeverity | undefined) =>
+  (severity && SEVERITY_CLASSES[severity]) || SEVERITY_CLASSES.UNKNOWN;
 
 /** Full name of the agency behind an alert, or its code when unknown. */
 export const sourceName = (source: AlertSource) => SOURCE_NAMES[source] ?? source;

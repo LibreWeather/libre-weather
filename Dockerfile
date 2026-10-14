@@ -5,6 +5,7 @@ COPY package-lock.json .
 
 # config files
 COPY .browserslistrc .
+COPY .postcssrc .
 COPY .config/ .config/
 
 # source code

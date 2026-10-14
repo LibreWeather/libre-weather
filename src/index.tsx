@@ -5,8 +5,7 @@ import App from './App';
 import * as serviceWorker from './resources/serviceWorker';
 
 import './fonts';
-import './App.less';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles.css';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

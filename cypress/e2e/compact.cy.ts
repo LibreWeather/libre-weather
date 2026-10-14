@@ -36,7 +36,7 @@ describe('Condensed view', () => {
       cy.get('.weeklyForecastRow').last().scrollIntoView();
       cy.get('.navSummary').should('have.css', 'opacity', '1');
       cy.get('.app-brand-links').should('not.be.visible');
-      cy.get('.navbar-toggler').then(($toggle) => {
+      cy.get('.app-menu-toggle').then(($toggle) => {
         cy.get('.navSummary').should(($summary) => {
           const toggle = $toggle[0].getBoundingClientRect();
           const summary = $summary[0].getBoundingClientRect();

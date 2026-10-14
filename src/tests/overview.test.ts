@@ -16,8 +16,8 @@ describe('conditions', () => {
   });
 
   test('wet conditions share a colour', () => {
-    expect(conditionClass(Condition.SNOW)).toBe('rain');
-    expect(conditionClass(Condition.FOG)).toBe('mostlyCloudy');
+    expect(conditionClass(Condition.SNOW)).toBe('bg-rain');
+    expect(conditionClass(Condition.FOG)).toBe('bg-mostly-cloudy');
   });
 });
 
