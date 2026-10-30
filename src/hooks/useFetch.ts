@@ -11,6 +11,11 @@ export type FetchOptions = {
   onError?: (error: Error) => void;
 };
 
+export type ExecuteOptions = {
+  /** Reload without a loading flag. A failure leaves the response already on screen. */
+  background?: boolean;
+};
+
 const toRequest = (request: string | FetchRequest): FetchRequest =>
   typeof request === 'string' ? { url: request } : request;
 
@@ -18,7 +23,8 @@ const toRequest = (request: string | FetchRequest): FetchRequest =>
  * JSON fetching in the style of axios-hooks, on native `fetch`.
  * Fetches whenever `request` changes, aborting the previous one; `null` means there's nothing to fetch yet.
  * `execute` re-sends the request (or another one) and resolves to its data, or `null` when it failed or was
- * superseded; errors land in state and `onError` rather than rejecting.
+ * superseded; errors land in state and `onError` rather than rejecting. `background` keeps the current
+ * screen up: no loading flag, and a failure does not replace a good response.
  * @param {string | FetchRequest | null} request URL or URL plus `fetch` options
  * @param {FetchOptions} [options]
  * @returns {[FetchState<T>, (request?: string | FetchRequest) => Promise<T | null>, () => void]}
@@ -41,13 +47,14 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
   }, []);
 
   const execute = useCallback(
-    async (override?: string | FetchRequest): Promise<T | null> => {
+    async (override?: string | FetchRequest, execOptions?: ExecuteOptions): Promise<T | null> => {
       const target = override ? toRequest(override) : stable;
+      const background = execOptions?.background ?? false;
       if (!target) return null;
       cancel();
       const current = new AbortController();
       controller.current = current;
-      setState((previous) => ({ ...previous, loading: true, error: null }));
+      if (!background) setState((previous) => ({ ...previous, loading: true, error: null }));
       try {
         const res = await fetch(target.url, { ...target.init, signal: current.signal });
         if (!res.ok) throw new Error(`Request to ${target.url} failed: ${res.status} ${res.statusText}`);
@@ -58,7 +65,9 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
       } catch (caught) {
         if (current.signal.aborted) return null;
         const error = caught instanceof Error ? caught : new Error(String(caught));
-        setState((previous) => ({ ...previous, loading: false, error }));
+        setState((previous) =>
+          background && previous.data != null ? { ...previous, loading: false } : { ...previous, loading: false, error }
+        );
         onErrorRef.current?.(error);
         return null;
       } finally {

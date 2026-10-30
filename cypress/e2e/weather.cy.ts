@@ -19,7 +19,7 @@ describe('Weather view', () => {
     expectRequest('geocode', ({ query }) => query.postalcode === '64106');
     expectRequest(
       'weather',
-      ({ url, headers }) => /\/39\.1031,-94\.5822\/unit\/IMPERIAL$/.test(url) && Boolean(headers['x-tz']),
+      ({ url, headers }) => /\/39\.1031,-94\.5822\/unit\/IMPERIAL\/(current|hourly|daily)$/.test(url) && Boolean(headers['x-tz']),
       'Kansas City weather request with an x-tz header'
     );
   });
@@ -64,8 +64,11 @@ describe('Weather view', () => {
     visitStubbed();
     cy.get('.currentTemp').should('be.visible');
     cy.get<Interception[]>('@weather.all').then((calls) => {
-      expect(calls.map(({ request }) => request.url)).to.have.length(1);
-      expect(calls[0].request.url).to.match(/\/39\.1031,-94\.5822\//);
+      const urls = calls.map(({ request }) => request.url);
+      expect(urls).to.have.length(3);
+      expect(urls.every((url) => /\/39\.1031,-94\.5822\/unit\/IMPERIAL\/(current|hourly|daily)$/.test(url))).to.equal(
+        true
+      );
     });
   });
 
@@ -81,7 +84,7 @@ describe('Weather view', () => {
     cy.get('@weather.all').should('have.length', 0);
 
     cy.contains('.locationPicker-option', 'Rotterdam').click();
-    expectRequest('weather', ({ url }) => /\/42\.8,-73\.9\/unit\/IMPERIAL$/.test(url));
+    expectRequest('weather', ({ url }) => /\/42\.8,-73\.9\/unit\/IMPERIAL\/(current|hourly|daily)$/.test(url));
     cy.get('.locationPicker').should('not.exist');
     cy.get('#locationName').should('have.text', 'Rotterdam');
     cy.get('.currentTemp').should('be.visible');
@@ -97,7 +100,7 @@ describe('Weather view', () => {
     cy.get('.currentTemp').should('be.visible');
 
     cy.reload();
-    expectRequest('weather', ({ url }) => /\/42\.8,-73\.9\/unit\/IMPERIAL$/.test(url));
+    expectRequest('weather', ({ url }) => /\/42\.8,-73\.9\/unit\/IMPERIAL\/(current|hourly|daily)$/.test(url));
     cy.get('#locationName').should('have.text', 'Rotterdam');
     cy.get('.currentTemp').should('be.visible');
     cy.get('.locationPicker').should('not.exist');

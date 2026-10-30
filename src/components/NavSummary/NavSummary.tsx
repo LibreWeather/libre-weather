@@ -3,7 +3,7 @@ import React from 'react';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { useHeroOffscreen } from '@/hooks/useHero';
 import { usePreferences } from '@/providers/PreferencesProvider';
-import { useWeather } from '@/providers/WeatherProvider';
+import { useWeather } from '@/providers/useWeather';
 import { tempDisplay } from '@/utilities/formatters';
 
 /** Current conditions for the navbar; CSS reveals it once the hero has scrolled away. */

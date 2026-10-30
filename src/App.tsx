@@ -4,9 +4,9 @@ import InstallBanner from '@components/InstallBanner';
 import NavigationBar from '@components/NavigationBar';
 import { useLocation } from '@/hooks/useLocation';
 import { AlertsProvider } from '@/providers/AlertsProvider';
+import { CurrentProvider, DailyProvider, HourlyProvider } from '@/providers/ForecastProviders';
 import { PlaceProvider } from '@/providers/PlaceProvider';
 import { PreferencesProvider } from '@/providers/PreferencesProvider';
-import { WeatherProvider } from '@/providers/WeatherProvider';
 import Weather from './views/Weather/Weather';
 
 /** Split out: the license list is large and rarely visited. */
@@ -27,15 +27,19 @@ const Page = () => {
 const App = () => (
   <PreferencesProvider>
     <PlaceProvider>
-      <WeatherProvider>
-        <AlertsProvider>
-          <div className="overflow-x-clip">
-            <NavigationBar />
-            <Page />
-            <InstallBanner />
-          </div>
-        </AlertsProvider>
-      </WeatherProvider>
+      <CurrentProvider>
+        <HourlyProvider>
+          <DailyProvider>
+            <AlertsProvider>
+              <div className="overflow-x-clip">
+                <NavigationBar />
+                <Page />
+                <InstallBanner />
+              </div>
+            </AlertsProvider>
+          </DailyProvider>
+        </HourlyProvider>
+      </CurrentProvider>
     </PlaceProvider>
   </PreferencesProvider>
 );

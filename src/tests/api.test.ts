@@ -28,9 +28,21 @@ describe('request builders', () => {
   });
 
   test('weather asks for a unit system and sends the time zone', () => {
-    const { url, init } = weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'https://api.example.com/weather');
-    expect(url).toBe('https://api.example.com/weather/1,2/unit/METRIC');
+    const { url, init } = weatherRequest(
+      { lat: 1, lon: 2 },
+      UnitSystem.METRIC,
+      'current',
+      'https://api.example.com/weather'
+    );
+    expect(url).toBe('https://api.example.com/weather/1,2/unit/METRIC/current');
+    expect(init?.cache).toBe('reload');
     expect(init?.headers).toEqual({ 'x-tz': Intl.DateTimeFormat().resolvedOptions().timeZone });
+    expect(weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'hourly', 'https://api.example.com/weather').url).toBe(
+      'https://api.example.com/weather/1,2/unit/METRIC/hourly'
+    );
+    expect(weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'daily', 'https://api.example.com/weather').url).toBe(
+      'https://api.example.com/weather/1,2/unit/METRIC/daily'
+    );
   });
 
   test('nominatim gets JSON output and booleans as 1/0', () => {

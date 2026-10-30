@@ -7,7 +7,7 @@ import WeeklyForecast from '@components/WeeklyForecast';
 import type { NominatimResponse } from '@/models/place';
 import { usePlace } from '@/providers/PlaceProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
-import { useWeather } from '@/providers/WeatherProvider';
+import { useWeather } from '@/providers/useWeather';
 import { pageClass } from '@/common/layout';
 import { placeLabel } from '@/utilities/place';
 
@@ -21,9 +21,9 @@ const LocationNotFound = () => (
   </div>
 );
 
-const WeatherFailed = ({ onRetry }: { onRetry: () => void }) => (
+const WeatherFailed = ({ onRetry, label = 'the forecast' }: { onRetry: () => void; label?: string }) => (
   <div className={errorClass} role="alert">
-    <span>Couldn&apos;t load the forecast.</span>
+    <span>Couldn&apos;t load {label}.</span>
     <button
       type="button"
       className="rounded border border-[#f8f9fa] px-2 py-1 text-sm text-[#f8f9fa] hover:bg-[#f8f9fa] hover:text-black"
@@ -64,14 +64,23 @@ const LocationPicker = ({
   </section>
 );
 
+const PartPending = ({ label }: { label: string }) => (
+  <div className="forecast-col my-[1em] h-16 animate-pulse rounded-xl bg-white/7" role="status" aria-label={label} />
+);
+
 const WeatherView = () => {
   const place = usePlace();
-  const { weather, status, retry } = useWeather();
+  const { weather, status, hourlyStatus, dailyStatus, retry } = useWeather();
   // Time labels come from plain formatters; subscribing re-renders them when the clock preference changes.
   usePreferences();
 
   const choosing = place.status === 'choosing';
-  const loading = place.status === 'resolving' || (place.status === 'resolved' && status === 'loading');
+  const refreshing =
+    weather != null &&
+    (place.status === 'resolving' ||
+      status === 'loading' ||
+      (hourlyStatus === 'loading' && weather.hourly.length > 0) ||
+      (dailyStatus === 'loading' && weather.daily.length > 0));
 
   let notice: React.ReactNode = null;
   if (place.status === 'failed') notice = <LocationNotFound />;
@@ -82,7 +91,7 @@ const WeatherView = () => {
     return (
       <div className={`header ${pageClass}`}>
         {notice}
-        <WeatherSkeleton animated={loading}>
+        <WeatherSkeleton animated={place.status === 'resolving' || status === 'loading'}>
           <WeatherAlerts />
         </WeatherSkeleton>
       </div>
@@ -91,13 +100,25 @@ const WeatherView = () => {
 
   return (
     <div
-      className={`header ${pageClass} transition-opacity duration-200 ${loading ? 'is-refreshing opacity-60' : ''}`}
-      aria-busy={loading}>
+      className={`header ${pageClass} transition-opacity duration-200 ${refreshing ? 'is-refreshing opacity-60' : ''}`}
+      aria-busy={refreshing}>
       {notice}
       <CurrentWeather weatherData={weather} />
       <WeatherAlerts />
-      <DailyOverview hourlyWeatherData={weather.hourly} />
-      <WeeklyForecast weatherData={weather} />
+      {hourlyStatus === 'loading' && weather.hourly.length === 0 ? (
+        <PartPending label="Loading hourly forecast" />
+      ) : hourlyStatus === 'error' && weather.hourly.length === 0 ? (
+        <WeatherFailed onRetry={retry} label="the hourly forecast" />
+      ) : (
+        <DailyOverview hourlyWeatherData={weather.hourly} />
+      )}
+      {dailyStatus === 'loading' && weather.daily.length === 0 ? (
+        <PartPending label="Loading daily forecast" />
+      ) : dailyStatus === 'error' && weather.daily.length === 0 ? (
+        <WeatherFailed onRetry={retry} label="the daily forecast" />
+      ) : (
+        <WeeklyForecast weatherData={weather} />
+      )}
       <AlertsCoverageNote />
     </div>
   );

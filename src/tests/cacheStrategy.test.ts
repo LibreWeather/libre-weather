@@ -20,6 +20,8 @@ describe('strategyFor', () => {
 
   test('fetches weather from the network, falling back to cache', () => {
     expect(strategyFor(req(`${API}/39.1,-94.5/unit/IMPERIAL`), ORIGIN, API)).toBe('network-first');
+    expect(strategyFor(req(`${API}/39.1,-94.5/unit/IMPERIAL/current`), ORIGIN, API)).toBe('network-first');
+    expect(strategyFor(req(`${API}/39.1,-94.5/unit/IMPERIAL/hourly`), ORIGIN, API)).toBe('network-first');
   });
 
   test('fetches geocoding from the network, falling back to cache', () => {

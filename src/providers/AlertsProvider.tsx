@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ALERTS_API_ROOT, alertsRequest } from '@/api/alerts';
-import { useFetch } from '@/hooks/useFetch';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import type { AlertsResponse, WeatherAlert } from '@/models/alerts';
 import type { LoadStatus } from '@/models/status';
 import { activeAlerts } from '@/utilities/alerts';
@@ -15,6 +15,7 @@ export type AlertsContextValue = {
   coverage: boolean | null;
   sources: AlertsResponse['sources'];
   status: LoadStatus;
+  stale: boolean;
 };
 
 const AlertsContext = React.createContext<AlertsContextValue | null>(null);
@@ -27,19 +28,10 @@ export const AlertsProvider = ({ children }: { children: React.ReactNode }) => {
     preferences: { alerts: enabled },
   } = usePreferences();
   const request = enabled && coords && ALERTS_API_ROOT ? alertsRequest(coords) : null;
-  const [{ data, loading, error }, refetch] = useFetch<AlertsResponse>(request, { onError: logWarning });
-
-  React.useEffect(() => {
-    if (!request) return undefined;
-    const timer = window.setInterval(() => refetch(), REFRESH_MS);
-    return () => window.clearInterval(timer);
-  }, [request, refetch]);
-
-  // Background refreshes keep showing the current alerts as `ready`.
-  let status: LoadStatus = 'idle';
-  if (error) status = 'error';
-  else if (data) status = 'ready';
-  else if (loading) status = 'loading';
+  const { data, status, stale } = useAutoRefresh<AlertsResponse>(request, {
+    intervalMs: REFRESH_MS,
+    onError: logWarning,
+  });
 
   const value = React.useMemo<AlertsContextValue>(
     () => ({
@@ -47,8 +39,9 @@ export const AlertsProvider = ({ children }: { children: React.ReactNode }) => {
       coverage: data ? data.coverage : null,
       sources: data?.sources ?? [],
       status,
+      stale,
     }),
-    [data, status]
+    [data, status, stale]
   );
 
   return <AlertsContext.Provider value={value}>{children}</AlertsContext.Provider>;

@@ -8,6 +8,8 @@ import Logo from '@components/Logo';
 import NavSummary from '@components/NavSummary';
 import PreferencesPanel from '@components/Preferences';
 import useDialogParam from '@/hooks/useDialogParam';
+import { useAlerts } from '@/providers/AlertsProvider';
+import { useCurrent, useDaily, useHourly } from '@/providers/ForecastProviders';
 import { usePlace } from '@/providers/PlaceProvider';
 import { PHONE_QUERY, mediaMatches } from '@/utilities/media';
 import { placeLabel } from '@/utilities/place';
@@ -23,6 +25,20 @@ const iconButton =
   'aria-expanded:bg-white/8 aria-expanded:text-white focus-visible:outline-2 focus-visible:outline-offset-2 ' +
   'focus-visible:outline-accent';
 const brandLink = 'block px-[0.45rem] py-[0.3rem] text-white/72 transition-colors hover:text-white focus:text-white';
+
+/** Shown once any slice is older than twice its refresh interval. */
+const DataAge = () => {
+  const current = useCurrent();
+  const hourly = useHourly();
+  const daily = useDaily();
+  const alerts = useAlerts();
+  if (!current.stale && !hourly.stale && !daily.stale && !alerts.stale) return null;
+  return (
+    <span className="dataAge mr-1 shrink-0 text-[0.7rem] font-semibold tracking-wide text-[#ffb020]" role="status">
+      Out of date
+    </span>
+  );
+};
 
 const NavigationBar = () => {
   const { zip, locationName, useGeo, geoAvailable, options, searchZip, toggleGeo, chooseLocation } = usePlace();
@@ -105,6 +121,8 @@ const NavigationBar = () => {
 
       <NavSummary />
 
+      <DataAge />
+
       <button
         type="button"
         ref={gearButton}
@@ -133,17 +151,20 @@ const NavigationBar = () => {
 
       <div
         id="app-settings"
-        className={`${menuOpen ? 'flex' : 'hidden'} grow basis-full items-stretch lg:flex lg:basis-auto`}>
+        className={
+          `${menuOpen ? 'flex' : 'hidden'} w-full min-w-0 max-w-full grow basis-full items-stretch ` +
+          'lg:flex lg:w-auto lg:max-w-none lg:basis-auto'
+        }>
         <div
           className={
-            'app-settings flex w-full flex-col items-stretch gap-[0.7rem] pt-3 pb-[0.35rem] text-white/75 ' +
+            'app-settings flex w-full min-w-0 flex-col items-stretch gap-[0.7rem] pt-3 pb-[0.35rem] text-white/75 ' +
             'lg:ml-auto lg:w-auto lg:flex-row lg:items-center lg:justify-end lg:gap-3 lg:p-0'
           }>
           <form
             ref={locationForm}
             className={
-              'app-settings-location relative ml-[25%] w-1/2 max-w-[50%] min-w-0 self-start ' +
-              'lg:ml-0 lg:w-auto lg:max-w-none lg:min-w-88 lg:flex-[1_1_22rem] lg:self-auto'
+              'app-settings-location relative w-full min-w-0 self-stretch ' +
+              'lg:w-auto lg:max-w-none lg:min-w-88 lg:flex-[1_1_22rem] lg:self-auto'
             }
             onSubmit={handleZipSubmit}>
             <div className="flex w-full flex-nowrap items-stretch">
@@ -171,14 +192,14 @@ const NavigationBar = () => {
               <span
                 id="locationName"
                 className={
-                  `${groupItem} app-settings-place block max-w-29 truncate border-field-border bg-field-addon ` +
-                  'lg:max-w-40'
+                  `${groupItem} app-settings-place block min-w-0 flex-[1.25] basis-0 truncate border-field-border ` +
+                  'bg-field-addon lg:max-w-40 lg:flex-none lg:basis-auto'
                 }>
                 {locationName}
               </span>
               <input
                 className={
-                  `${groupItem} w-[1%] min-w-0 grow border-field-border bg-field text-field-text ` +
+                  `${groupItem} min-w-0 flex-1 border-field-border bg-field text-field-text ` +
                   'placeholder:text-field-text/75 focus:z-10 focus:border-focus focus:outline-none ' +
                   'focus:shadow-[0_0_0_0.25rem_rgb(13_110_253/0.25)]'
                 }

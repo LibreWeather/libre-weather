@@ -19,7 +19,7 @@ describe('Settings bar', () => {
       cy.get('.app-settings-location button[type="submit"]').click();
       geocodeFor('90210');
       cy.get('#locationName').should('have.text', 'Beverly Hills');
-      weatherFor(/\/34\.0901,-118\.4065\/unit\/IMPERIAL$/);
+      weatherFor(/\/34\.0901,-118\.4065\/unit\/IMPERIAL\/(current|hourly|daily)$/);
       cy.window().its('localStorage').invoke('getItem', 'zip').should('eq', '90210');
     });
 
@@ -33,7 +33,7 @@ describe('Settings bar', () => {
       cy.get('.app-location-option').should('have.length', 2);
       cy.contains('.app-location-option', 'Rotterdam, USA').click();
       cy.get('#locationName').should('have.text', 'Rotterdam');
-      weatherFor(/\/42\.8,-73\.9\/unit\/IMPERIAL$/);
+      weatherFor(/\/42\.8,-73\.9\/unit\/IMPERIAL\/(current|hourly|daily)$/);
       cy.get('#location-options').should('not.exist');
     });
 
@@ -50,7 +50,7 @@ describe('Settings bar', () => {
       cy.get('@geo').should('have.attr', 'aria-pressed', 'true');
       expectRequest('reverse', ({ query }) => query.lat === REVERSE.lat && query.lon === '-74.006');
       cy.get('#locationName').should('have.text', 'Geoville');
-      weatherFor(/\/40\.7128,-74\.006\/unit\/IMPERIAL$/);
+      weatherFor(/\/40\.7128,-74\.006\/unit\/IMPERIAL\/(current|hourly|daily)$/);
       cy.window().its('localStorage').invoke('getItem', 'useGeo').should('eq', 'true');
 
       cy.get('@geo').click();

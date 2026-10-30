@@ -65,7 +65,7 @@ describe('Preferences', () => {
   describe('temperature', () => {
     it('defaults to Celsius for browsers outside Fahrenheit regions', () => {
       visitStubbed({ languages: ['en-GB', 'en'] });
-      weatherFor(/\/unit\/METRIC$/);
+      weatherFor(/\/unit\/METRIC\/(current|hourly|daily)$/);
       cy.get('.currentTemp').should('contain.text', '21');
       openPreferences();
       cy.contains('.prefs-field', 'Temperature').find('input[value="auto"]').should('be.checked');
@@ -74,12 +74,12 @@ describe('Preferences', () => {
 
     it('defaults to Fahrenheit for US browsers', () => {
       visitStubbed({ languages: ['es-US', 'es'] });
-      weatherFor(/\/unit\/IMPERIAL$/);
+      weatherFor(/\/unit\/IMPERIAL\/(current|hourly|daily)$/);
     });
 
     it('keeps a saved choice over the browser locale', () => {
       visitStubbed({ languages: ['de-DE'], onBeforeLoad: withPreferences({ temperature: 'F' }) });
-      weatherFor(/\/unit\/IMPERIAL$/);
+      weatherFor(/\/unit\/IMPERIAL\/(current|hourly|daily)$/);
     });
 
     it('carries over the unit saved before preferences existed', () => {
@@ -88,7 +88,7 @@ describe('Preferences', () => {
           win.localStorage.setItem('units', 'METRIC');
         },
       });
-      weatherFor(/\/unit\/METRIC$/);
+      weatherFor(/\/unit\/METRIC\/(current|hourly|daily)$/);
     });
 
     it('switches to Celsius, refetches and remembers it', () => {
@@ -96,12 +96,12 @@ describe('Preferences', () => {
       cy.get('.currentTemp').should('contain.text', '69');
       openPreferences();
       choose('Temperature', '°C');
-      weatherFor(/\/unit\/METRIC$/);
+      weatherFor(/\/unit\/METRIC\/(current|hourly|daily)$/);
       cy.get('.currentTemp').should('contain.text', '21');
       savedPreferences().its('temperature').should('eq', 'C');
 
       cy.reload();
-      weatherFor(/\/unit\/METRIC$/);
+      weatherFor(/\/unit\/METRIC\/(current|hourly|daily)$/);
       cy.get('.currentTemp').should('contain.text', '21');
     });
   });
@@ -114,7 +114,7 @@ describe('Preferences', () => {
       closePreferences();
       cy.get('.currentTopBar').should('contain.text', '13 km/h');
       cy.get('.currentTemp').should('contain.text', '69');
-      weatherFor(/\/unit\/IMPERIAL$/);
+      weatherFor(/\/unit\/IMPERIAL\/(current|hourly|daily)$/);
     });
 
     it('shows rain in millimeters alongside Fahrenheit', () => {
