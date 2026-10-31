@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/LibreWeather/libre-weather/compare/v1.8.0...v1.9.0) (2026-10-30)
+
+
+### Features
+
+* refresh weather slices on separate clocks and keep the last good payload ([88fc70e](https://github.com/LibreWeather/libre-weather/commit/88fc70e736856f13f60df220e37aa761cf2141a9))
+
 # [1.8.0](https://github.com/LibreWeather/libre-weather/compare/v1.7.0...v1.8.0) (2026-10-14)
 
 
