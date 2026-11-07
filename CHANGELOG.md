@@ -1,3 +1,13 @@
+## [1.9.1](https://github.com/LibreWeather/libre-weather/compare/v1.9.0...v1.9.1) (2026-11-07)
+
+
+### Bug Fixes
+
+* align prefs panel and hide alerts when turned off ([#77](https://github.com/LibreWeather/libre-weather/issues/77)) ([4cd215e](https://github.com/LibreWeather/libre-weather/commit/4cd215e6216b0ca8ecf838641d710bfda61d139d))
+* **deps-dev:** bump qs from 6.16.0 to 6.17.1 ([#76](https://github.com/LibreWeather/libre-weather/issues/76)) ([d28dd42](https://github.com/LibreWeather/libre-weather/commit/d28dd427a38c7b09edd88c8067979d1e1c1c599d))
+* **deps-dev:** bump systeminformation from 5.33.13 to 5.33.19 ([#75](https://github.com/LibreWeather/libre-weather/issues/75)) ([f229326](https://github.com/LibreWeather/libre-weather/commit/f229326defede981d29c09226d19ea1fe0f07478))
+* **deps:** bump fast-uri from 3.1.8 to 3.1.9 ([#74](https://github.com/LibreWeather/libre-weather/issues/74)) ([9b7598e](https://github.com/LibreWeather/libre-weather/commit/9b7598e40f7577b9241cd3dad3908f6a04ea07b7))
+
 # [1.9.0](https://github.com/LibreWeather/libre-weather/compare/v1.8.0...v1.9.0) (2026-10-30)
 
 
