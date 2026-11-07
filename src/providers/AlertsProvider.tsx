@@ -35,13 +35,14 @@ export const AlertsProvider = ({ children }: { children: React.ReactNode }) => {
 
   const value = React.useMemo<AlertsContextValue>(
     () => ({
-      alerts: activeAlerts(data?.alerts ?? []),
-      coverage: data ? data.coverage : null,
-      sources: data?.sources ?? [],
-      status,
-      stale,
+      // useAutoRefresh holds the last payload after the request is cleared. Turning alerts off must drop it.
+      alerts: enabled ? activeAlerts(data?.alerts ?? []) : [],
+      coverage: enabled && data ? data.coverage : null,
+      sources: enabled ? (data?.sources ?? []) : [],
+      status: enabled ? status : 'idle',
+      stale: enabled && stale,
     }),
-    [data, status, stale]
+    [data, enabled, status, stale]
   );
 
   return <AlertsContext.Provider value={value}>{children}</AlertsContext.Provider>;

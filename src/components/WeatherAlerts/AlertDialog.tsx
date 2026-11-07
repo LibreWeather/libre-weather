@@ -17,7 +17,7 @@ const subhead = 'mb-[0.4rem] font-sans text-[0.95rem] font-[650] tracking-normal
 const text = 'leading-normal whitespace-pre-line text-white/88';
 
 const AlertDialog = ({ alert, onClose }: AlertDialogProps) => {
-  const { ref, close, onBackdropClick } = useModalDialog();
+  const { ref, close, onBackdropClick } = useModalDialog(onClose);
   const titleId = React.useId();
   const facts = alert ? alertFacts(alert) : [];
 
@@ -29,11 +29,10 @@ const AlertDialog = ({ alert, onClose }: AlertDialogProps) => {
         'w-[min(40rem,calc(100vw_-_2rem))] ' +
         'rounded-2xl border border-(--alert-color)/45 bg-panel p-0 text-left text-base text-white ' +
         'shadow-[0_1.5rem_4rem_rgb(0_0_0/0.55)] backdrop:bg-[rgb(10_12_15/0.6)] backdrop:backdrop-blur-[3px] ' +
-        'max-md:mx-0 max-md:mt-auto max-md:mb-0 max-md:max-h-[88dvh] max-md:w-screen max-md:max-w-[100vw] ' +
+        'max-md:mx-0 max-md:mt-auto max-md:mb-0 max-md:max-h-[88dvh] max-md:w-full max-md:max-w-full ' +
         'max-md:rounded-t-2xl max-md:rounded-b-none max-md:border-x-0 max-md:border-b-0'
       }
       aria-labelledby={titleId}
-      onClose={onClose}
       onClick={onBackdropClick}>
       <div className="flex max-h-[inherit] flex-col">
         <header
