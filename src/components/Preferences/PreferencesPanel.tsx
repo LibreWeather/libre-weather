@@ -68,7 +68,7 @@ type PreferencesPanelProps = {
 };
 
 const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
-  const { ref, close, onBackdropClick } = useModalDialog();
+  const { ref, close, onBackdropClick } = useModalDialog(onClose);
   const titleId = React.useId();
   const { preferences, setPreference } = usePreferences();
 
@@ -78,7 +78,8 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
   const anchorStyle = anchor ?
       ({
         '--prefs-top': `${anchor.bottom + 8}px`,
-        '--prefs-right': `${Math.max(window.innerWidth - anchor.right, 8)}px`,
+        // clientWidth is the layout viewport. innerWidth includes the scrollbar, so the panel sat 15px left of the gear.
+        '--prefs-right': `${Math.max(document.documentElement.clientWidth - anchor.right, 8)}px`,
       } as React.CSSProperties) :
     undefined;
 
@@ -92,12 +93,11 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
           'is-anchored fixed inset-[var(--prefs-top)_var(--prefs-right)_auto_auto] m-0 ' +
           'max-h-[calc(100dvh_-_var(--prefs-top)_-_1rem)] backdrop:bg-transparent' :
           'm-auto max-h-[calc(100dvh_-_4rem)] backdrop:bg-[rgb(10_12_15/0.35)] max-md:fixed max-md:inset-[auto_0_0] ' +
-          'max-md:m-0 max-md:max-h-[85dvh] max-md:w-screen max-md:max-w-[100vw] max-md:rounded-t-2xl ' +
+          'max-md:m-0 max-md:max-h-[85dvh] max-md:w-auto max-md:max-w-none max-md:rounded-t-2xl ' +
           'max-md:rounded-b-none max-md:border-x-0 max-md:border-b-0 max-md:backdrop:bg-[rgb(10_12_15/0.5)]')
       }
       style={anchorStyle}
       aria-labelledby={titleId}
-      onClose={onClose}
       onClick={onBackdropClick}>
       <div className="flex max-h-[inherit] flex-col">
         <header className="flex items-center justify-between pt-3 pr-3 pb-2 pl-[1.1rem]">

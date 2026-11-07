@@ -56,8 +56,11 @@ describe('Preferences', () => {
       openPreferences();
       cy.get('dialog.prefsPanel').should(($panel) => {
         const panel = $panel[0].getBoundingClientRect();
-        expect(panel.bottom).to.be.closeTo(844, 1);
-        expect(panel.width).to.be.closeTo(390, 1);
+        const view = $panel[0].ownerDocument.documentElement;
+        // Fill the layout viewport. Classic scrollbars make that smaller than cy.viewport().
+        expect(panel.bottom).to.be.closeTo(view.clientHeight, 1);
+        expect(panel.left).to.be.closeTo(0, 1);
+        expect(panel.width).to.be.closeTo(view.clientWidth, 1);
       });
     });
   });
