@@ -137,12 +137,21 @@ describe('pirate weather', () => {
       },
     };
     const current = pirateWeather.parse('current', body, UnitSystem.METRIC) as {
-      current: { humidity: number; time: number; sunrise: number; condition: Condition };
+      current: {
+        humidity: number;
+        time: number;
+        sunrise: number;
+        condition: Condition;
+        description: string;
+        summary?: string;
+      };
     };
     expect(current.current.humidity).toBe(80);
     expect(current.current.time).toBe(1_700_000_000_000);
     expect(current.current.sunrise).toBe(1_700_000_100_000);
     expect(current.current.condition).toBe(Condition.RAIN);
+    expect(current.current.description).toBe('Rain');
+    expect(current.current.summary).toBeUndefined();
 
     const hourly = pirateWeather.parse('hourly', body, UnitSystem.METRIC) as {
       hourly: {

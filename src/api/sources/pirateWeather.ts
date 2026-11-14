@@ -92,11 +92,11 @@ const mapCurrent = (data: Record<string, unknown>, units: UnitSystem): Current =
   return {
     apparentTemp: temperature(cur.apparentTemperature, units),
     condition: condition(cur.icon),
+    // Dark Sky only has one label; omit `summary` so the hero does not double it.
     description: text(cur.summary),
     dewPoint: temperature(cur.dewPoint, units),
     humidity: percent(cur.humidity),
     pressure: pressureOf(cur.pressure),
-    summary: text(cur.summary),
     sunrise: unixMillis(firstDay.sunriseTime),
     sunset: unixMillis(firstDay.sunsetTime),
     temp: temperature(cur.temperature, units),
