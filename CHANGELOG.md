@@ -1,3 +1,15 @@
+# [1.10.0](https://github.com/LibreWeather/libre-weather/compare/v1.9.2...v1.10.0) (2026-11-14)
+
+
+### Bug Fixes
+
+* expand licenses detail ([41212f2](https://github.com/LibreWeather/libre-weather/commit/41212f27a004e79c7f9c878fa13299fa3d5d3b90))
+
+
+### Features
+
+* support selectable data sources from the frontend ([e71c88c](https://github.com/LibreWeather/libre-weather/commit/e71c88c0a3b70ee2313fa61aa3c01639fb6feb56))
+
 ## [1.9.2](https://github.com/LibreWeather/libre-weather/compare/v1.9.1...v1.9.2) (2026-11-14)
 
 
