@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/LibreWeather/libre-weather/compare/v1.9.1...v1.9.2) (2026-11-14)
+
+
+### Bug Fixes
+
+* **render:** split render sections ([ba7ee76](https://github.com/LibreWeather/libre-weather/commit/ba7ee763177865b83f5880fdc4c1e81c9ea51c41))
+
 ## [1.9.1](https://github.com/LibreWeather/libre-weather/compare/v1.9.0...v1.9.1) (2026-11-07)
 
 
