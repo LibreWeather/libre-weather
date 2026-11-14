@@ -1,3 +1,4 @@
+import type { DataSourcePref } from '@/models/dataSource';
 import type {
   LayoutPref,
   MotionPref,
@@ -21,14 +22,25 @@ export const DEFAULT_PREFERENCES: Preferences = {
   transparency: 'auto',
   layout: 'auto',
   installBannerDismissed: false,
+  dataSource: 'auto',
+  pirateWeatherKey: '',
 };
 
 export const STORAGE_KEY = 'preferences';
 const LEGACY_UNITS_KEY = 'units';
 const LEGACY_INSTALL_KEY = 'installBannerDismissed';
 
+const DATA_SOURCES: readonly DataSourcePref[] = ['auto', 'libre', 'open-meteo', 'pirate-weather'];
+
 const pick = <T extends string>(value: unknown, allowed: readonly T[], fallback: T): T =>
   allowed.includes(value as T) ? (value as T) : fallback;
+
+/** Keep a user-typed Pirate Weather key, and drop anything that is not a single token. */
+const pirateKey = (value: unknown) => {
+  if (typeof value !== 'string') return '';
+  const key = value.trim();
+  return key.length > 0 && key.length <= 128 && !/\s/.test(key) ? key : '';
+};
 
 /**
  * Validate a stored preferences object, keeping known values and defaulting the rest.
@@ -49,6 +61,8 @@ export const sanitizePreferences = (raw: unknown): Preferences => {
     layout: pick(value.layout, ['auto', 'compact', 'comfortable'], d.layout),
     installBannerDismissed:
       typeof value.installBannerDismissed === 'boolean' ? value.installBannerDismissed : d.installBannerDismissed,
+    dataSource: pick(value.dataSource, DATA_SOURCES, d.dataSource),
+    pirateWeatherKey: pirateKey(value.pirateWeatherKey),
   };
 };
 

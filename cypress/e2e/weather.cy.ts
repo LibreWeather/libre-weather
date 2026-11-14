@@ -133,8 +133,11 @@ describe('Weather view', () => {
     cy.intercept('GET', '**/weather/**', (req) => {
       req.reply(buildWeather(fixedNow(), 'IMPERIAL'));
     }).as('weatherRetry');
-    cy.get('.weatherError button').click({ multiple: true });
-    cy.wait('@weatherRetry');
+    // Each retry re-renders that slice, so a multi-click loses the buttons it has not reached yet.
+    ['current conditions', 'hourly forecast', 'daily forecast'].forEach((label) => {
+      cy.contains('.weatherError', label).find('button').click();
+    });
+    cy.wait(['@weatherRetry', '@weatherRetry', '@weatherRetry']);
     cy.get('.weatherError').should('not.exist');
     cy.get('.currentTemp').should('contain.text', '69');
   });

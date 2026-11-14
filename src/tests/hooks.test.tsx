@@ -34,6 +34,27 @@ describe('useFetch', () => {
     expect(data).toEqual([1]);
   });
 
+  test('maps the JSON body', async () => {
+    global.fetch = jest.fn(() => respond({ n: 2 })) as never;
+    const { result } = renderHook(() =>
+      useFetch<{ n: number }>('/api', { parse: (body) => ({ n: Number((body as { n: number }).n) + 1 }) })
+    );
+    await waitFor(() => expect(result.current[0].data).toEqual({ n: 3 }));
+  });
+
+  test('hides a secret carried in the request url', async () => {
+    global.fetch = jest.fn(() => respond(null, false)) as never;
+    const { result } = renderHook(() =>
+      useFetch({
+        url: 'https://api.pirateweather.net/forecast/secret/1,2',
+        errorUrl: 'https://api.pirateweather.net/forecast/***/1,2',
+      })
+    );
+    await waitFor(() => expect(result.current[0].error).toBeInstanceOf(Error));
+    expect(result.current[0].error?.message).toContain('/***/1,2');
+    expect(result.current[0].error?.message).not.toContain('secret');
+  });
+
   test('reports errors without rejecting', async () => {
     global.fetch = jest.fn(() => respond(null, false)) as never;
     const onError = jest.fn();

@@ -3,12 +3,14 @@ import type { FetchRequest } from '@/models/fetch';
 
 export type FetchState<T> = { data: T | null; loading: boolean; error: Error | null };
 
-export type FetchOptions = {
+export type FetchOptions<T> = {
   /** Only fetch when `execute` is called. */
   manual?: boolean;
   /** Keep the last response while a new request loads, instead of clearing it. */
   keepPreviousData?: boolean;
   onError?: (error: Error) => void;
+  /** Turn the JSON body into `T`. Runs when the response arrives, not when the request is built. */
+  parse?: (body: unknown) => T;
 };
 
 export type ExecuteOptions = {
@@ -29,17 +31,19 @@ const toRequest = (request: string | FetchRequest): FetchRequest =>
  * @param {FetchOptions} [options]
  * @returns {[FetchState<T>, (request?: string | FetchRequest) => Promise<T | null>, () => void]}
  */
-export const useFetch = <T>(request: string | FetchRequest | null, options: FetchOptions = {}) => {
-  const { manual = false, keepPreviousData = false, onError } = options;
+export const useFetch = <T>(request: string | FetchRequest | null, options: FetchOptions<T> = {}) => {
+  const { manual = false, keepPreviousData = false, onError, parse } = options;
   const key = request ? JSON.stringify(toRequest(request)) : null;
   const stable = useMemo<FetchRequest | null>(() => (key ? JSON.parse(key) : null), [key]);
   const [state, setState] = useState<FetchState<T>>({ data: null, loading: !manual && key != null, error: null });
   const controller = useRef<AbortController | null>(null);
   const onErrorRef = useRef(onError);
+  const parseRef = useRef(parse);
 
   useEffect(() => {
     onErrorRef.current = onError;
-  }, [onError]);
+    parseRef.current = parse;
+  }, [onError, parse]);
 
   const cancel = useCallback(() => {
     controller.current?.abort();
@@ -57,8 +61,10 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
       if (!background) setState((previous) => ({ ...previous, loading: true, error: null }));
       try {
         const res = await fetch(target.url, { ...target.init, signal: current.signal });
-        if (!res.ok) throw new Error(`Request to ${target.url} failed: ${res.status} ${res.statusText}`);
-        const data = (await res.json()) as T;
+        const reported = target.errorUrl ?? target.url;
+        if (!res.ok) throw new Error(`Request to ${reported} failed: ${res.status} ${res.statusText}`);
+        const body: unknown = await res.json();
+        const data = (parseRef.current ? parseRef.current(body) : body) as T;
         if (current.signal.aborted) return null;
         setState({ data, loading: false, error: null });
         return data;

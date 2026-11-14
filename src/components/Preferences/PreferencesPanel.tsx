@@ -2,7 +2,9 @@ import React from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Icon from '@components/Icon';
 
+import { activeSource, dataConfig } from '@/api/sources';
 import { useModalDialog } from '@/hooks/useModalDialog';
+import type { DataSourceId } from '@/models/dataSource';
 import type { PreferenceChoiceKey, Preferences } from '@/models/preferences';
 import { UnitSystem } from '@/models/weather';
 import { usePreferences } from '@/providers/PreferencesProvider';
@@ -61,6 +63,12 @@ const Segmented = <K extends PreferenceChoiceKey>({
 
 const mediaLabel = (query: string) => (mediaMatches(query) ? 'on' : 'off');
 
+const SOURCE_LABEL: Record<DataSourceId, string> = {
+  libre: 'the LibreWeather API',
+  'open-meteo': 'Open-Meteo',
+  'pirate-weather': 'Pirate Weather',
+};
+
 type PreferencesPanelProps = {
   /** Gear button bounds; the panel drops down from it on wider screens. */
   anchor: DOMRect | null;
@@ -71,6 +79,10 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
   const { ref, close, onBackdropClick } = useModalDialog(onClose);
   const titleId = React.useId();
   const { preferences, setPreference } = usePreferences();
+  const source = activeSource(
+    { source: preferences.dataSource, pirateWeatherKey: preferences.pirateWeatherKey },
+    dataConfig()
+  );
 
   const autoImperial = resolveUnitSystem('auto') === UnitSystem.IMPERIAL;
   const system = resolveUnitSystem(preferences.temperature);
@@ -118,6 +130,47 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
             'overflow-y-auto overscroll-contain px-[1.1rem] pb-[1.1rem] ' +
             'max-md:pb-[max(1.1rem,env(safe-area-inset-bottom))]'
           }>
+          <Section title="Data">
+            <Segmented
+              name="dataSource"
+              label="Forecast source"
+              options={[
+                { value: 'auto', label: 'Auto' },
+                { value: 'libre', label: 'API' },
+                { value: 'open-meteo', label: 'Meteo' },
+                { value: 'pirate-weather', label: 'Pirate' },
+              ]} />
+            <p className="-mt-[0.3rem] mb-[0.7rem] text-[0.78rem] text-white/50">
+              {source.ready ?
+                `Using ${SOURCE_LABEL[source.id]}.` :
+                'Pirate Weather needs an API key.'}
+              {preferences.dataSource === 'auto' ?
+                ' Auto uses the LibreWeather API when one is configured, otherwise Open-Meteo.' :
+                ''}
+            </p>
+            {preferences.dataSource === 'pirate-weather' ? (
+              <label className="mb-[0.7rem] block text-[0.88rem] font-[550]">
+                Pirate Weather API key
+                <input
+                  className={
+                    'mt-[0.3rem] w-full rounded-[0.55rem] border border-white/15 bg-white/6 px-2 py-[0.4rem] ' +
+                    'font-mono text-[0.82rem] font-normal text-white placeholder:text-white/35 ' +
+                    'focus-visible:outline-2 focus-visible:outline-accent'
+                  }
+                  type="password"
+                  name="pirateWeatherKey"
+                  autoComplete="off"
+                  spellCheck={false}
+                  value={preferences.pirateWeatherKey}
+                  placeholder="Paste key"
+                  onChange={(event) => setPreference('pirateWeatherKey', event.target.value)} />
+                <small className="mt-[0.15rem] block text-[0.78rem] font-normal text-white/50">
+                  Saved in this browser. Sent only to api.pirateweather.net.
+                </small>
+              </label>
+            ) : null}
+          </Section>
+
           <Section title="Units">
             <Segmented
               name="temperature"

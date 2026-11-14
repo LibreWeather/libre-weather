@@ -46,6 +46,19 @@ describe('preferences storage', () => {
     });
   });
 
+  test('keeps a forecast source and a pirate weather key, and drops junk', () => {
+    expect(sanitizePreferences({ dataSource: 'pirate-weather', pirateWeatherKey: 'ab cd' }).dataSource).toBe(
+      'pirate-weather'
+    );
+    expect(sanitizePreferences({ pirateWeatherKey: ' abc ' }).pirateWeatherKey).toBe('abc');
+    expect(sanitizePreferences({ pirateWeatherKey: 'ab cd' }).pirateWeatherKey).toBe('');
+    expect(sanitizePreferences({ dataSource: 'open-meteo', pirateWeatherKey: 'pw-key' })).toMatchObject({
+      dataSource: 'open-meteo',
+      pirateWeatherKey: 'pw-key',
+    });
+    expect(sanitizePreferences({ dataSource: 'nope' }).dataSource).toBe('auto');
+  });
+
   test('keeps a valid layout and drops an unknown one', () => {
     expect(sanitizePreferences({ layout: 'compact' }).layout).toBe('compact');
     expect(sanitizePreferences({ layout: 'dense' }).layout).toBe('auto');

@@ -11,11 +11,13 @@ type RefreshClockOptions = {
   resetKey?: string | null;
 };
 
-type AutoRefreshOptions = {
+type AutoRefreshOptions<T> = {
   intervalMs: number;
   /** Reload without clearing the previous response. */
   keepPreviousData?: boolean;
   onError?: (error: Error) => void;
+  /** Map a provider payload into the forecast model before it is stored. */
+  parse?: (body: unknown) => T;
 };
 
 export type AutoRefresh<T> = {
@@ -95,10 +97,10 @@ const useRefreshClock = (refresh: () => void, options: RefreshClockOptions) => {
  */
 export const useAutoRefresh = <T>(
   request: string | FetchRequest | null,
-  options: AutoRefreshOptions
+  options: AutoRefreshOptions<T>
 ): AutoRefresh<T> => {
-  const { intervalMs, keepPreviousData = true, onError } = options;
-  const [{ data, loading, error }, refetch] = useFetch<T>(request, { keepPreviousData, onError });
+  const { intervalMs, keepPreviousData = true, onError, parse } = options;
+  const [{ data, loading, error }, refetch] = useFetch<T>(request, { keepPreviousData, onError, parse });
   const key = requestKey(request);
   // Keep the last success on screen when a refresh fails or the request is briefly empty.
   const [held, setHeld] = useState<T | null>(null);

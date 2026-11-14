@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { WEATHER_API_ROOT, weatherRequest, type WeatherPart } from '@/api/weather';
+import { activeSource, dataConfig, type DataChoice } from '@/api/sources';
+import type { WeatherPart } from '@/api/weather';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import type { LoadStatus } from '@/models/status';
 import type { Current, CurrentDay, Daily, Hourly } from '@/models/weather';
@@ -20,17 +21,21 @@ const logWarning = (error: Error) => console.warn(error);
 
 const useWeatherRequest = (part: WeatherPart) => {
   const { coords } = usePlace();
-  const {
-    resolved: { unitSystem: units },
-  } = usePreferences();
-  const blocked = Boolean(coords && !WEATHER_API_ROOT);
-  const request = coords && WEATHER_API_ROOT ? weatherRequest(coords, units, part) : null;
-  return { request, blocked };
+  const { preferences, resolved } = usePreferences();
+  const units = resolved.unitSystem;
+  const choice: DataChoice = { source: preferences.dataSource, pirateWeatherKey: preferences.pirateWeatherKey };
+  const { provider, ready } = activeSource(choice, dataConfig());
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const request = coords && ready ? provider.request({ coords, units, part, tz }, choice, dataConfig()) : null;
+  const blocked = Boolean(coords && !ready);
+  const parse = useCallback((body: unknown) => provider.parse(part, body, units), [provider, part, units]);
+  return { request, blocked, parse };
 };
 
 const useSlice = <T>(part: WeatherPart, intervalMs: number): Slice<T> => {
-  const { request, blocked } = useWeatherRequest(part);
-  const slice = useAutoRefresh<T>(request, { intervalMs, onError: logWarning });
+  const { request, blocked, parse } = useWeatherRequest(part);
+  const map = useCallback((body: unknown) => parse(body) as T, [parse]);
+  const slice = useAutoRefresh<T>(request, { intervalMs, onError: logWarning, parse: map });
   const { data, retry, stale } = slice;
   const status: LoadStatus = blocked ? 'error' : slice.status;
   return useMemo(() => ({ data, status, stale, retry }), [data, status, stale, retry]);
