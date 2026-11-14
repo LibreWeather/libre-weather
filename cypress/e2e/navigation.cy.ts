@@ -39,6 +39,11 @@ describe('Navigation bar', () => {
   it('renders the licenses page directly', () => {
     visitStubbed({ path: '/licenses' });
     cy.contains(/Built with/i).should('be.visible');
+    cy.contains('Copyright 2016 The Inter Project Authors').should('be.visible');
+    cy.contains('The Source Serif 4 Project Authors').should('be.visible');
+    cy.contains('Reserved Font Name \'Source\'').should('be.visible');
+    cy.contains('summary', 'SIL Open Font License 1.1').click();
+    cy.contains('SIL OPEN FONT LICENSE Version 1.1').should('be.visible');
     cy.get('h6').its('length').should('be.greaterThan', 5);
   });
 
