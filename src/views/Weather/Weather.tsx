@@ -2,12 +2,10 @@ import React from 'react';
 import CurrentWeather from '@components/CurrentWeather';
 import DailyOverview from '@components/DailyOverview';
 import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts';
-import WeatherSkeleton from '@components/WeatherSkeleton';
 import WeeklyForecast from '@components/WeeklyForecast';
 import type { NominatimResponse } from '@/models/place';
 import { usePlace } from '@/providers/PlaceProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
-import { useWeather } from '@/providers/useWeather';
 import { pageClass } from '@/common/layout';
 import { placeLabel } from '@/utilities/place';
 
@@ -18,18 +16,6 @@ const errorClass =
 const LocationNotFound = () => (
   <div className={errorClass} role="alert">
     <span>Couldn&apos;t find that location. Enter a ZIP or postal code above.</span>
-  </div>
-);
-
-const WeatherFailed = ({ onRetry, label = 'the forecast' }: { onRetry: () => void; label?: string }) => (
-  <div className={errorClass} role="alert">
-    <span>Couldn&apos;t load {label}.</span>
-    <button
-      type="button"
-      className="rounded border border-[#f8f9fa] px-2 py-1 text-sm text-[#f8f9fa] hover:bg-[#f8f9fa] hover:text-black"
-      onClick={onRetry}>
-      Try again
-    </button>
   </div>
 );
 
@@ -64,61 +50,24 @@ const LocationPicker = ({
   </section>
 );
 
-const PartPending = ({ label }: { label: string }) => (
-  <div className="forecast-col my-[1em] h-16 animate-pulse rounded-xl bg-white/7" role="status" aria-label={label} />
-);
-
 const WeatherView = () => {
   const place = usePlace();
-  const { weather, status, hourlyStatus, dailyStatus, retry } = useWeather();
   // Time labels come from plain formatters; subscribing re-renders them when the clock preference changes.
   usePreferences();
 
-  const choosing = place.status === 'choosing';
-  const refreshing =
-    weather != null &&
-    (place.status === 'resolving' ||
-      status === 'loading' ||
-      (hourlyStatus === 'loading' && weather.hourly.length > 0) ||
-      (dailyStatus === 'loading' && weather.daily.length > 0));
-
   let notice: React.ReactNode = null;
   if (place.status === 'failed') notice = <LocationNotFound />;
-  else if (choosing) notice = <LocationPicker options={place.options} onChoose={place.chooseLocation} />;
-  else if (status === 'error') notice = <WeatherFailed onRetry={retry} />;
-
-  if (!weather) {
-    return (
-      <div className={`header ${pageClass}`}>
-        {notice}
-        <WeatherSkeleton animated={place.status === 'resolving' || status === 'loading'}>
-          <WeatherAlerts />
-        </WeatherSkeleton>
-      </div>
-    );
+  else if (place.status === 'choosing') {
+    notice = <LocationPicker options={place.options} onChoose={place.chooseLocation} />;
   }
 
   return (
-    <div
-      className={`header ${pageClass} transition-opacity duration-200 ${refreshing ? 'is-refreshing opacity-60' : ''}`}
-      aria-busy={refreshing}>
+    <div className={`header ${pageClass}`}>
       {notice}
-      <CurrentWeather weatherData={weather} />
+      <CurrentWeather />
       <WeatherAlerts />
-      {hourlyStatus === 'loading' && weather.hourly.length === 0 ? (
-        <PartPending label="Loading hourly forecast" />
-      ) : hourlyStatus === 'error' && weather.hourly.length === 0 ? (
-        <WeatherFailed onRetry={retry} label="the hourly forecast" />
-      ) : (
-        <DailyOverview hourlyWeatherData={weather.hourly} />
-      )}
-      {dailyStatus === 'loading' && weather.daily.length === 0 ? (
-        <PartPending label="Loading daily forecast" />
-      ) : dailyStatus === 'error' && weather.daily.length === 0 ? (
-        <WeatherFailed onRetry={retry} label="the daily forecast" />
-      ) : (
-        <WeeklyForecast weatherData={weather} />
-      )}
+      <DailyOverview />
+      <WeeklyForecast />
       <AlertsCoverageNote />
     </div>
   );

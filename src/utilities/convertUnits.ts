@@ -1,4 +1,13 @@
-import { VolumeUnit, WindUnit, type Volume, type Weather, type WindSpeed } from '@/models/weather';
+import {
+  VolumeUnit,
+  WindUnit,
+  type Current,
+  type Daily,
+  type Hourly,
+  type Volume,
+  type Weather,
+  type WindSpeed,
+} from '@/models/weather';
 
 const METERS_PER_SECOND: Record<WindUnit, number> = {
   [WindUnit.MS]: 1,
@@ -15,6 +24,8 @@ const VOLUME_DECIMALS: Record<VolumeUnit, number> = {
   [VolumeUnit.MM]: 1,
   [VolumeUnit.IN]: 2,
 };
+
+type PreferredUnits = { wind: WindUnit; volume: VolumeUnit };
 
 const round = (value: number, decimals: number) => Number(value.toFixed(decimals));
 
@@ -35,32 +46,43 @@ export const convertVolume = <T extends Volume | undefined>(volume: T, to: Volum
   return { ...volume, value: round(converted, VOLUME_DECIMALS[to]), unit: to };
 };
 
-/**
- * Re-express every wind speed and precipitation volume in the preferred units. The API only
- * offers whole unit systems, so mixes like °C with mph are converted here.
- * @param {Weather} weather API response
- * @param {{ wind: WindUnit, volume: VolumeUnit }} units preferred units
- * @returns {Weather}
- */
-export const convertWeather = (
-  weather: Weather,
-  { wind, volume }: { wind: WindUnit; volume: VolumeUnit }
-): Weather => ({
-  ...weather,
-  current: { ...weather.current, windspeed: convertWind(weather.current.windspeed, wind) },
-  daily: weather.daily.map((day) => ({
-    ...day,
-    rainVolume: convertVolume(day.rainVolume, volume),
-    snowVolume: convertVolume(day.snowVolume, volume),
-    windspeed: convertWind(day.windspeed, wind),
-    windGust: convertWind(day.windGust, wind),
-  })),
-  hourly: weather.hourly.map((hour) => ({
+/** Re-express current wind in the preferred unit. */
+export const convertCurrent = (current: Current, wind: WindUnit): Current => ({
+  ...current,
+  windspeed: convertWind(current.windspeed, wind),
+});
+
+/** Re-express hourly wind and precip volumes in the preferred units. */
+export const convertHourly = (hourly: Hourly[], { wind, volume }: PreferredUnits): Hourly[] =>
+  hourly.map((hour) => ({
     ...hour,
     precipVolume: convertVolume(hour.precipVolume, volume),
     rainVolume: convertVolume(hour.rainVolume, volume),
     snowVolume: convertVolume(hour.snowVolume, volume),
     windspeed: convertWind(hour.windspeed, wind),
     windGust: convertWind(hour.windGust, wind),
-  })),
+  }));
+
+/** Re-express daily wind and precip volumes in the preferred units. */
+export const convertDaily = (daily: Daily[], { wind, volume }: PreferredUnits): Daily[] =>
+  daily.map((day) => ({
+    ...day,
+    rainVolume: convertVolume(day.rainVolume, volume),
+    snowVolume: convertVolume(day.snowVolume, volume),
+    windspeed: convertWind(day.windspeed, wind),
+    windGust: convertWind(day.windGust, wind),
+  }));
+
+/**
+ * Re-express every wind speed and precipitation volume in the preferred units. The API only
+ * offers whole unit systems, so mixes like °C with mph are converted here.
+ * @param {Weather} weather API response
+ * @param {PreferredUnits} units preferred units
+ * @returns {Weather}
+ */
+export const convertWeather = (weather: Weather, units: PreferredUnits): Weather => ({
+  ...weather,
+  current: convertCurrent(weather.current, units.wind),
+  daily: convertDaily(weather.daily, units),
+  hourly: convertHourly(weather.hourly, units),
 });

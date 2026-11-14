@@ -1,8 +1,8 @@
-import type { Weather } from '@/models/weather';
+import type { Current, Daily } from '@/models/weather';
 import { pressureDisplay, tempDisplay, visibilityDisplay, windDisplay } from './formatters';
 
 /** The hero's readings, formatted for display. */
-export const currentConditions = ({ current, daily }: Weather) => ({
+export const currentConditions = (current: Current, daily?: Daily[] | null) => ({
   condition: current.condition,
   description: current.description ? `${current.description}.` : null,
   dewPoint: tempDisplay(current.dewPoint),
@@ -11,8 +11,8 @@ export const currentConditions = ({ current, daily }: Weather) => ({
   summary: current.summary?.length ? `${current.summary}.` : null,
   temp: tempDisplay(current.temp),
   tempFeelsLike: tempDisplay(current.apparentTemp),
-  tempMax: tempDisplay(daily[0]?.temp.max),
-  tempMin: tempDisplay(daily[0]?.temp.min),
+  tempMax: tempDisplay(daily?.[0]?.temp.max),
+  tempMin: tempDisplay(daily?.[0]?.temp.min),
   uvIndex: Math.round(Number(current.uvIndex)),
   visibility: visibilityDisplay(current.visibility),
   windDeg: Number(current.windspeed.direction),

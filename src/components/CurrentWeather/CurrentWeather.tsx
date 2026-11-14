@@ -1,20 +1,26 @@
 import React from 'react';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
+import ForecastError from '@components/ForecastError';
 import Icon from '@components/Icon';
+import { CurrentSkeleton } from '@components/WeatherSkeleton';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { useTrackHero } from '@/hooks/useHero';
-import type { Weather } from '@/models/weather';
+import { useCurrent, useDaily } from '@/providers/ForecastProviders';
+import { usePlace } from '@/providers/PlaceProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
 import { currentConditions } from '@/utilities/current';
 
 const stat = 'px-3 compact:rounded-full compact:bg-white/6 compact:px-2 compact:py-[0.15rem]';
 
-const CurrentWeather = ({ weatherData }: { weatherData: Weather }) => {
-  const { resolved } = usePreferences();
+const CurrentWeatherContent = ({
+  currentWeather,
+  compact,
+}: {
+  currentWeather: ReturnType<typeof currentConditions>;
+  compact: boolean;
+}) => {
   const hero = React.useRef<HTMLDivElement>(null);
   useTrackHero(hero);
-  const currentWeather = currentConditions(weatherData);
-  const { compact } = resolved;
   const { description } = currentWeather;
 
   return (
@@ -92,6 +98,30 @@ const CurrentWeather = ({ weatherData }: { weatherData: Weather }) => {
           {description}
         </div>
       ) : null}
+    </div>
+  );
+};
+
+const CurrentWeather = () => {
+  const { current, status, retry } = useCurrent();
+  const { daily } = useDaily();
+  const place = usePlace();
+  const { resolved } = usePreferences();
+
+  if (!current && status === 'error') {
+    return <ForecastError onRetry={retry} label="current conditions" />;
+  }
+
+  if (!current) {
+    return <CurrentSkeleton animated={status === 'loading' || place.status === 'resolving'} />;
+  }
+
+  const refreshing = status === 'loading';
+  return (
+    <div
+      className={`transition-opacity duration-200 ${refreshing ? 'is-refreshing opacity-60' : ''}`}
+      aria-busy={refreshing}>
+      <CurrentWeatherContent currentWeather={currentConditions(current, daily)} compact={resolved.compact} />
     </div>
   );
 };

@@ -2,18 +2,17 @@ import React from 'react';
 
 import { WeatherIcon } from '@components/WeatherIcon';
 import { useHeroOffscreen } from '@/hooks/useHero';
+import { useCurrent } from '@/providers/ForecastProviders';
 import { usePreferences } from '@/providers/PreferencesProvider';
-import { useWeather } from '@/providers/useWeather';
 import { tempDisplay } from '@/utilities/formatters';
 
 /** Current conditions for the navbar; CSS reveals it once the hero has scrolled away. */
 const NavSummary = () => {
-  const { weather } = useWeather();
+  const { current } = useCurrent();
   const { resolved } = usePreferences();
   const visible = useHeroOffscreen();
 
-  if (!weather) return null;
-  const { current } = weather;
+  if (!current) return null;
   const text = current.summary || current.description;
   const label = [tempDisplay(current.temp), text].filter(Boolean).join(' ');
 

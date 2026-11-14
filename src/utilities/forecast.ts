@@ -1,5 +1,5 @@
 import type { ForecastDay, Precipitation } from '@/models/forecast';
-import type { Hourly, Volume, Weather } from '@/models/weather';
+import type { Daily, Hourly, Volume } from '@/models/weather';
 import { timeDisplay, volumeDisplay } from './formatters';
 import { DAY } from './time';
 
@@ -13,7 +13,7 @@ export const precipitation = (rain: Volume, snow: Volume): Precipitation => {
   return { type: 'Rain', value: volumeDisplay(rain) };
 };
 
-export const forecastDays = ({ daily }: Weather): ForecastDay[] =>
+export const forecastDays = (daily: Daily[]): ForecastDay[] =>
   daily.slice(0, FORECAST_DAYS).map((day) => ({
     condition: day.condition,
     description: day.description,

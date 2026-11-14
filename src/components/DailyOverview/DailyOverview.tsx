@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ForecastError from '@components/ForecastError';
+import { HourlySkeleton } from '@components/WeatherSkeleton';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { useHourLayout } from '@/hooks/useHourLayout';
 import type { OverviewBar, OverviewHour } from '@/models/forecast';
-import type { Hourly } from '@/models/weather';
+import { useHourly } from '@/providers/ForecastProviders';
+import { usePlace } from '@/providers/PlaceProvider';
 import { conditionClass } from '@/utilities/conditions';
 import { formatHour } from '@/utilities/locale';
 import { OVERVIEW_HOURS, groupByStride, overviewBarLabel, overviewBarTip, overviewHours } from '@/utilities/overview';
@@ -134,10 +137,27 @@ const TIC_COLS = Array.from(Array(OVERVIEW_HOURS).keys()).map((i) => (
   </div>
 ));
 
-const DailyOverview = ({ hourlyWeatherData }: { hourlyWeatherData: Hourly[] }) => {
-  const hours = overviewHours(hourlyWeatherData);
+const DailyOverview = () => {
+  const { hourly, status, retry } = useHourly();
+  const place = usePlace();
+
+  if (!hourly && status === 'error') {
+    return <ForecastError onRetry={retry} label="the hourly forecast" />;
+  }
+
+  if (!hourly) {
+    return <HourlySkeleton animated={status === 'loading' || place.status === 'resolving'} />;
+  }
+
+  const hours = overviewHours(hourly);
+  const refreshing = status === 'loading';
   return (
-    <div className="dailyOverview forecast-col px-3 text-base compact:*:text-sm">
+    <div
+      className={
+        `dailyOverview forecast-col px-3 text-base transition-opacity duration-200 compact:*:text-sm ` +
+        `${refreshing ? 'is-refreshing opacity-60' : ''}`
+      }
+      aria-busy={refreshing}>
       <div className="grid w-full grid-cols-24">
         <OverviewBarCols hours={hours} />
       </div>

@@ -172,7 +172,7 @@ describe('Weather alerts', () => {
 
   it('shows alerts even before the forecast has loaded', () => {
     visitStubbed({ weatherDelay: 1500, alerts: reply([alert({ event: 'Flood Warning', severity: 'SEVERE' })]) });
-    cy.get('.weatherSkeleton').should('be.visible');
+    cy.get('.weatherSkeleton-current').should('be.visible');
     cy.contains('.weatherAlert', 'Flood Warning').should('be.visible');
   });
 

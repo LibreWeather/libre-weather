@@ -1,4 +1,13 @@
-import { convertVolume, convertWind } from '@/utilities/convertUnits';
+import { convertCurrent, convertDaily, convertHourly, convertVolume, convertWind } from '@/utilities/convertUnits';
+import {
+  Condition,
+  PressureUnit,
+  TempUnit,
+  UnitSystem,
+  VisibilityUnit,
+  VolumeUnit,
+  WindUnit,
+} from '@/models/weather';
 import {
   DEFAULT_PREFERENCES,
   STORAGE_KEY,
@@ -9,7 +18,6 @@ import {
   sanitizePreferences,
   savePreferences,
 } from '@/utilities/preferences';
-import { UnitSystem, VolumeUnit, WindUnit } from '@/models/weather';
 
 describe('preferences storage', () => {
   beforeEach(() => localStorage.clear());
@@ -95,5 +103,72 @@ describe('conversion', () => {
       value: null,
       unit: VolumeUnit.IN,
     });
+  });
+
+  test('converts each forecast slice on its own', () => {
+    const units = { wind: WindUnit.KMH, volume: VolumeUnit.MM };
+    const current = convertCurrent(
+      {
+        apparentTemp: { value: 70, unit: TempUnit.F },
+        condition: Condition.CLEAR,
+        dewPoint: { value: 60, unit: TempUnit.F },
+        humidity: 40,
+        pressure: { value: 1010, unit: PressureUnit.MB },
+        sunrise: 0,
+        sunset: 0,
+        temp: { value: 70, unit: TempUnit.F },
+        time: 0,
+        visibility: { value: 10, unit: VisibilityUnit.MI },
+        windspeed: { magnitude: 10, direction: 90, unit: WindUnit.MPH },
+      },
+      units.wind
+    );
+    expect(current.windspeed).toEqual({ magnitude: 16.1, direction: 90, unit: WindUnit.KMH });
+
+    const [hour] = convertHourly(
+      [
+        {
+          apparentTemp: { value: 70, unit: TempUnit.F },
+          cloudCover: 0,
+          condition: Condition.CLEAR,
+          description: 'Clear',
+          dewPoint: { value: 60, unit: TempUnit.F },
+          humidity: 40,
+          precipProbability: 0,
+          precipVolume: { value: 1, unit: VolumeUnit.IN },
+          pressure: { value: 1010, unit: PressureUnit.MB },
+          rainVolume: { value: 1, unit: VolumeUnit.IN },
+          snowVolume: { value: 0, unit: VolumeUnit.IN },
+          sunshineDuration: 0,
+          temp: { value: 70, unit: TempUnit.F },
+          time: 0,
+          uvIndex: 0,
+          visibility: { value: 10, unit: VisibilityUnit.MI },
+          windspeed: { magnitude: 10, direction: 90, unit: WindUnit.MPH },
+        },
+      ],
+      units
+    );
+    expect(hour.precipVolume.value).toBe(25.4);
+    expect(hour.windspeed.unit).toBe(WindUnit.KMH);
+
+    const [day] = convertDaily(
+      [
+        {
+          condition: Condition.CLEAR,
+          description: 'Clear',
+          rainVolume: { value: 1, unit: VolumeUnit.IN },
+          snowVolume: { value: 0, unit: VolumeUnit.IN },
+          sunrise: 0,
+          sunset: 0,
+          temp: { min: { value: 50, unit: TempUnit.F }, max: { value: 70, unit: TempUnit.F } },
+          time: 0,
+          windspeed: { magnitude: 10, direction: 90, unit: WindUnit.MPH },
+        },
+      ],
+      units
+    );
+    expect(day.rainVolume.value).toBe(25.4);
+    expect(day.windspeed?.unit).toBe(WindUnit.KMH);
   });
 });

@@ -1,1 +1,1 @@
-export { default } from './WeatherSkeleton';
+export { CurrentSkeleton, HourlySkeleton, DailySkeleton } from './WeatherSkeleton';

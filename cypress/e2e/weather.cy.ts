@@ -42,21 +42,23 @@ describe('Weather view', () => {
 
   it('shows a skeleton until the forecast arrives', () => {
     visitStubbed({ weatherDelay: 800 });
-    cy.get('.weatherSkeleton').should('be.visible').and('have.class', 'is-animated');
+    cy.get('.weatherSkeleton-current').should('be.visible').and('have.class', 'is-animated');
+    cy.get('.weatherSkeleton-hourly').should('be.visible').and('have.class', 'is-animated');
+    cy.get('.weatherSkeleton-daily').should('be.visible').and('have.class', 'is-animated');
     cy.get('.weatherSkeleton-day').should('have.length', 7);
     cy.get('.currentTemp').should('not.exist');
     cy.get('.currentTemp', { timeout: 10000 }).should('contain.text', '69');
     cy.get('.weatherSkeleton').should('not.exist');
   });
 
-  it('dims the forecast while new weather loads', () => {
+  it('dims each section while that slice reloads', () => {
     visitStubbed({ weatherDelay: 400 });
     cy.get('.currentTemp').should('be.visible');
-    cy.get('.header').should('not.have.class', 'is-refreshing');
+    cy.get('.is-refreshing').should('not.exist');
     cy.get('button[aria-label="Preferences"]').click();
     cy.contains('.prefs-field', 'Temperature').contains('label', '°C').click();
-    cy.get('.header').should('have.class', 'is-refreshing').and('have.attr', 'aria-busy', 'true');
-    cy.get('.header').should('not.have.class', 'is-refreshing');
+    cy.get('.is-refreshing').should('exist').and('have.attr', 'aria-busy', 'true');
+    cy.get('.is-refreshing').should('not.exist');
     cy.get('.currentTemp').should('contain.text', '21');
   });
 
@@ -81,6 +83,7 @@ describe('Weather view', () => {
     cy.contains('.locationPicker-title', 'Which 12345 did you mean?').should('be.visible');
     cy.get('.locationPicker-option').should('have.length', 2);
     cy.get('.weatherSkeleton').should('be.visible').and('not.have.class', 'is-animated');
+    cy.get('.weatherSkeleton-current, .weatherSkeleton-hourly, .weatherSkeleton-daily').should('have.length', 3);
     cy.get('@weather.all').should('have.length', 0);
 
     cy.contains('.locationPicker-option', 'Rotterdam').click();
@@ -120,14 +123,17 @@ describe('Weather view', () => {
 
   it('shows an error with a retry when the weather request fails', () => {
     visitStubbed({ weather: { statusCode: 500, body: 'boom' } });
-    cy.get('.weatherError').should('be.visible').and('contain.text', 'load the forecast');
-    cy.get('.weatherSkeleton').should('be.visible').and('not.have.class', 'is-animated');
+    cy.get('.weatherError').should('have.length', 3);
+    cy.contains('.weatherError', 'current conditions').should('be.visible');
+    cy.contains('.weatherError', 'hourly forecast').should('be.visible');
+    cy.contains('.weatherError', 'daily forecast').should('be.visible');
+    cy.get('.weatherSkeleton').should('not.exist');
     cy.get('.app-navbar').should('be.visible');
 
     cy.intercept('GET', '**/weather/**', (req) => {
       req.reply(buildWeather(fixedNow(), 'IMPERIAL'));
     }).as('weatherRetry');
-    cy.contains('.weatherError button', 'Try again').click();
+    cy.get('.weatherError button').click({ multiple: true });
     cy.wait('@weatherRetry');
     cy.get('.weatherError').should('not.exist');
     cy.get('.currentTemp').should('contain.text', '69');
