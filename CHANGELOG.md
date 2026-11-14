@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/LibreWeather/libre-weather/compare/v1.10.1...v1.10.2) (2026-11-14)
+
+
+### Bug Fixes
+
+* **pirate:** consistent description ([34eeb11](https://github.com/LibreWeather/libre-weather/commit/34eeb11823c448ef0503f4a35e0822c5d4655e64))
+
 ## [1.10.1](https://github.com/LibreWeather/libre-weather/compare/v1.10.0...v1.10.1) (2026-11-14)
 
 
