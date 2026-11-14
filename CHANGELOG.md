@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/LibreWeather/libre-weather/compare/v1.10.0...v1.10.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* **deps:** bump compression and serve ([#78](https://github.com/LibreWeather/libre-weather/issues/78)) ([796d1d6](https://github.com/LibreWeather/libre-weather/commit/796d1d6fc38b556c25a995781803b3716f43e18a))
+
 # [1.10.0](https://github.com/LibreWeather/libre-weather/compare/v1.9.2...v1.10.0) (2026-11-14)
 
 
