@@ -1,3 +1,10 @@
+## [1.10.5](https://github.com/LibreWeather/libre-weather/compare/v1.10.4...v1.10.5) (2026-11-16)
+
+
+### Bug Fixes
+
+* collapse summary/desc ([89be859](https://github.com/LibreWeather/libre-weather/commit/89be85984e786645552f764da96a0772d0b13e83))
+
 ## [1.10.4](https://github.com/LibreWeather/libre-weather/compare/v1.10.3...v1.10.4) (2026-11-16)
 
 
