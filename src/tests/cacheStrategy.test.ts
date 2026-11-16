@@ -18,6 +18,10 @@ describe('strategyFor', () => {
     expect(strategyFor(req(`${ORIGIN}/index.1a2b3c.js`), ORIGIN, API)).toBe('cache-first');
   });
 
+  test('refetches runtime config so a new Matomo host is not stuck in the cache', () => {
+    expect(strategyFor(req(`${ORIGIN}/config.js`), ORIGIN, API)).toBe('network-first');
+  });
+
   test('fetches weather from the network, falling back to cache', () => {
     expect(strategyFor(req(`${API}/39.1,-94.5/unit/IMPERIAL`), ORIGIN, API)).toBe('network-first');
     expect(strategyFor(req(`${API}/39.1,-94.5/unit/IMPERIAL/current`), ORIGIN, API)).toBe('network-first');

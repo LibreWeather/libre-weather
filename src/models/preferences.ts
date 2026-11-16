@@ -20,6 +20,10 @@ export type Preferences = {
   transparency: TransparencyPref;
   layout: LayoutPref;
   installBannerDismissed: boolean;
+  /** Anonymous page-view sharing. Off until the user opts in. */
+  analytics: boolean;
+  /** The first-run analytics sheet has been answered, so it does not come back. */
+  analyticsAsked: boolean;
   /** Forecast source. `auto` keeps today's LibreWeather API when one is configured. */
   dataSource: DataSourcePref;
   /** Pirate Weather key typed into preferences. Empty until the user pastes one. */

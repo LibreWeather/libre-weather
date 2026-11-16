@@ -35,3 +35,5 @@ You'll need to create a .env.development if you're not running in `production` f
 
 Variables:
 `LIBRE_WEATHER_API`: URL for the API, if you're running the default port for the API, this would be `http://localhost:3000/weather`
+`MATOMO_URL`: Matomo server, for example `https://matomo.example.com/`. At container start this is written to `/config.js` only when the variable is set. In development, put it in `.env.development` and the dev server serves the same file.
+`MATOMO_SITE_ID`: Matomo site id. Included in `/config.js` only when set. The tracker and the first-run prompt stay off unless both are set. Usage sharing defaults off.

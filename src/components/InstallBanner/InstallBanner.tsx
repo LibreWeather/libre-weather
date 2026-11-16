@@ -1,37 +1,27 @@
 import React from 'react';
 import { faArrowUpFromBracket, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Icon from '@components/Icon';
+import { focusRing, PromptSheet } from '@components/Prompts/PromptSheet';
 
-import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { usePreferences } from '@/providers/PreferencesProvider';
-import { appleTouchIconHref, isIos, isStandalone } from '@/utilities/platform';
-import './InstallBanner.scss';
+import { appleTouchIconHref } from '@/utilities/platform';
 
-const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+type InstallBannerProps = {
+  canPrompt: boolean;
+  install: () => Promise<'accepted' | 'dismissed' | null>;
+};
 
-const InstallBanner = () => {
-  const { preferences, setPreference } = usePreferences();
-  const [standalone] = React.useState(isStandalone);
-  const [ios] = React.useState(isIos);
+const InstallBanner = ({ canPrompt, install }: InstallBannerProps) => {
+  const { setPreference } = usePreferences();
   const [icon] = React.useState(appleTouchIconHref);
   const dismiss = React.useCallback(() => setPreference('installBannerDismissed', true), [setPreference]);
-  const { canPrompt, install } = useInstallPrompt(dismiss);
-
-  if (preferences.installBannerDismissed || standalone || (!canPrompt && !ios)) return null;
 
   const onInstall = async () => {
     if ((await install()) === 'accepted') dismiss();
   };
 
   return (
-    <aside
-      className={
-        'installBanner fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-[1030] flex ' +
-        'w-[min(30rem,calc(100vw_-_2rem))] -translate-x-1/2 items-center gap-3 rounded-[0.875rem] ' +
-        'border border-white/10 bg-clear/94 py-[0.65rem] pr-[0.65rem] pl-3 text-left text-[0.9rem] text-white ' +
-        'shadow-[0_0.75rem_2.5rem_rgb(0_0_0/0.45)] backdrop-blur-[10px] reduce-transparency:bg-clear'
-      }
-      aria-label="Install Libre Weather">
+    <PromptSheet className="installBanner" label="Install Libre Weather">
       {icon ? <img className="size-10 flex-none rounded-[0.6rem]" src={icon} alt="" /> : null}
       <div className="flex min-w-0 flex-1 flex-col leading-[1.35]">
         <strong>Install Libre Weather</strong>
@@ -46,19 +36,25 @@ const InstallBanner = () => {
       {canPrompt ? (
         <button
           type="button"
-          className={`flex-none rounded-[0.55rem] bg-accent px-[0.95rem] py-[0.45rem] font-semibold text-white hover:bg-[#2f6fd8] ${focusRing}`}
+          className={
+            `flex-none rounded-[0.55rem] bg-accent px-[0.95rem] py-[0.45rem] font-semibold text-white ` +
+            `hover:bg-[#2f6fd8] ${focusRing}`
+          }
           onClick={onInstall}>
           Install
         </button>
       ) : null}
       <button
         type="button"
-        className={`installBanner-dismiss grid size-8 flex-none place-items-center rounded-lg text-white/60 hover:bg-white/8 hover:text-white ${focusRing}`}
+        className={
+          `installBanner-dismiss grid size-8 flex-none place-items-center rounded-lg text-white/60 ` +
+          `hover:bg-white/8 hover:text-white ${focusRing}`
+        }
         aria-label="Dismiss"
         onClick={dismiss}>
         <Icon icon={faXmark} />
       </button>
-    </aside>
+    </PromptSheet>
   );
 };
 

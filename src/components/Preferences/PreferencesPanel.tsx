@@ -7,7 +7,9 @@ import { useModalDialog } from '@/hooks/useModalDialog';
 import type { DataSourceId } from '@/models/dataSource';
 import type { PreferenceChoiceKey, Preferences } from '@/models/preferences';
 import { UnitSystem } from '@/models/weather';
+import { useRuntimeConfig } from '@/providers/RuntimeConfigProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
+import { matomoTarget } from '@/utilities/config';
 import { browserUses12HourClock } from '@/utilities/locale';
 import { PHONE_QUERY, REDUCED_MOTION_QUERY, REDUCED_TRANSPARENCY_QUERY, mediaMatches } from '@/utilities/media';
 import { isStandalone } from '@/utilities/platform';
@@ -79,6 +81,8 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
   const { ref, close, onBackdropClick } = useModalDialog(onClose);
   const titleId = React.useId();
   const { preferences, setPreference } = usePreferences();
+  const { ready, config } = useRuntimeConfig();
+  const analyticsAvailable = ready && matomoTarget(config) != null;
   const source = activeSource(
     { source: preferences.dataSource, pirateWeatherKey: preferences.pirateWeatherKey },
     dataConfig()
@@ -259,6 +263,34 @@ const PreferencesPanel = ({ anchor, onClose }: PreferencesPanelProps) => {
                 onChange={(event) => setPreference('alerts', event.target.checked)} />
             </label>
           </Section>
+
+          {analyticsAvailable ? (
+            <Section title="Privacy">
+              <label className="prefs-toggle flex cursor-pointer items-center justify-between gap-4">
+                <span className="flex flex-col text-[0.88rem] font-[550]">
+                  Share anonymous usage
+                  <small className="mt-[0.15rem] text-[0.78rem] font-normal text-white/50">
+                    A count of pages opened. Off until you turn it on.
+                  </small>
+                </span>
+                <input
+                  className={
+                    'relative h-[1.4rem] w-[2.4rem] flex-none cursor-pointer appearance-none rounded-2xl bg-white/18 ' +
+                    'transition-colors after:absolute after:top-[0.15rem] after:left-[0.15rem] after:size-[1.1rem] ' +
+                    'after:rounded-full after:bg-white after:transition-transform checked:bg-accent ' +
+                    'checked:after:translate-x-4 focus-visible:outline-2 focus-visible:outline-offset-2 ' +
+                    'focus-visible:outline-accent'
+                  }
+                  type="checkbox"
+                  role="switch"
+                  checked={preferences.analytics}
+                  onChange={(event) => {
+                    setPreference('analytics', event.target.checked);
+                    setPreference('analyticsAsked', true);
+                  }} />
+              </label>
+            </Section>
+          ) : null}
 
           {preferences.installBannerDismissed && !isStandalone() ? (
             <Section title="App">

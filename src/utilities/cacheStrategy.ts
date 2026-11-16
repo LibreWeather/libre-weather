@@ -29,6 +29,8 @@ export const strategyFor = (
   const url = new URL(request.url);
   if (apiRoot && request.url.startsWith(`${apiRoot}/`)) return 'network-first';
   if (url.origin === NOMINATIM_ORIGIN) return 'network-first';
+  // Written at container start. Cache-first would keep an old Matomo host.
+  if (url.origin === origin && url.pathname === '/config.js') return 'network-first';
   if (url.origin === origin) return 'cache-first';
   return 'passthrough';
 };

@@ -22,6 +22,8 @@ export const DEFAULT_PREFERENCES: Preferences = {
   transparency: 'auto',
   layout: 'auto',
   installBannerDismissed: false,
+  analytics: false,
+  analyticsAsked: false,
   dataSource: 'auto',
   pirateWeatherKey: '',
 };
@@ -61,6 +63,8 @@ export const sanitizePreferences = (raw: unknown): Preferences => {
     layout: pick(value.layout, ['auto', 'compact', 'comfortable'], d.layout),
     installBannerDismissed:
       typeof value.installBannerDismissed === 'boolean' ? value.installBannerDismissed : d.installBannerDismissed,
+    analytics: typeof value.analytics === 'boolean' ? value.analytics : d.analytics,
+    analyticsAsked: typeof value.analyticsAsked === 'boolean' ? value.analyticsAsked : d.analyticsAsked,
     dataSource: pick(value.dataSource, DATA_SOURCES, d.dataSource),
     pirateWeatherKey: pirateKey(value.pirateWeatherKey),
   };

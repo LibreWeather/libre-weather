@@ -59,6 +59,19 @@ describe('preferences storage', () => {
     expect(sanitizePreferences({ dataSource: 'nope' }).dataSource).toBe('auto');
   });
 
+  test('defaults analytics off and remembers an explicit choice', () => {
+    expect(sanitizePreferences({}).analytics).toBe(false);
+    expect(sanitizePreferences({}).analyticsAsked).toBe(false);
+    expect(sanitizePreferences({ analytics: true, analyticsAsked: true })).toMatchObject({
+      analytics: true,
+      analyticsAsked: true,
+    });
+    expect(sanitizePreferences({ analytics: 'yes', analyticsAsked: 1 })).toMatchObject({
+      analytics: false,
+      analyticsAsked: false,
+    });
+  });
+
   test('keeps a valid layout and drops an unknown one', () => {
     expect(sanitizePreferences({ layout: 'compact' }).layout).toBe('compact');
     expect(sanitizePreferences({ layout: 'dense' }).layout).toBe('auto');
