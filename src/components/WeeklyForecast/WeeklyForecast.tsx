@@ -5,7 +5,7 @@ import { DailySkeleton } from '@components/WeatherSkeleton';
 import { useOpenDays } from '@/hooks/useOpenDays';
 import type { ForecastDay } from '@/models/forecast';
 import type { Hourly } from '@/models/weather';
-import { useDaily, useHourly } from '@/providers/ForecastProviders';
+import { useDaily, useForecastOutage, useHourly } from '@/providers/ForecastProviders';
 import { usePlace } from '@/providers/PlaceProvider';
 import { forecastDays, hoursOnDay, tempBounds } from '@/utilities/forecast';
 import { isDayOpen } from '@/utilities/openDays';
@@ -35,6 +35,9 @@ const WeeklyForecast = () => {
   const { daily, status, retry } = useDaily();
   const { hourly } = useHourly();
   const place = usePlace();
+  const outage = useForecastOutage();
+
+  if (outage) return null;
 
   if (!daily && status === 'error') {
     return <ForecastError onRetry={retry} label="the daily forecast" />;

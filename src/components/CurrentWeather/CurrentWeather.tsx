@@ -5,7 +5,7 @@ import Icon from '@components/Icon';
 import { CurrentSkeleton } from '@components/WeatherSkeleton';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { useTrackHero } from '@/hooks/useHero';
-import { useCurrent, useDaily } from '@/providers/ForecastProviders';
+import { useCurrent, useDaily, useForecastOutage } from '@/providers/ForecastProviders';
 import { usePlace } from '@/providers/PlaceProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
 import { currentConditions } from '@/utilities/current';
@@ -107,6 +107,9 @@ const CurrentWeather = () => {
   const { daily } = useDaily();
   const place = usePlace();
   const { resolved } = usePreferences();
+  const outage = useForecastOutage();
+
+  if (outage) return null;
 
   if (!current && status === 'error') {
     return <ForecastError onRetry={retry} label="current conditions" />;

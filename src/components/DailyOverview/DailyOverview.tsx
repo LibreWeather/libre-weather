@@ -4,7 +4,7 @@ import { HourlySkeleton } from '@components/WeatherSkeleton';
 import { WeatherIcon } from '@components/WeatherIcon';
 import { useHourLayout } from '@/hooks/useHourLayout';
 import type { OverviewBar, OverviewHour } from '@/models/forecast';
-import { useHourly } from '@/providers/ForecastProviders';
+import { useForecastOutage, useHourly } from '@/providers/ForecastProviders';
 import { usePlace } from '@/providers/PlaceProvider';
 import { conditionClass } from '@/utilities/conditions';
 import { formatHour } from '@/utilities/locale';
@@ -140,6 +140,9 @@ const TIC_COLS = Array.from(Array(OVERVIEW_HOURS).keys()).map((i) => (
 const DailyOverview = () => {
   const { hourly, status, retry } = useHourly();
   const place = usePlace();
+  const outage = useForecastOutage();
+
+  if (outage) return null;
 
   if (!hourly && status === 'error') {
     return <ForecastError onRetry={retry} label="the hourly forecast" />;

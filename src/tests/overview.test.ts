@@ -15,9 +15,18 @@ describe('conditions', () => {
     expect(mostSevere(items).id).toBe(2);
   });
 
-  test('wet conditions share a colour', () => {
+  test('wet conditions share a colour, and light rain is its own', () => {
     expect(conditionClass(Condition.SNOW)).toBe('bg-rain');
+    expect(conditionClass(Condition.LIGHT_RAIN)).toBe('bg-light-rain');
     expect(conditionClass(Condition.FOG)).toBe('bg-mostly-cloudy');
+  });
+
+  test('rain beats light rain', () => {
+    const items = [
+      { condition: Condition.LIGHT_RAIN, id: 1 },
+      { condition: Condition.RAIN, id: 2 },
+    ];
+    expect(mostSevere(items).id).toBe(2);
   });
 });
 
@@ -45,6 +54,8 @@ describe('overview', () => {
 
   test('labels only bars wide enough to fit them', () => {
     expect(overviewBarLabel({ condition: Condition.RAIN, hrCnt: 3 }, false)).toBe('Rain');
+    expect(overviewBarLabel({ condition: Condition.LIGHT_RAIN, hrCnt: 4 }, false)).toBe('');
+    expect(overviewBarLabel({ condition: Condition.LIGHT_RAIN, hrCnt: 5 }, false)).toBe('Light Rain');
     expect(overviewBarLabel({ condition: Condition.CLOUDY, hrCnt: 4 }, false)).toBe('');
     expect(overviewBarLabel({ condition: Condition.RAIN, hrCnt: 12 }, true)).toBe('');
   });

@@ -7,13 +7,16 @@ const CONDITION_RANK: Record<Condition, number> = {
   [Condition.CLOUDY]: 2,
   [Condition.FOG]: 3,
   [Condition.WIND]: 3,
-  [Condition.RAIN]: 4,
-  [Condition.SNOW]: 5,
-  [Condition.SLEET]: 6,
+  [Condition.LIGHT_RAIN]: 4,
+  [Condition.RAIN]: 5,
+  [Condition.SNOW]: 6,
+  [Condition.SLEET]: 7,
 };
 
 export const conditionName = (condition: Condition) => {
   switch (condition) {
+    case Condition.LIGHT_RAIN:
+      return 'Light Rain';
     case Condition.RAIN:
       return 'Rain';
     case Condition.SNOW:
@@ -34,6 +37,8 @@ export const conditionName = (condition: Condition) => {
 /** Tailwind class picking the background colour for a condition. */
 export const conditionClass = (condition: Condition) => {
   switch (condition) {
+    case Condition.LIGHT_RAIN:
+      return 'bg-light-rain';
     case Condition.RAIN:
     case Condition.SNOW:
     case Condition.SLEET:

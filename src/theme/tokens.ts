@@ -17,6 +17,7 @@ export const COLORS = {
   clear: '#202224',
   'partly-cloudy': '#2c3032',
   'mostly-cloudy': '#343d4a',
+  'light-rain': '#4f86c6',
   rain: '#2e5a94',
   panel: '#23262b',
   accent: '#3b82f6',

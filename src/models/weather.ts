@@ -1,4 +1,5 @@
 export enum Condition {
+  LIGHT_RAIN = 'LIGHT_RAIN',
   RAIN = 'RAIN',
   SNOW = 'SNOW',
   SLEET = 'SLEET',

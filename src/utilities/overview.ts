@@ -47,8 +47,11 @@ export const groupByStride = (hours: OverviewHour[], stride: number): OverviewBa
 /** Text inside a bar, or empty when the bar is too narrow to fit it. */
 export const overviewBarLabel = ({ condition, hrCnt }: Pick<OverviewBar, 'condition' | 'hrCnt'>, narrow: boolean) => {
   if (narrow) return '';
-  const cloudy = condition === Condition.PARTLY_CLOUDY || condition === Condition.CLOUDY;
-  return hrCnt < (cloudy ? 5 : 3) ? '' : conditionName(condition);
+  const wide =
+    condition === Condition.PARTLY_CLOUDY ||
+    condition === Condition.CLOUDY ||
+    condition === Condition.LIGHT_RAIN;
+  return hrCnt < (wide ? 5 : 3) ? '' : conditionName(condition);
 };
 
 export const overviewBarTip = ({ condition, startTime, endTime }: OverviewBar) =>

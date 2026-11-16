@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { LoadStatus } from '@/models/status';
 import type { Current, Daily, Hourly } from '@/models/weather';
+import type { Backend } from '@/utilities/backend';
 import CurrentDayContext from './CurrentDayContext';
 import { useCurrentData, useDailyData, useHourlyData } from './forecastSlice';
 
@@ -10,6 +11,7 @@ export type CurrentContextValue = {
   status: LoadStatus;
   stale: boolean;
   retry: () => void;
+  backend: Backend | null;
 };
 
 const CurrentContext = React.createContext<CurrentContextValue | null>(null);
@@ -34,6 +36,7 @@ export type HourlyContextValue = {
   status: LoadStatus;
   stale: boolean;
   retry: () => void;
+  backend: Backend | null;
 };
 
 const HourlyContext = React.createContext<HourlyContextValue | null>(null);
@@ -54,9 +57,18 @@ export type DailyContextValue = {
   status: LoadStatus;
   stale: boolean;
   retry: () => void;
+  backend: Backend | null;
 };
 
 const DailyContext = React.createContext<DailyContextValue | null>(null);
+
+const ForecastOutageContext = React.createContext(false);
+
+export const ForecastOutageProvider = ({ outage, children }: { outage: boolean; children: React.ReactNode }) => (
+  <ForecastOutageContext.Provider value={outage}>{children}</ForecastOutageContext.Provider>
+);
+
+export const useForecastOutage = () => React.useContext(ForecastOutageContext);
 
 export const DailyProvider = ({ children }: { children: React.ReactNode }) => {
   const value = useDailyData();

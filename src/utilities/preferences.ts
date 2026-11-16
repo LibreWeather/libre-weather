@@ -1,4 +1,4 @@
-import type { DataSourcePref } from '@/models/dataSource';
+import { Backend, BACKEND_PREFS, backendNeedsKey, type BackendPref } from '@/utilities/backend';
 import type {
   LayoutPref,
   MotionPref,
@@ -24,24 +24,32 @@ export const DEFAULT_PREFERENCES: Preferences = {
   installBannerDismissed: false,
   analytics: false,
   analyticsAsked: false,
-  dataSource: 'auto',
-  pirateWeatherKey: '',
+  backend: '',
+  backendKey: '',
 };
 
 export const STORAGE_KEY = 'preferences';
 const LEGACY_UNITS_KEY = 'units';
 const LEGACY_INSTALL_KEY = 'installBannerDismissed';
 
-const DATA_SOURCES: readonly DataSourcePref[] = ['auto', 'libre', 'open-meteo', 'pirate-weather'];
-
 const pick = <T extends string>(value: unknown, allowed: readonly T[], fallback: T): T =>
   allowed.includes(value as T) ? (value as T) : fallback;
 
-/** Keep a user-typed Pirate Weather key, and drop anything that is not a single token. */
-const pirateKey = (value: unknown) => {
+/** Keep a user-typed backend key, and drop anything that is not a single token. */
+const backendKeyOf = (value: unknown) => {
   if (typeof value !== 'string') return '';
   const key = value.trim();
   return key.length > 0 && key.length <= 128 && !/\s/.test(key) ? key : '';
+};
+
+/**
+ * Old saves named a host. Pirate keeps its key. Open-Meteo becomes a header.
+ * The LibreWeather API and auto become the server default, and their keys are dropped.
+ */
+const migratedBackend = (source: unknown, key: string): { backend: BackendPref; backendKey: string } => {
+  if (source === 'pirate-weather') return { backend: Backend.PIRATE, backendKey: key };
+  if (source === 'open-meteo') return { backend: Backend.METEO, backendKey: '' };
+  return { backend: '', backendKey: '' };
 };
 
 /**
@@ -65,9 +73,20 @@ export const sanitizePreferences = (raw: unknown): Preferences => {
       typeof value.installBannerDismissed === 'boolean' ? value.installBannerDismissed : d.installBannerDismissed,
     analytics: typeof value.analytics === 'boolean' ? value.analytics : d.analytics,
     analyticsAsked: typeof value.analyticsAsked === 'boolean' ? value.analyticsAsked : d.analyticsAsked,
-    dataSource: pick(value.dataSource, DATA_SOURCES, d.dataSource),
-    pirateWeatherKey: pirateKey(value.pirateWeatherKey),
+    ...backendChoice(value),
   };
+};
+
+const backendChoice = (value: Record<string, unknown>): { backend: BackendPref; backendKey: string } => {
+  if (value.backend !== undefined) {
+    const backend = pick(value.backend, BACKEND_PREFS, '');
+    const keyed = backendNeedsKey(backend);
+    return { backend, backendKey: keyed ? backendKeyOf(value.backendKey ?? value.pirateWeatherKey) : '' };
+  }
+  if (value.dataSource !== undefined) {
+    return migratedBackend(value.dataSource, backendKeyOf(value.pirateWeatherKey));
+  }
+  return { backend: '', backendKey: '' };
 };
 
 /**

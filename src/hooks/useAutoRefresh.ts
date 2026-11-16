@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFetch, type ExecuteOptions } from '@/hooks/useFetch';
 import type { FetchRequest } from '@/models/fetch';
 import type { LoadStatus } from '@/models/status';
+import type { Backend } from '@/utilities/backend';
 
 type RefreshClockOptions = {
   enabled?: boolean;
@@ -26,6 +27,8 @@ export type AutoRefresh<T> = {
   /** Last good response is older than twice the refresh interval. */
   stale: boolean;
   retry: () => void;
+  /** Backend named by the latest response. */
+  backend: Backend | null;
 };
 
 const statusOf = (loading: boolean, error: Error | null, hasData: boolean): LoadStatus => {
@@ -100,7 +103,7 @@ export const useAutoRefresh = <T>(
   options: AutoRefreshOptions<T>
 ): AutoRefresh<T> => {
   const { intervalMs, keepPreviousData = true, onError, parse } = options;
-  const [{ data, loading, error }, refetch] = useFetch<T>(request, { keepPreviousData, onError, parse });
+  const [{ data, loading, error, backend }, refetch] = useFetch<T>(request, { keepPreviousData, onError, parse });
   const key = requestKey(request);
   // Keep the last success on screen when a refresh fails or the request is briefly empty.
   const [held, setHeld] = useState<T | null>(null);
@@ -141,5 +144,5 @@ export const useAutoRefresh = <T>(
     reload();
   }, [reload]);
 
-  return { data: held, status: statusOf(loading, error, held != null), stale, retry };
+  return { data: held, status: statusOf(loading, error, held != null), stale, retry, backend };
 };

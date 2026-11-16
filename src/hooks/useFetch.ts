@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FetchRequest } from '@/models/fetch';
+import type { Backend } from '@/utilities/backend';
+import { parseBackend } from '@/utilities/backend';
 
-export type FetchState<T> = { data: T | null; loading: boolean; error: Error | null };
+export type FetchState<T> = {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+  /** `x-backend` from the last response, when the server sent one. */
+  backend: Backend | null;
+};
 
 export type FetchOptions<T> = {
   /** Only fetch when `execute` is called. */
@@ -35,7 +43,12 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
   const { manual = false, keepPreviousData = false, onError, parse } = options;
   const key = request ? JSON.stringify(toRequest(request)) : null;
   const stable = useMemo<FetchRequest | null>(() => (key ? JSON.parse(key) : null), [key]);
-  const [state, setState] = useState<FetchState<T>>({ data: null, loading: !manual && key != null, error: null });
+  const [state, setState] = useState<FetchState<T>>({
+    data: null,
+    loading: !manual && key != null,
+    error: null,
+    backend: null,
+  });
   const controller = useRef<AbortController | null>(null);
   const onErrorRef = useRef(onError);
   const parseRef = useRef(parse);
@@ -66,7 +79,7 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
         const body: unknown = await res.json();
         const data = (parseRef.current ? parseRef.current(body) : body) as T;
         if (current.signal.aborted) return null;
-        setState({ data, loading: false, error: null });
+        setState({ data, loading: false, error: null, backend: parseBackend(res.headers.get('x-backend')) });
         return data;
       } catch (caught) {
         if (current.signal.aborted) return null;
@@ -86,10 +99,10 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
   useEffect(() => {
     if (manual) return undefined;
     if (!stable) {
-      setState({ data: null, loading: false, error: null });
+      setState({ data: null, loading: false, error: null, backend: null });
       return undefined;
     }
-    if (!keepPreviousData) setState({ data: null, loading: true, error: null });
+    if (!keepPreviousData) setState({ data: null, loading: true, error: null, backend: null });
     execute();
     return cancel;
   }, [stable, manual, keepPreviousData, execute, cancel]);

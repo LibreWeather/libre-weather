@@ -1,12 +1,15 @@
 import React from 'react';
 import CurrentWeather from '@components/CurrentWeather';
 import DailyOverview from '@components/DailyOverview';
+import ForecastError from '@components/ForecastError';
 import WeatherAlerts, { AlertsCoverageNote } from '@components/WeatherAlerts';
 import WeeklyForecast from '@components/WeeklyForecast';
 import type { NominatimResponse } from '@/models/place';
+import { ForecastOutageProvider, useCurrent, useDaily, useHourly } from '@/providers/ForecastProviders';
 import { usePlace } from '@/providers/PlaceProvider';
 import { usePreferences } from '@/providers/PreferencesProvider';
 import { pageClass } from '@/common/layout';
+import { backendLabel, forecastIsDown, mismatchedBackend, type Backend, type BackendPref } from '@/utilities/backend';
 import { placeLabel } from '@/utilities/place';
 
 const errorClass =
@@ -50,10 +53,33 @@ const LocationPicker = ({
   </section>
 );
 
+const warnClass =
+  'forecast-col mb-5 rounded-[0.625rem] border border-[rgb(240_190_90/0.35)] bg-[rgb(240_190_90/0.1)] ' +
+  'px-3.5 py-2.5 text-base';
+
+const BackendWarning = ({ sent, served }: { sent: BackendPref; served: Backend }) => (
+  <div className={warnClass} role="status">
+    {backendLabel(sent)} settings were not used. This forecast is from {backendLabel(served)}.
+  </div>
+);
+
 const WeatherView = () => {
   const place = usePlace();
-  // Time labels come from plain formatters; subscribing re-renders them when the clock preference changes.
-  usePreferences();
+  const { preferences } = usePreferences();
+  const current = useCurrent();
+  const hourly = useHourly();
+  const daily = useDaily();
+  const outage = forecastIsDown([
+    { status: current.status, hasData: current.current != null },
+    { status: hourly.status, hasData: hourly.hourly != null },
+    { status: daily.status, hasData: daily.daily != null },
+  ]);
+  const mismatch = mismatchedBackend(preferences.backend, [current.backend, hourly.backend, daily.backend]);
+  const retryAll = () => {
+    current.retry();
+    hourly.retry();
+    daily.retry();
+  };
 
   let notice: React.ReactNode = null;
   if (place.status === 'failed') notice = <LocationNotFound />;
@@ -62,14 +88,18 @@ const WeatherView = () => {
   }
 
   return (
-    <div className={`header ${pageClass}`}>
-      {notice}
-      <CurrentWeather />
-      <WeatherAlerts />
-      <DailyOverview />
-      <WeeklyForecast />
-      <AlertsCoverageNote />
-    </div>
+    <ForecastOutageProvider outage={outage}>
+      <div className={`header ${pageClass}`}>
+        {notice}
+        {mismatch ? <BackendWarning sent={preferences.backend} served={mismatch} /> : null}
+        {outage ? <ForecastError onRetry={retryAll} label="the forecast" /> : null}
+        <CurrentWeather />
+        <WeatherAlerts />
+        <DailyOverview />
+        <WeeklyForecast />
+        <AlertsCoverageNote />
+      </div>
+    </ForecastOutageProvider>
   );
 };
 

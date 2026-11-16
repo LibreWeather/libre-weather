@@ -4,8 +4,14 @@ import { useFetch } from '@/hooks/useFetch';
 import { useStorage } from '@/hooks/useStorage';
 import type { StorageCodec } from '@/models/storage';
 
-const respond = (body: unknown, ok = true) =>
-  Promise.resolve({ ok, status: ok ? 200 : 500, statusText: ok ? 'OK' : 'Server Error', json: () => Promise.resolve(body) });
+const respond = (body: unknown, ok = true, backend: string | null = null) =>
+  Promise.resolve({
+    ok,
+    status: ok ? 200 : 500,
+    statusText: ok ? 'OK' : 'Server Error',
+    json: () => Promise.resolve(body),
+    headers: { get: (name: string) => (name.toLowerCase() === 'x-backend' ? backend : null) },
+  });
 
 describe('useFetch', () => {
   const originalFetch = global.fetch;
@@ -24,7 +30,7 @@ describe('useFetch', () => {
   test('stays idle without a request, and manual waits for execute', async () => {
     global.fetch = jest.fn(() => respond([1])) as never;
     const idle = renderHook(() => useFetch(null));
-    expect(idle.result.current[0]).toEqual({ data: null, loading: false, error: null });
+    expect(idle.result.current[0]).toEqual({ data: null, loading: false, error: null, backend: null });
     const manual = renderHook(() => useFetch<number[]>('/api', { manual: true }));
     expect(global.fetch).not.toHaveBeenCalled();
     let data: number[] | null = null;

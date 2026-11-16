@@ -1,5 +1,6 @@
 import { manifest, version } from '@parcel/service-worker';
 
+import { WEATHER_API_ROOT } from './utilities/backend';
 import { precacheList, strategyFor } from './utilities/cacheStrategy';
 
 interface SwExtendableEvent extends Event {
@@ -71,7 +72,7 @@ const cacheFirst = async (request: Request) => {
 
 sw.addEventListener('fetch', (event) => {
   const { request } = event;
-  switch (strategyFor(request, sw.location.origin, process.env.LIBRE_WEATHER_API)) {
+  switch (strategyFor(request, sw.location.origin, WEATHER_API_ROOT)) {
     case 'app-shell':
       event.respondWith(networkFirst(request, SHELL_CACHE, SHELL_URL));
       break;

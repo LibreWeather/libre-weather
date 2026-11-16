@@ -1,6 +1,6 @@
-import type { DataSourcePref } from '@/models/dataSource';
+import type { BackendPref } from '@/utilities/backend';
 
-export type { DataSourcePref };
+export type { BackendPref };
 
 export type TemperaturePref = 'auto' | 'F' | 'C';
 export type WindPref = 'auto' | 'mph' | 'kmh' | 'ms';
@@ -24,10 +24,12 @@ export type Preferences = {
   analytics: boolean;
   /** The first-run analytics sheet has been answered, so it does not come back. */
   analyticsAsked: boolean;
-  /** Forecast source. `auto` keeps today's LibreWeather API when one is configured. */
-  dataSource: DataSourcePref;
-  /** Pirate Weather key typed into preferences. Empty until the user pastes one. */
-  pirateWeatherKey: string;
+  /**
+   * Backend override sent as `x-backend`. Empty uses the API's configured backend.
+   */
+  backend: BackendPref;
+  /** Key sent as `x-backend-key` for OpenWeatherMap and Pirate Weather. */
+  backendKey: string;
 };
 
 /** Preferences picked from a fixed set of options, as opposed to free text or on/off switches. */

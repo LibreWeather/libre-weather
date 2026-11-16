@@ -2,6 +2,7 @@ import { alertsRequest, alertsRoot } from '@/api/alerts';
 import { geocodeRequest, reverseRequest } from '@/api/nominatim';
 import { weatherRequest } from '@/api/weather';
 import { UnitSystem } from '@/models/weather';
+import { Backend } from '@/utilities/backend';
 
 describe('alertsRoot', () => {
   test('sits next to the weather endpoint', () => {
@@ -37,6 +38,19 @@ describe('request builders', () => {
     expect(url).toBe('https://api.example.com/weather/1,2/unit/METRIC/current');
     expect(init?.cache).toBe('reload');
     expect(init?.headers).toEqual({ 'x-tz': Intl.DateTimeFormat().resolvedOptions().timeZone });
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    expect(weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'current', 'https://api.example.com/weather', {
+      backend: Backend.PIRATE,
+      key: 'pw-key',
+    }).init?.headers).toEqual({ 'x-tz': zone, 'x-backend': 'PIRATE', 'x-backend-key': 'pw-key' });
+    expect(weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'current', 'https://api.example.com/weather', {
+      backend: Backend.METEO,
+      key: 'unused',
+    }).init?.headers).toEqual({ 'x-tz': zone, 'x-backend': 'METEO' });
+    expect(weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'current', 'https://api.example.com/weather', {
+      backend: Backend.OWM,
+      key: 'bad key',
+    }).init?.headers).toEqual({ 'x-tz': zone, 'x-backend': 'OWM' });
     expect(weatherRequest({ lat: 1, lon: 2 }, UnitSystem.METRIC, 'hourly', 'https://api.example.com/weather').url).toBe(
       'https://api.example.com/weather/1,2/unit/METRIC/hourly'
     );

@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 
-import { activeSource, dataConfig, type DataChoice } from '@/api/sources';
-import type { WeatherPart } from '@/api/weather';
+import { weatherRequest, type WeatherPart } from '@/api/weather';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import type { LoadStatus } from '@/models/status';
 import type { Current, CurrentDay, Daily, Hourly } from '@/models/weather';
+import { WEATHER_API_ROOT, type Backend } from '@/utilities/backend';
 import { convertCurrent, convertDaily, convertHourly } from '@/utilities/convertUnits';
 import { CURRENT_REFRESH_MS, DAILY_REFRESH_MS, HOURLY_REFRESH_MS } from '@/utilities/refresh';
 import { usePlace } from './PlaceProvider';
@@ -15,6 +15,7 @@ type Slice<T> = {
   status: LoadStatus;
   stale: boolean;
   retry: () => void;
+  backend: Backend | null;
 };
 
 const logWarning = (error: Error) => console.warn(error);
@@ -23,22 +24,20 @@ const useWeatherRequest = (part: WeatherPart) => {
   const { coords } = usePlace();
   const { preferences, resolved } = usePreferences();
   const units = resolved.unitSystem;
-  const choice: DataChoice = { source: preferences.dataSource, pirateWeatherKey: preferences.pirateWeatherKey };
-  const { provider, ready } = activeSource(choice, dataConfig());
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const request = coords && ready ? provider.request({ coords, units, part, tz }, choice, dataConfig()) : null;
-  const blocked = Boolean(coords && !ready);
-  const parse = useCallback((body: unknown) => provider.parse(part, body, units), [provider, part, units]);
-  return { request, blocked, parse };
+  const root = WEATHER_API_ROOT;
+  const request = coords && root ?
+      weatherRequest(coords, units, part, root, { backend: preferences.backend, key: preferences.backendKey }) :
+    null;
+  const blocked = Boolean(coords && !root);
+  return { request, blocked };
 };
 
 const useSlice = <T>(part: WeatherPart, intervalMs: number): Slice<T> => {
-  const { request, blocked, parse } = useWeatherRequest(part);
-  const map = useCallback((body: unknown) => parse(body) as T, [parse]);
-  const slice = useAutoRefresh<T>(request, { intervalMs, onError: logWarning, parse: map });
-  const { data, retry, stale } = slice;
+  const { request, blocked } = useWeatherRequest(part);
+  const slice = useAutoRefresh<T>(request, { intervalMs, onError: logWarning });
+  const { data, retry, stale, backend } = slice;
   const status: LoadStatus = blocked ? 'error' : slice.status;
-  return useMemo(() => ({ data, status, stale, retry }), [data, status, stale, retry]);
+  return useMemo(() => ({ data, status, stale, retry, backend }), [data, status, stale, retry, backend]);
 };
 
 const usePreferredUnits = () => {
@@ -56,8 +55,8 @@ export const useCurrentData = () => {
     return raw ? convertCurrent(raw, wind) : null;
   }, [slice.data, wind]);
   const value = useMemo(
-    () => ({ current, status: slice.status, stale: slice.stale, retry: slice.retry }),
-    [current, slice.status, slice.stale, slice.retry]
+    () => ({ current, status: slice.status, stale: slice.stale, retry: slice.retry, backend: slice.backend }),
+    [current, slice.status, slice.stale, slice.retry, slice.backend]
   );
   const day = useMemo<CurrentDay>(
     () => ({ sunrise: current?.sunrise ?? 0, sunset: current?.sunset ?? 0, time: current?.time ?? 0 }),
@@ -74,8 +73,8 @@ export const useHourlyData = () => {
     return raw ? convertHourly(raw, units) : null;
   }, [slice.data, units]);
   return useMemo(
-    () => ({ hourly, status: slice.status, stale: slice.stale, retry: slice.retry }),
-    [hourly, slice.status, slice.stale, slice.retry]
+    () => ({ hourly, status: slice.status, stale: slice.stale, retry: slice.retry, backend: slice.backend }),
+    [hourly, slice.status, slice.stale, slice.retry, slice.backend]
   );
 };
 
@@ -87,7 +86,7 @@ export const useDailyData = () => {
     return raw ? convertDaily(raw, units) : null;
   }, [slice.data, units]);
   return useMemo(
-    () => ({ daily, status: slice.status, stale: slice.stale, retry: slice.retry }),
-    [daily, slice.status, slice.stale, slice.retry]
+    () => ({ daily, status: slice.status, stale: slice.stale, retry: slice.retry, backend: slice.backend }),
+    [daily, slice.status, slice.stale, slice.retry, slice.backend]
   );
 };

@@ -8,6 +8,7 @@ import {
   VolumeUnit,
   WindUnit,
 } from '@/models/weather';
+import { Backend } from '@/utilities/backend';
 import {
   DEFAULT_PREFERENCES,
   STORAGE_KEY,
@@ -46,17 +47,29 @@ describe('preferences storage', () => {
     });
   });
 
-  test('keeps a forecast source and a pirate weather key, and drops junk', () => {
-    expect(sanitizePreferences({ dataSource: 'pirate-weather', pirateWeatherKey: 'ab cd' }).dataSource).toBe(
-      'pirate-weather'
-    );
-    expect(sanitizePreferences({ pirateWeatherKey: ' abc ' }).pirateWeatherKey).toBe('abc');
-    expect(sanitizePreferences({ pirateWeatherKey: 'ab cd' }).pirateWeatherKey).toBe('');
-    expect(sanitizePreferences({ dataSource: 'open-meteo', pirateWeatherKey: 'pw-key' })).toMatchObject({
-      dataSource: 'open-meteo',
-      pirateWeatherKey: 'pw-key',
+  test('migrates a saved forecast source into a backend header', () => {
+    expect(sanitizePreferences({ dataSource: 'pirate-weather', pirateWeatherKey: ' abc ' })).toMatchObject({
+      backend: Backend.PIRATE,
+      backendKey: 'abc',
     });
-    expect(sanitizePreferences({ dataSource: 'nope' }).dataSource).toBe('auto');
+    expect(sanitizePreferences({ dataSource: 'pirate-weather', pirateWeatherKey: 'ab cd' })).toMatchObject({
+      backend: Backend.PIRATE,
+      backendKey: '',
+    });
+    expect(sanitizePreferences({ dataSource: 'open-meteo', pirateWeatherKey: 'pw-key' })).toMatchObject({
+      backend: Backend.METEO,
+      backendKey: '',
+    });
+    expect(sanitizePreferences({ dataSource: 'libre', pirateWeatherKey: 'pw-key' })).toMatchObject({
+      backend: '',
+      backendKey: '',
+    });
+    expect(sanitizePreferences({ dataSource: 'auto' })).toMatchObject({ backend: '', backendKey: '' });
+    expect(sanitizePreferences({ dataSource: 'nope' })).toMatchObject({ backend: '', backendKey: '' });
+    expect(sanitizePreferences({ backend: Backend.OWM, backendKey: 'owm-key', dataSource: 'open-meteo' })).toMatchObject({
+      backend: Backend.OWM,
+      backendKey: 'owm-key',
+    });
   });
 
   test('defaults analytics off and remembers an explicit choice', () => {
