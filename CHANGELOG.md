@@ -1,3 +1,10 @@
+## [1.10.3](https://github.com/LibreWeather/libre-weather/compare/v1.10.2...v1.10.3) (2026-11-16)
+
+
+### Bug Fixes
+
+* analytics ([190b84c](https://github.com/LibreWeather/libre-weather/commit/190b84caa8ac9e00e4848b0285d953ce56e05e46)), closes [#1](https://github.com/LibreWeather/libre-weather/issues/1)
+
 ## [1.10.2](https://github.com/LibreWeather/libre-weather/compare/v1.10.1...v1.10.2) (2026-11-14)
 
 
