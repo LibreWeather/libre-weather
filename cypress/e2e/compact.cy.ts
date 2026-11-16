@@ -49,7 +49,8 @@ describe('Condensed view', () => {
   describe('compact layout', () => {
     it('tightens the current conditions when turned on', () => {
       visitStubbed();
-      cy.get('.currentDescription').should('have.text', 'Overcast.');
+      cy.get('.currentTemp').should('contain.text', 'Overcast.');
+      cy.get('.currentDescription').should('not.exist');
       cy.get('.currentHero').invoke('outerHeight').then((comfortable) => {
         cy.get('button[aria-label="Preferences"]').click();
         cy.contains('.prefs-field', 'Compact layout').contains('label', 'On').click();
@@ -58,7 +59,8 @@ describe('Condensed view', () => {
         cy.get('html').should('have.class', 'compact');
         cy.get('.currentHero').invoke('outerHeight').should('be.lessThan', comfortable);
         cy.get('.currentDescription').should('not.exist');
-        cy.get('.currentMeta-description').should('have.text', 'Overcast.');
+        cy.get('.currentMeta-description').should('not.exist');
+        cy.get('.currentTemp').should('contain.text', 'Overcast.');
       });
       savedPreferences().its('layout').should('eq', 'compact');
 
@@ -79,7 +81,8 @@ describe('Condensed view', () => {
       visitStubbed();
       cy.get('.currentTemp').should('be.visible');
       cy.get('html').should('have.class', 'compact');
-      cy.get('.currentMeta-description').should('exist');
+      cy.get('.currentTemp').should('contain.text', 'Overcast.');
+      cy.get('.currentMeta-description').should('not.exist');
     });
 
     it('is comfortable on desktop by default', () => {
@@ -93,7 +96,8 @@ describe('Condensed view', () => {
       visitStubbed({ onBeforeLoad: withPreferences({ layout: 'comfortable' }) });
       cy.get('.currentTemp').should('be.visible');
       cy.get('html').should('not.have.class', 'compact');
-      cy.get('.currentDescription').should('exist');
+      cy.get('.currentTemp').should('contain.text', 'Overcast.');
+      cy.get('.currentDescription').should('not.exist');
     });
   });
 });

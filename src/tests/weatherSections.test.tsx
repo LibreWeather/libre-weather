@@ -184,6 +184,57 @@ describe('independent forecast sections', () => {
 
 const slice = (retry = jest.fn()) => ({ status: 'error' as const, stale: false, retry, backend: null });
 
+describe('current headline', () => {
+  test('description fills the summary slot when there is no summary', () => {
+    useCurrentMock.mockReturnValue({ current, status: 'ready', stale: false, retry: jest.fn(), backend: null });
+    const { container } = render(<CurrentWeather />);
+    expect(container.querySelector('.currentTemp')).toHaveTextContent('Overcast.');
+    expect(container.querySelector('.currentDescription')).not.toBeInTheDocument();
+    expect(container.querySelector('.currentMeta-description')).not.toBeInTheDocument();
+  });
+
+  test('description stays under the hero when a summary is present', () => {
+    useCurrentMock.mockReturnValue({
+      current: { ...current, summary: 'Cloudy' },
+      status: 'ready',
+      stale: false,
+      retry: jest.fn(),
+      backend: null,
+    });
+    const { container } = render(<CurrentWeather />);
+    expect(container.querySelector('.currentTemp')).toHaveTextContent('Cloudy.');
+    expect(container.querySelector('.currentTemp')).not.toHaveTextContent('Overcast');
+    expect(container.querySelector('.currentDescription')).toHaveTextContent('Overcast.');
+  });
+
+  test('compact layout keeps the description in the meta row only when a summary is present', () => {
+    usePreferencesMock.mockReturnValue({
+      preferences: {} as never,
+      setPreference: jest.fn(),
+      resolved: {
+        compact: true,
+        reduceMotion: true,
+        reduceTransparency: false,
+        unitSystem: 'IMPERIAL' as never,
+        windUnit: WindUnit.MPH,
+        volumeUnit: VolumeUnit.IN,
+        twelveHour: true,
+      },
+    });
+    useCurrentMock.mockReturnValue({
+      current: { ...current, summary: 'Cloudy' },
+      status: 'ready',
+      stale: false,
+      retry: jest.fn(),
+      backend: null,
+    });
+    const { container } = render(<CurrentWeather />);
+    expect(container.querySelector('.currentDescription')).not.toBeInTheDocument();
+    expect(container.querySelector('.currentMeta-description')).toHaveTextContent('Overcast.');
+    expect(container.querySelector('.currentTemp')).toHaveTextContent('Cloudy.');
+  });
+});
+
 describe('forecast outage and backend warning', () => {
   test('one alert retries every slice when the forecast is down', () => {
     const retryCurrent = jest.fn();

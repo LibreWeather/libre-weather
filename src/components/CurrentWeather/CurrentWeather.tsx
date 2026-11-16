@@ -21,7 +21,10 @@ const CurrentWeatherContent = ({
 }) => {
   const hero = React.useRef<HTMLDivElement>(null);
   useTrackHero(hero);
-  const { description } = currentWeather;
+  const { description, summary } = currentWeather;
+  // No short label: the description takes the summary slot and the line under the hero goes away.
+  const headline = summary ?? description;
+  const detail = summary ? description : null;
 
   return (
     <div className="current mx-auto w-full px-3">
@@ -69,7 +72,7 @@ const CurrentWeatherContent = ({
               'compact:text-[1.75rem]!'
             }>
             {currentWeather.temp}
-            {currentWeather.summary ? ` ${currentWeather.summary}` : ''}
+            {headline ? ` ${headline}` : ''}
           </div>
           <div
             className={
@@ -85,17 +88,17 @@ const CurrentWeatherContent = ({
             <span>
               <b>High:</b> {currentWeather.tempMax}
             </span>
-            {compact && description ? <span className="currentMeta-description">{description}</span> : null}
+            {compact && detail ? <span className="currentMeta-description">{detail}</span> : null}
           </div>
         </div>
       </div>
-      {!compact && description ? (
+      {!compact && detail ? (
         <div
           className={
             'currentDescription mb-2 flex justify-center font-serif text-[calc(1.325rem_+_0.9vw)] leading-tight ' +
             'font-semibold tracking-[-0.02em] xl:text-[2rem]'
           }>
-          {description}
+          {detail}
         </div>
       ) : null}
     </div>
