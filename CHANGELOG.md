@@ -1,3 +1,10 @@
+## [1.10.4](https://github.com/LibreWeather/libre-weather/compare/v1.10.3...v1.10.4) (2026-11-16)
+
+
+### Bug Fixes
+
+* pass api pref to backend ([6ba9529](https://github.com/LibreWeather/libre-weather/commit/6ba9529170693826672301efa807d1340b1eae4a)), closes [#9](https://github.com/LibreWeather/libre-weather/issues/9)
+
 ## [1.10.3](https://github.com/LibreWeather/libre-weather/compare/v1.10.2...v1.10.3) (2026-11-16)
 
 
