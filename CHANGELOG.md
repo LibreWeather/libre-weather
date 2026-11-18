@@ -1,3 +1,10 @@
+## [1.10.6](https://github.com/LibreWeather/libre-weather/compare/v1.10.5...v1.10.6) (2026-11-18)
+
+
+### Bug Fixes
+
+* call preact hooks through the React default export ([1eb1023](https://github.com/LibreWeather/libre-weather/commit/1eb10235613f6379b351fcf9e9dc5a0f400562fd))
+
 ## [1.10.5](https://github.com/LibreWeather/libre-weather/compare/v1.10.4...v1.10.5) (2026-11-16)
 
 
