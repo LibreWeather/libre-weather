@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import React from 'react';
 
 export type AppLocation = { pathname: string; search: string; state: unknown };
 
@@ -39,4 +39,4 @@ export const navigate = (to: string, { replace = false, state = null }: Navigate
 };
 
 /** The current URL and history state, re-rendering on navigation and Back/Forward. */
-export const useLocation = () => useSyncExternalStore(subscribe, read, read);
+export const useLocation = () => React.useSyncExternalStore(subscribe, read, read);

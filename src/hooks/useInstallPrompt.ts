@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import type { InstallPromptEvent } from '@/models/install';
 
 /**
@@ -7,9 +7,9 @@ import type { InstallPromptEvent } from '@/models/install';
  * @returns {{ canPrompt: boolean, install: () => Promise<'accepted' | 'dismissed' | null> }}
  */
 export const useInstallPrompt = (onInstalled: () => void) => {
-  const [promptEvent, setPromptEvent] = useState<InstallPromptEvent | null>(null);
+  const [promptEvent, setPromptEvent] = React.useState<InstallPromptEvent | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const onPrompt = (event: Event) => {
       event.preventDefault();
       setPromptEvent(event as InstallPromptEvent);
@@ -22,7 +22,7 @@ export const useInstallPrompt = (onInstalled: () => void) => {
     };
   }, [onInstalled]);
 
-  const install = useCallback(async () => {
+  const install = React.useCallback(async () => {
     if (!promptEvent) return null;
     await promptEvent.prompt();
     const { outcome } = await promptEvent.userChoice;

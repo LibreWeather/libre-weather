@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, type MouseEvent } from 'react';
+import React from 'react';
+import type { MouseEvent } from 'react';
 
 /**
  * Opens a `<dialog>` as a modal on mount; clicks on the backdrop close it.
@@ -8,18 +9,18 @@ import { useCallback, useEffect, useRef, type MouseEvent } from 'react';
  * @returns {{ ref, close: () => void, onBackdropClick: (event: MouseEvent) => void }}
  */
 export const useModalDialog = (onClose?: () => void) => {
-  const ref = useRef<HTMLDialogElement>(null);
-  const onCloseRef = useRef(onClose);
+  const ref = React.useRef<HTMLDialogElement>(null);
+  const onCloseRef = React.useRef(onClose);
   onCloseRef.current = onClose;
-  const closed = useRef(false);
+  const closed = React.useRef(false);
 
-  const close = useCallback(() => {
+  const close = React.useCallback(() => {
     if (closed.current) return;
     closed.current = true;
     onCloseRef.current?.();
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const node = ref.current;
     if (!node) return undefined;
     if (!node.open) node.showModal();
@@ -28,7 +29,7 @@ export const useModalDialog = (onClose?: () => void) => {
     return () => node.removeEventListener('close', close);
   }, [close]);
 
-  const onBackdropClick = useCallback(
+  const onBackdropClick = React.useCallback(
     (event: MouseEvent<HTMLDialogElement>) => {
       if (event.target === event.currentTarget) close();
     },

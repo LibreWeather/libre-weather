@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { useFetch, type ExecuteOptions } from '@/hooks/useFetch';
 import type { FetchRequest } from '@/models/fetch';
@@ -50,10 +50,10 @@ const requestKey = (request: string | FetchRequest | null) => {
  */
 const useRefreshClock = (refresh: () => void, options: RefreshClockOptions) => {
   const { enabled = true, intervalMs, resetKey = null } = options;
-  const refreshRef = useRef(refresh);
+  const refreshRef = React.useRef(refresh);
   refreshRef.current = refresh;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!enabled) return undefined;
 
     let timer = 0;
@@ -106,17 +106,17 @@ export const useAutoRefresh = <T>(
   const [{ data, loading, error, backend }, refetch] = useFetch<T>(request, { keepPreviousData, onError, parse });
   const key = requestKey(request);
   // Keep the last success on screen when a refresh fails or the request is briefly empty.
-  const [held, setHeld] = useState<T | null>(null);
-  const [fetchedAt, setFetchedAt] = useState<number | null>(null);
-  const [stale, setStale] = useState(false);
+  const [held, setHeld] = React.useState<T | null>(null);
+  const [fetchedAt, setFetchedAt] = React.useState<number | null>(null);
+  const [stale, setStale] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (data == null) return;
     setHeld(data);
     setFetchedAt(Date.now());
   }, [data]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (fetchedAt == null) return undefined;
     const limit = intervalMs * 2;
     const mark = () => setStale(Date.now() - fetchedAt >= limit);
@@ -132,7 +132,7 @@ export const useAutoRefresh = <T>(
     };
   }, [fetchedAt, intervalMs]);
 
-  const reload = useCallback((execOptions?: ExecuteOptions) => {
+  const reload = React.useCallback((execOptions?: ExecuteOptions) => {
     refetch(undefined, execOptions);
   }, [refetch]);
 
@@ -140,7 +140,7 @@ export const useAutoRefresh = <T>(
     reload({ background: true });
   }, { enabled: key != null, intervalMs, resetKey: key });
 
-  const retry = useCallback(() => {
+  const retry = React.useCallback(() => {
     reload();
   }, [reload]);
 

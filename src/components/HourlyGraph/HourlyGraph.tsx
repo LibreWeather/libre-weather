@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
 import { faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import Icon from '@components/Icon';
 import { buildChart, hourPosition, barGeometry, num, TRACK_H, VIEW_HOURS } from '@/utilities/graph';
@@ -101,14 +101,14 @@ const Plot = ({ children, count }: { children?: ReactNode; count: number }) => (
 );
 
 const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }) => {
-  const hours = useMemo(() => (hourly || []).filter(Boolean), [hourly]);
-  const scroller = useRef<HTMLDivElement | null>(null);
-  const drag = useRef<{ id: number; x: number; scroll: number } | null>(null);
-  const nowPos = useMemo(() => hourPosition(hours, Date.now()), [hours]);
+  const hours = React.useMemo(() => (hourly || []).filter(Boolean), [hourly]);
+  const scroller = React.useRef<HTMLDivElement | null>(null);
+  const drag = React.useRef<{ id: number; x: number; scroll: number } | null>(null);
+  const nowPos = React.useMemo(() => hourPosition(hours, Date.now()), [hours]);
   const nowIndex = nowPos == null ? 0 : Math.floor(nowPos);
-  const [hover, setHover] = useState(nowIndex);
+  const [hover, setHover] = React.useState(nowIndex);
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     const el = scroller.current;
     if (!el || nowPos == null || !hours.length) {
       return;
@@ -116,7 +116,7 @@ const HourlyGraph = ({ heading, hourly }: { heading?: string; hourly: Hourly[] }
     el.scrollLeft = (el.scrollWidth * Math.max(0, nowIndex - 1)) / hours.length;
   }, [hours.length, nowIndex, nowPos]);
 
-  const chart = useMemo(() => buildChart(hours), [hours]);
+  const chart = React.useMemo(() => buildChart(hours), [hours]);
 
   if (hours.length < 2) {
     return null;

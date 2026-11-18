@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import ForecastError from '@components/ForecastError';
 import { HourlySkeleton } from '@components/WeatherSkeleton';
 import { WeatherIcon } from '@components/WeatherIcon';
@@ -14,13 +14,13 @@ const LONG_PRESS_MS = 500;
 
 const ConditionBar = ({ bar, narrow }: { bar: OverviewBar; narrow: boolean }) => {
   const { condition, hrCnt, time } = bar;
-  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPress = useRef(false);
-  const [show, setShow] = useState(false);
+  const pressTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPress = React.useRef(false);
+  const [show, setShow] = React.useState(false);
   const tip = overviewBarTip(bar);
   const label = overviewBarLabel(bar, narrow);
 
-  useEffect(() => () => {
+  React.useEffect(() => () => {
     if (pressTimer.current) {
       clearTimeout(pressTimer.current);
     }

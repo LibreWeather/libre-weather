@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import React from 'react';
 
 import { weatherRequest, type WeatherPart } from '@/api/weather';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
@@ -37,28 +37,28 @@ const useSlice = <T>(part: WeatherPart, intervalMs: number): Slice<T> => {
   const slice = useAutoRefresh<T>(request, { intervalMs, onError: logWarning });
   const { data, retry, stale, backend } = slice;
   const status: LoadStatus = blocked ? 'error' : slice.status;
-  return useMemo(() => ({ data, status, stale, retry, backend }), [data, status, stale, retry, backend]);
+  return React.useMemo(() => ({ data, status, stale, retry, backend }), [data, status, stale, retry, backend]);
 };
 
 const usePreferredUnits = () => {
   const {
     resolved: { windUnit, volumeUnit },
   } = usePreferences();
-  return useMemo(() => ({ wind: windUnit, volume: volumeUnit }), [windUnit, volumeUnit]);
+  return React.useMemo(() => ({ wind: windUnit, volume: volumeUnit }), [windUnit, volumeUnit]);
 };
 
 export const useCurrentData = () => {
   const slice = useSlice<{ current: Current }>('current', CURRENT_REFRESH_MS);
   const { wind } = usePreferredUnits();
-  const current = useMemo(() => {
+  const current = React.useMemo(() => {
     const raw = slice.data?.current ?? null;
     return raw ? convertCurrent(raw, wind) : null;
   }, [slice.data, wind]);
-  const value = useMemo(
+  const value = React.useMemo(
     () => ({ current, status: slice.status, stale: slice.stale, retry: slice.retry, backend: slice.backend }),
     [current, slice.status, slice.stale, slice.retry, slice.backend]
   );
-  const day = useMemo<CurrentDay>(
+  const day = React.useMemo<CurrentDay>(
     () => ({ sunrise: current?.sunrise ?? 0, sunset: current?.sunset ?? 0, time: current?.time ?? 0 }),
     [current]
   );
@@ -68,11 +68,11 @@ export const useCurrentData = () => {
 export const useHourlyData = () => {
   const slice = useSlice<{ hourly: Hourly[] }>('hourly', HOURLY_REFRESH_MS);
   const units = usePreferredUnits();
-  const hourly = useMemo(() => {
+  const hourly = React.useMemo(() => {
     const raw = slice.data?.hourly ?? null;
     return raw ? convertHourly(raw, units) : null;
   }, [slice.data, units]);
-  return useMemo(
+  return React.useMemo(
     () => ({ hourly, status: slice.status, stale: slice.stale, retry: slice.retry, backend: slice.backend }),
     [hourly, slice.status, slice.stale, slice.retry, slice.backend]
   );
@@ -81,11 +81,11 @@ export const useHourlyData = () => {
 export const useDailyData = () => {
   const slice = useSlice<{ daily: Daily[] }>('daily', DAILY_REFRESH_MS);
   const units = usePreferredUnits();
-  const daily = useMemo(() => {
+  const daily = React.useMemo(() => {
     const raw = slice.data?.daily ?? null;
     return raw ? convertDaily(raw, units) : null;
   }, [slice.data, units]);
-  return useMemo(
+  return React.useMemo(
     () => ({ daily, status: slice.status, stale: slice.stale, retry: slice.retry, backend: slice.backend }),
     [daily, slice.status, slice.stale, slice.retry, slice.backend]
   );

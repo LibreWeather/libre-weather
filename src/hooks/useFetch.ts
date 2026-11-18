@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
 import type { FetchRequest } from '@/models/fetch';
 import type { Backend } from '@/utilities/backend';
 import { parseBackend } from '@/utilities/backend';
@@ -42,28 +42,28 @@ const toRequest = (request: string | FetchRequest): FetchRequest =>
 export const useFetch = <T>(request: string | FetchRequest | null, options: FetchOptions<T> = {}) => {
   const { manual = false, keepPreviousData = false, onError, parse } = options;
   const key = request ? JSON.stringify(toRequest(request)) : null;
-  const stable = useMemo<FetchRequest | null>(() => (key ? JSON.parse(key) : null), [key]);
-  const [state, setState] = useState<FetchState<T>>({
+  const stable = React.useMemo<FetchRequest | null>(() => (key ? JSON.parse(key) : null), [key]);
+  const [state, setState] = React.useState<FetchState<T>>({
     data: null,
     loading: !manual && key != null,
     error: null,
     backend: null,
   });
-  const controller = useRef<AbortController | null>(null);
-  const onErrorRef = useRef(onError);
-  const parseRef = useRef(parse);
+  const controller = React.useRef<AbortController | null>(null);
+  const onErrorRef = React.useRef(onError);
+  const parseRef = React.useRef(parse);
 
-  useEffect(() => {
+  React.useEffect(() => {
     onErrorRef.current = onError;
     parseRef.current = parse;
   }, [onError, parse]);
 
-  const cancel = useCallback(() => {
+  const cancel = React.useCallback(() => {
     controller.current?.abort();
     controller.current = null;
   }, []);
 
-  const execute = useCallback(
+  const execute = React.useCallback(
     async (override?: string | FetchRequest, execOptions?: ExecuteOptions): Promise<T | null> => {
       const target = override ? toRequest(override) : stable;
       const background = execOptions?.background ?? false;
@@ -96,7 +96,7 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
     [stable, cancel]
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (manual) return undefined;
     if (!stable) {
       setState({ data: null, loading: false, error: null, backend: null });
@@ -107,7 +107,7 @@ export const useFetch = <T>(request: string | FetchRequest | null, options: Fetc
     return cancel;
   }, [stable, manual, keepPreviousData, execute, cancel]);
 
-  useEffect(() => cancel, [cancel]);
+  React.useEffect(() => cancel, [cancel]);
 
   return [state, execute, cancel] as const;
 };

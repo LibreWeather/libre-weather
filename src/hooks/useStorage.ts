@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import React from 'react';
 import type { StorageCodec } from '@/models/storage';
 
 type SetStored<T> = (next: T | ((current: T) => T)) => void;
@@ -10,8 +10,8 @@ type SetStored<T> = (next: T | ((current: T) => T)) => void;
  * @returns {[T, SetStored<T>]}
  */
 export const useStorage = <T>(codec: StorageCodec<T>, storage: Storage = localStorage) => {
-  const [value, setValue] = useState(() => codec.load(storage));
-  const setStored: SetStored<T> = useCallback(
+  const [value, setValue] = React.useState(() => codec.load(storage));
+  const setStored: SetStored<T> = React.useCallback(
     (next) => {
       setValue((current) => {
         const updated = typeof next === 'function' ? (next as (current: T) => T)(current) : next;

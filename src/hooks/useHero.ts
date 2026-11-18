@@ -1,4 +1,5 @@
-import { useEffect, useSyncExternalStore, type RefObject } from 'react';
+import React from 'react';
+import type { RefObject } from 'react';
 
 /** Clearance under the sticky navbar before the hero counts as scrolled away. */
 const NAVBAR_CLEARANCE_PX = 72;
@@ -24,7 +25,7 @@ const subscribe = (listener: () => void) => {
 
 /** Tracks whether `hero` has scrolled up behind the navbar. */
 export const useTrackHero = (hero: RefObject<HTMLElement | null>) => {
-  useEffect(() => {
+  React.useEffect(() => {
     const node = hero.current;
     if (!node || typeof IntersectionObserver === 'undefined') return undefined;
     const observer = new IntersectionObserver(
@@ -40,4 +41,4 @@ export const useTrackHero = (hero: RefObject<HTMLElement | null>) => {
 };
 
 /** True while the tracked hero is scrolled offscreen. */
-export const useHeroOffscreen = () => useSyncExternalStore(subscribe, () => offscreen, () => false);
+export const useHeroOffscreen = () => React.useSyncExternalStore(subscribe, () => offscreen, () => false);
